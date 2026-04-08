@@ -1,6 +1,7 @@
 import pygame
 from classes import game_property, entity, world, tchat, game_type, ui
-from classes.solo.texture_manager import TextureManager
+from classes.texture_manager import TextureManager
+from classes.inventory import Crafting_types
 import random
 
 PLAYER_NAME = "Player1"
@@ -11,7 +12,7 @@ class Game:
         pygame.display.set_caption("TeraCraft")
         info = pygame.display.Info()
 
-        WIDTH, HEIGHT = 1200, 900 # info.current_w, info.current_h
+        WIDTH, HEIGHT = 1800, 1000 # info.current_w, info.current_h
 
         self.HEIGHT_SCREEN = HEIGHT
         self.WIDTH_SCREEN = WIDTH
@@ -48,7 +49,7 @@ class Game:
         json = world.load_world_json("world_saved")
         print(json)
 
-        #self.World = world.World(seed=seed, screen_size=(self.WIDTH_SCREEN, self.HEIGHT_SCREEN))
+        # self.World = world.World(seed=seed, screen_size=(self.WIDTH_SCREEN, self.HEIGHT_SCREEN), name="world_saved")
 
         self.World = world.World((WIDTH, HEIGHT), name="world_saved", json_data=json)
 
@@ -56,7 +57,7 @@ class Game:
         if player:
             self.player = player
         else:
-            self.player = entity.Player(name=PLAYER_NAME)
+            self.player = entity.Player(self.World, name=PLAYER_NAME)
             self.World.create_entity(self.player)
 
         self.UI = ui.UI((WIDTH, HEIGHT), self.player.inventory, self.tchat)
@@ -68,13 +69,16 @@ class Game:
         self.texture_manager = TextureManager()
         self.texture_manager.load_default_textures()
 
-        from classes.solo.world import Block
+        from classes.world import Block
         Block.texture_manager = self.texture_manager
-        from classes.solo.inventory import ItemStack
+
+        from classes.inventory import ItemStack
         ItemStack.texture_manager = self.texture_manager
-        from classes.solo.entity import Entity
+
+        from classes.entity import Entity
         Entity.texture_manager = self.texture_manager
-        from classes.solo.game_type import ItemProperty
+
+        from classes.game_type import ItemProperty
         ItemProperty.texture_manager = self.texture_manager
 
     # START GAME
@@ -188,9 +192,9 @@ class Game:
     def mouse_scroll(self, y):
         if not self.tchat.oppened and not self.UI.is_open_inv():
             if y < 0:
-                self.player.inventory.move_selected_index(1)
+                self.player.inventory.ui.move_selected_index(1)
             elif y > 0:
-                self.player.inventory.move_selected_index(-1)
+                self.player.inventory.ui.move_selected_index(-1)
         else:
             if self.tchat.oppened:
                 if y < 0:
@@ -219,24 +223,28 @@ class Game:
                 self.player.on_ground = False
 
             # Breaking
-            if self.keys_.get(self.event_mouse_get(1)):
-                # Try break
-                if self.old_current_bock_pos == self.current_block_pos:
-                    self.World.try_destroy_block(self.current_block_pos, self.player)
+            selected_item = self.player.inventory.ui.get_selected_item()
+            if selected_item is None or not isinstance(selected_item.item_property, game_type.Attack_tool):
+                if self.keys_.get(self.event_mouse_get(1)):
+                    # Try break
+                    if self.old_current_bock_pos == self.current_block_pos:
+                        self.World.try_destroy_block(self.current_block_pos, self.player)
+                    else:
+                        self.World.reset_block(self.old_current_bock_pos)
                 else:
-                    self.World.reset_block(self.old_current_bock_pos)
-            else:
-                if self.prev_keys_.get(self.event_mouse_get(1)):
-                    self.World.reset_block(self.current_block_pos)
+                    if self.prev_keys_.get(self.event_mouse_get(1)):
+                        self.World.reset_block(self.current_block_pos)
             
             # Attacking
             if self.keys_.get(self.event_mouse_get(1)):
                 if not self.prev_keys_.get(self.event_mouse_get(1)):
                     # ATTACK
-
+                    
                     self.player.try_attack(self.cam_rect)
+                        
 
             if self.keys_.get(self.event_mouse_get(3)):
+                self.click_on_block(self.current_block_pos, self.player)
                 self.pos_block(self.current_block_pos, self.player)
 
             if self.keys_.get(pygame.K_t):
@@ -244,11 +252,11 @@ class Game:
 
             # Spawning for debug
             if self.keys_.get(pygame.K_m) and not self.prev_keys_.get(pygame.K_m):
-                z = entity.Zobmie()
+                z = entity.Zobmie(self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
             if self.keys_.get(pygame.K_p) and not self.prev_keys_.get(pygame.K_p):
-                p = entity.Player("Player2")
+                p = entity.Player(self.World, "Player2")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
 
@@ -258,16 +266,22 @@ class Game:
                 self.UI.open_inv(self.player.inventory)
             
             if self.keys_.get(pygame.K_a):
-                self.player.drop_item(self.World)
+                self.player.drop_item()
 
         elif self.UI.is_open_inv():
             if self.keys_.get(self.event_mouse_get(1)):
                 if not self.prev_keys_.get(self.event_mouse_get(1)):
                     self.UI.mouse_down(1)
-
             else:
                 if self.prev_keys_.get(self.event_mouse_get(1)):
                     self.UI.mouse_up(1)
+            
+            if self.keys_.get(self.event_mouse_get(3)):
+                if not self.prev_keys_.get(self.event_mouse_get(3)):
+                    self.UI.mouse_down(3)
+            else:
+                if self.prev_keys_.get(self.event_mouse_get(3)):
+                    self.UI.mouse_up(3)
             
 
         # forward world update handles gravity and actual movement
@@ -279,8 +293,7 @@ class Game:
         if self.UI.is_open_inv():
             self.UI.mouse_up(button)
 
-    def pos_block(self, pos_block, player):
-
+    def click_on_block(self, pos_block, player):
         # centre du bloc
         block_center_x = pos_block[0] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
         block_center_y = pos_block[1] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
@@ -294,9 +307,19 @@ class Game:
 
         if dx*dx + dy*dy > game_property.MAX_ACTION_DISTANCE**2:
             return
+        
+        old_block = self.World.get_block(pos_block[0], pos_block[1])
 
-        current_item = player.inventory.get_selected_item()
+        if old_block:
+            if old_block.block_property == game_type.BlockProperty.AIR:
+                self.pos_block(pos_block, player)
+            else:
+                if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
+                    
+                    self.UI.open_inv(player.inventory, Crafting_types.CRAFTING_TABLE)
 
+    def pos_block(self, pos_block, player):
+        current_item = player.inventory.ui.get_selected_item()
         if current_item and current_item.is_posable():
 
             old_block = self.World.get_block(pos_block[0], pos_block[1])
@@ -307,24 +330,20 @@ class Game:
 
             if old_block and old_block.block_property == world.BlockProperty.AIR:
 
-                block_property = game_type.get_block_property(current_item.item_type)
+                block_property = game_type.get_block_property(current_item.item_property.item_name)
 
                 if block_property:
                     if self.World.set_block(
                         pos_block[0],
                         pos_block[1],
                         world.Block(
-                            pygame.Rect(
-                                pos_block[0] * game_property.TILE_SIZE,
-                                pos_block[1] * game_property.TILE_SIZE,
-                                game_property.TILE_SIZE,
-                                game_property.TILE_SIZE
-                            ),
-                            block_property
+                            pos_block[0],
+                            pos_block[1],
+                            block_property,
                         )
                     ):
 
-                        player.inventory.delete_item(player.inventory.selected_index)
+                        player.inventory.delete_item(player.inventory.ui.selected_index)
 
     # RENDER
     def render(self):
@@ -351,23 +370,43 @@ class Game:
     def update_debug(self, dt):
         self.debug_timer += dt
 
-    def render_debug(self): 
-        if self.debug_timer > 0.10: 
-            self.debug_timer = 0 
-            debug_text = ( f"FPS: {int(self.fps)}\n" f"X: {(self.player.rect.x / game_property.TILE_SIZE):.1f}, Y: {(self.player.rect.y / game_property.TILE_SIZE):.1f}" ) 
+        if self.debug_timer > 0.10:
+            self.debug_timer = 0
+
+            player_block_x = int(self.player.rect.x / game_property.TILE_SIZE)
+
+            biome = self.World.biome_manager.get_biome_at(player_block_x, abs(hash(self.World.seed)) % 1024)
+
+            # ✅ conversion sûre en nom
+            if biome is None:
+                biome_name = "Unknown"
+            else:
+                biome_name = biome.name
+
+            # première lettre majuscule
+            biome_name = biome_name[0].upper() + biome_name[1:].lower()
+
+            debug_text = (
+                f"FPS: {int(self.fps)}\n"
+                f"X: {(self.player.rect.x / game_property.TILE_SIZE):.1f}, "
+                f"Y: {(self.player.rect.y / game_property.TILE_SIZE):.1f}\n"
+                f"Biome: {biome_name}"
+            )
 
             lines = debug_text.split("\n")
+            self.debug_surface = [
+                self.debug_font.render(line, True, (0, 0, 0))
+                for line in lines
+            ]
 
-            surfaces = [] 
-            for line in lines: 
-                surfaces.append(self.debug_font.render(line, True, (0,0,0))) 
-                self.debug_surface = surfaces 
-                
-                if self.debug_surface: 
-                    y = 10 
-                    for surf in self.debug_surface: 
-                        self.screen.blit(surf, (10, y)) 
-                        y += 20 
+    def render_debug(self):
+        if not self.debug_surface:
+            return
+
+        y = 10
+        for surf in self.debug_surface:
+            self.screen.blit(surf, (10, y))
+            y += 20
     
 
 if __name__ == "__main__": 

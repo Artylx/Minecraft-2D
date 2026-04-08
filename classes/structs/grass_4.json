@@ -1,0 +1,10 @@
+{
+  "origin": {"x": 0, "y": 0},
+  "condition_blocks":[
+    "grass"
+  ],
+  "blocks": [
+    {"x": 0, "y": 0, "block": "grass_4"}
+  ],
+  "entities": []
+}

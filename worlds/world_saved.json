@@ -1,0 +1,93 @@
+{
+    "seed": 226867,
+    "entitys": [
+        {
+            "type": "Player",
+            "uuid": "1aa8b1e0-83f4-447a-bcc5-103900780188",
+            "x": 617,
+            "y": 736,
+            "w": 27,
+            "h": 80,
+            "vx": -2.5e-323,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player1",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "f10314b7-e24d-4c2b-b4aa-ad8d40c9030f",
+                "size": 24,
+                "title": "Inventory of Player1",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "oak_plank",
+                            "count": 2
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "stick",
+                            "count": 2
+                        }
+                    }
+                ],
+                "owner_uuid": "1aa8b1e0-83f4-447a-bcc5-103900780188"
+            }
+        }
+    ],
+    "modified_blocks": {
+        "0": [
+            {
+                "x": 12,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": 11,
+                "y": 24,
+                "block": "air"
+            }
+        ],
+        "1": [
+            {
+                "x": 16,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 22,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 22,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": 22,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 23,
+                "block": "crafting_table"
+            }
+        ]
+    }
+}

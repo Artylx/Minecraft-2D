@@ -1,0 +1,1929 @@
+{
+    "seed": 91785,
+    "entitys": [
+        {
+            "type": "Player",
+            "uuid": "6f054331-51c8-44c8-9b09-ccac1d0cf789",
+            "x": -971,
+            "y": 512,
+            "w": 27,
+            "h": 80,
+            "vx": -6.871824878115845e-82,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player1",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "owner_uuid": "6f054331-51c8-44c8-9b09-ccac1d0cf789",
+                "uuid": "50936257-ec39-4235-9174-52cbdb2919a3",
+                "size": 24,
+                "case_number": 6,
+                "title": "Inventory of Player1",
+                "selected_index": 2,
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "diamond_sword",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "diamond_pickaxe",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "grass_1",
+                            "count": 98
+                        }
+                    },
+                    {
+                        "slot": 3,
+                        "itemStack": {
+                            "item_type_name": "grass_2",
+                            "count": 98
+                        }
+                    },
+                    {
+                        "slot": 4,
+                        "itemStack": {
+                            "item_type_name": "grass_3",
+                            "count": 97
+                        }
+                    },
+                    {
+                        "slot": 5,
+                        "itemStack": {
+                            "item_type_name": "grass_4",
+                            "count": 97
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 7,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "count": 14
+                        }
+                    },
+                    {
+                        "slot": 8,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk_bottom",
+                            "count": 100
+                        }
+                    },
+                    {
+                        "slot": 9,
+                        "itemStack": {
+                            "item_type_name": "oak_leaves",
+                            "count": 26
+                        }
+                    },
+                    {
+                        "slot": 11,
+                        "itemStack": {
+                            "item_type_name": "grass",
+                            "count": 4
+                        }
+                    },
+                    {
+                        "slot": 14,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 2
+                        }
+                    },
+                    {
+                        "slot": 15,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk_mid",
+                            "count": 96
+                        }
+                    },
+                    {
+                        "slot": 16,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "count": 83
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "modified_blocks": {
+        "-2": [
+            {
+                "x": -27,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": 20,
+                "block": "grass"
+            },
+            {
+                "x": -25,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "grass"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "grass"
+            },
+            {
+                "x": -31,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 15,
+                "block": "grass"
+            },
+            {
+                "x": -30,
+                "y": 15,
+                "block": "grass"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -30,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -27,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -27,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -26,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": 14,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 14,
+                "block": "air"
+            },
+            {
+                "x": -26,
+                "y": 14,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 14,
+                "block": "dirt"
+            },
+            {
+                "x": -27,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 26,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 26,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 26,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -24,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -24,
+                "y": 16,
+                "block": "grass"
+            },
+            {
+                "x": -24,
+                "y": 15,
+                "block": "dirt"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -32,
+                "y": 16,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -32,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -29,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 16,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -30,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 16,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -30,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -30,
+                "y": 16,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -30,
+                "y": 17,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -30,
+                "y": 18,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -30,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -31,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -29,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -30,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -32,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -28,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -32,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -28,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -21,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -17,
+                "y": 19,
+                "block": "grass_1"
+            },
+            {
+                "x": -17,
+                "y": 19,
+                "block": "air"
+            }
+        ],
+        "-3": [
+            {
+                "x": -41,
+                "y": 19,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -41,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -34,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -34,
+                "y": 16,
+                "block": "grass"
+            },
+            {
+                "x": -34,
+                "y": 19,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -34,
+                "y": 20,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -34,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -34,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 18,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -34,
+                "y": 18,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -34,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 19,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -40,
+                "y": 20,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -40,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -42,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -42,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -40,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -39,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -38,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -38,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -39,
+                "y": 21,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -41,
+                "y": 19,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -41,
+                "y": 20,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -39,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -40,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 23,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -40,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -38,
+                "y": 22,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -41,
+                "y": 19,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -41,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -40,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -39,
+                "y": 24,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -41,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -37,
+                "y": 18,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -37,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 20,
+                "block": "grass"
+            },
+            {
+                "x": -39,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -47,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -47,
+                "y": 19,
+                "block": "grass"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -36,
+                "y": 17,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": -37,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -36,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "oak_leaves"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -35,
+                "y": 19,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -36,
+                "y": 18,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -36,
+                "y": 19,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": -36,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -36,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -35,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -35,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -37,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 15,
+                "block": "dirt"
+            },
+            {
+                "x": -37,
+                "y": 16,
+                "block": "grass"
+            },
+            {
+                "x": -38,
+                "y": 16,
+                "block": "grass"
+            },
+            {
+                "x": -35,
+                "y": 17,
+                "block": "grass"
+            },
+            {
+                "x": -35,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -36,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -36,
+                "y": 16,
+                "block": "grass"
+            }
+        ],
+        "-4": [
+            {
+                "x": -61,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -61,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -61,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -61,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -61,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -61,
+                "y": 20,
+                "block": "dirt"
+            },
+            {
+                "x": -61,
+                "y": 19,
+                "block": "dirt"
+            },
+            {
+                "x": -61,
+                "y": 23,
+                "block": "grass"
+            },
+            {
+                "x": -61,
+                "y": 23,
+                "block": "air"
+            }
+        ],
+        "-1": [
+            {
+                "x": -2,
+                "y": 23,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 26,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 29,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 28,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 32,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 31,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 35,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 38,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 37,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 41,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 40,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 44,
+                "block": "oak_trunk"
+            },
+            {
+                "x": -2,
+                "y": 43,
+                "block": "oak_trunk"
+            }
+        ],
+        "20": [
+            {
+                "x": 330,
+                "y": 25,
+                "block": "oak_trunk_bottom"
+            },
+            {
+                "x": 330,
+                "y": 26,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": 330,
+                "y": 27,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": 330,
+                "y": 28,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": 330,
+                "y": 29,
+                "block": "oak_trunk_mid"
+            },
+            {
+                "x": 327,
+                "y": 27,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 327,
+                "y": 26,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 327,
+                "y": 30,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 330,
+                "y": 30,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 30,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 27,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 329,
+                "y": 29,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 327,
+                "y": 30,
+                "block": "air"
+            },
+            {
+                "x": 327,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 327,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 328,
+                "y": 26,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 328,
+                "y": 29,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 327,
+                "y": 29,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 328,
+                "y": 30,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 331,
+                "y": 30,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 331,
+                "y": 26,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 331,
+                "y": 29,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 332,
+                "y": 26,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 332,
+                "y": 29,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 332,
+                "y": 30,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 333,
+                "y": 29,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 331,
+                "y": 31,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 31,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 31,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 32,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 32,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 331,
+                "y": 32,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 332,
+                "y": 31,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 328,
+                "y": 31,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 33,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 33,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 331,
+                "y": 33,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 34,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 35,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 330,
+                "y": 36,
+                "block": "oak_leaves"
+            },
+            {
+                "x": 329,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 331,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 332,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 333,
+                "y": 25,
+                "block": "oak_trunk"
+            },
+            {
+                "x": 330,
+                "y": 30,
+                "block": "air"
+            }
+        ],
+        "15": [
+            {
+                "x": 246,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": 243,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 255,
+                "y": 5,
+                "block": "grass_1"
+            },
+            {
+                "x": 255,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 242,
+                "y": 5,
+                "block": "grass_4"
+            }
+        ],
+        "16": [
+            {
+                "x": 256,
+                "y": 5,
+                "block": "grass_2"
+            },
+            {
+                "x": 257,
+                "y": 5,
+                "block": "grass_3"
+            },
+            {
+                "x": 258,
+                "y": 5,
+                "block": "grass_4"
+            },
+            {
+                "x": 258,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 257,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 256,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 256,
+                "y": 5,
+                "block": "grass_2"
+            },
+            {
+                "x": 257,
+                "y": 5,
+                "block": "grass_3"
+            }
+        ],
+        "14": [
+            {
+                "x": 233,
+                "y": 8,
+                "block": "grass_4"
+            },
+            {
+                "x": 234,
+                "y": 7,
+                "block": "grass_3"
+            }
+        ]
+    }
+}

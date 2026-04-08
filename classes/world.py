@@ -1,13 +1,14 @@
 import pygame
 from noise import pnoise1, pnoise2
-from classes.solo import inventory
-from classes.solo import entity as EntityClass, game_property, game_type
+from classes import inventory
+from classes import entity as EntityClass, game_property, game_type
 import random
-from classes.solo import entity
-from classes.solo.texture_manager import TextureManager
-from classes.solo.game_type import BlockProperty
+from classes import entity
+from classes.struct import StructureManager, StructureType
+from classes.game_type import BlockProperty
 import json
 import os
+from classes.biome import BiomeType, BiomeManager
 
 def load_world_json(world_name):
     """
@@ -51,6 +52,9 @@ class World:
 
             self.entitys = []  
             self.modified_blocks = {}  
+        
+        self.structure_manager = StructureManager()
+        self.biome_manager = BiomeManager()
 
         # initialisation commune
         self.init()
@@ -59,7 +63,6 @@ class World:
         self.hit_box_visible = False
 
         self.chunks = {}
-        self.generate_chunks()
         
 
     def save_world(self):
@@ -74,11 +77,11 @@ class World:
 
         if seed is not None and entitys is not None and modified_blocks is not None:
             self.seed = seed
-            print(f"World load with seed: {seed}")
-            self.entitys = entity.dict_to_entitys(entitys)
-            print(f"World load with entitys: {entitys}")
+            #print(f"World load with seed: {seed}")
+            self.entitys = entity.dict_to_entitys(entitys, self)
+            #print(f"World load with entitys: {entitys}")
             self.modified_blocks = modified_blocks
-            print(f"World load with modif_block: {modified_blocks}")
+            #print(f"World load with modif_block: {modified_blocks}")
 
             print("World chargé avec succés")
         else:
@@ -95,14 +98,10 @@ class World:
     def create_entity(self, entity):
         self.entitys.append(entity)
 
-    def generate_chunks(self):
-        for i in range(-game_property.RENDER_DISTANCE, game_property.RENDER_DISTANCE + 1):
-            self.add_chunk(i)
-
     def add_chunk(self, chunk_x):
         if chunk_x not in self.chunks:
 
-            chunk = Chunk(chunk_x, self.seed)
+            chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
             self.chunks[chunk_x] = chunk
 
             # appliquer les modifications sauvegardées
@@ -120,14 +119,7 @@ class World:
 
                     block_type = BlockProperty.REGISTRY[block_name]
 
-                    rect = pygame.Rect(
-                        x * game_property.TILE_SIZE,
-                        y * game_property.TILE_SIZE,
-                        game_property.TILE_SIZE,
-                        game_property.TILE_SIZE
-                    )
-
-                    chunk.blocks[(x,y)] = Block(rect, block_type)
+                    chunk.set_block(x, y, Block(x, y, block_type))
 
     def update_chunks(self):
         # recalcule les chunks à charger en fonction de la position de toutes les entités
@@ -209,11 +201,11 @@ class World:
 
         debug_text = f"Chunks loaded: {len(self.chunks.values())}, {list(self.chunks.keys())}"
         text_surface = font.render(debug_text, True, (0, 0, 0))
-        screen.blit(text_surface, (10, 50))
+        screen.blit(text_surface, (10, 70))
 
         debug_text = f"Entitys: {len(self.entitys)}"
         text_surface = font.render(debug_text, True, (0, 0, 0))
-        screen.blit(text_surface, (10, 70))
+        screen.blit(text_surface, (10, 90))
 
         # pygame.draw.rect(screen, (0, 255, 0), (self.screen_size[0] // 2 - 1, 0, 2, self.screen_size[1]))
         # pygame.draw.rect(screen, (0, 255, 0), (0, self.screen_size[1] // 2 - 1, self.screen_size[0], 2))
@@ -274,7 +266,7 @@ class World:
         )
 
         # vérification collision avec toutes les entités
-        if block.block_property != BlockProperty.AIR:
+        if block.block_property != BlockProperty.AIR and block.can_collide():
             for entity in self.entitys:
                 if block_rect.colliderect(entity.rect):
                     # on refuse de placer le bloc
@@ -338,16 +330,18 @@ class World:
             block_pos[0],
             block_pos[1],
             Block(
-                pygame.Rect(x, y, game_property.TILE_SIZE, game_property.TILE_SIZE),
+                x,
+                y,
                 block_property=BlockProperty.AIR
             )
         )
 
-        r = random.Random()
-        pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
+        if game_type.get_item_type_by_name(current_block.block_property.item_type) is not None:
+            r = random.Random()
+            pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
 
-        block_entity = EntityClass.Item(game_type.get_item_type(current_block.block_property), pos)
-        self.create_entity(block_entity)
+            block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos)
+            self.create_entity(block_entity)
     
     def try_destroy_block(self, block_pos, player):
         current_block = self.get_block(block_pos[0], block_pos[1])
@@ -438,11 +432,14 @@ class World:
 
 
 class Chunk:
-    def __init__(self, x, seed):
+    def __init__(self, x, seed, structure_manager, biome_manager):
         self.x = x
-        self.seed = seed
-        
+        self.seed = abs(hash(seed)) % 1024
+        self.structure_manager = structure_manager
+        self.biome_manager = biome_manager
+
         self.blocks = {}
+        self.structures = []
         self.generate()
 
     # def generate(self):
@@ -462,151 +459,136 @@ class Chunk:
     #             block = Block(block_rect, block_property)
     #             self.blocks.append(block)
 
-    def generate(self):
-        scale = 0.01            
-        amplitude = 20 * 4
-        base_height = 20
+    def add_structure(self, struct_type: StructureType, base_x, base_y):
+        self.structures.append((struct_type, base_x, base_y))
 
-        seed = abs(hash(self.seed)) % 1024
+    def generate_structures(self):
+        for struct_type, base_x, base_y in self.structures:
+            self.structure_manager.place_structure(self, struct_type, base_x, base_y)
+
+    def generate(self):
+        terrain_scale = 0.01
+
+        sea_level = game_property.WATER_Y
 
         for x in range(game_property.CHUNK_WIDTH):
             world_x = self.x * game_property.CHUNK_WIDTH + x
-            noise_value = pnoise1(world_x * scale, base=seed)
-            surface_height = int(base_height + noise_value * amplitude)
+
+            biome, amplitude, base_height = self.biome_manager.get_biome_generate_values(world_x, self.seed)
+
+            # 🌊 variation locale
+            variation = pnoise1(world_x * 0.02, base=self.seed)
+            amplitude += variation * 5
+            base_height += variation * 3
+
+            terrain_noise = pnoise1(world_x * terrain_scale, base=self.seed)
+            surface_height = int(base_height + terrain_noise * amplitude)
+
+            # ⛰️ TERRAIN
+            terrain_noise = pnoise1(world_x * terrain_scale, base=self.seed)
+            surface_height = int(base_height + terrain_noise * amplitude)
 
             for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
                 world_y = y
-                block_x = world_x
-                block_y = world_y
 
-                block_rect = pygame.Rect(
-                    block_x * game_property.TILE_SIZE,
-                    block_y * game_property.TILE_SIZE,
-                    game_property.TILE_SIZE,
-                    game_property.TILE_SIZE
-                )
-
-                # blocs de surface / souterrains
-                sea_level = game_property.WATER_Y
-
+                # 🌫️ AIR
                 if world_y > max(surface_height, sea_level):
                     block_property = BlockProperty.AIR
 
+                    # 🌱 STRUCTURES
+                    if world_y - 1 == surface_height and surface_height >= sea_level:
+                        rng = random.Random(self.seed + world_x)
+                        r = rng.random()
+
+                        structure_type = self.biome_manager.get_structure(biome, r)
+                        if structure_type:
+                            self.add_structure(structure_type, world_x, world_y)
+
+                # 🌊 EAU
                 elif world_y > surface_height and world_y <= sea_level:
                     block_property = BlockProperty.WATER
 
+                # 🌿 SURFACE (IMPORTANT POUR VISUEL BIOME)
                 elif world_y == surface_height:
-
-                    # plage
                     if surface_height <= sea_level:
                         block_property = BlockProperty.SAND
                     else:
-                        block_property = BlockProperty.GRASS
+                        if surface_height >= game_property.CHUNK_MAX_HEIGHT // 2:
+                            block_property = BlockProperty.SNOW
+                        else:
+                            block_property = BlockProperty.GRASS
 
+                # 🌱 SOUS-SOL
                 elif world_y > surface_height - 4:
-
                     if surface_height <= sea_level:
                         block_property = BlockProperty.SAND
                     else:
-                        block_property = BlockProperty.DIRT
+                        if surface_height >= game_property.CHUNK_MAX_HEIGHT // 2:
+                            if world_y > surface_height - 2:
+                                block_property = BlockProperty.STONE_SNOW
+                            else:
+                                block_property = BlockProperty.STONE
+                        else:
+                            block_property = BlockProperty.DIRT
 
+                # 🪨 PROFOND
                 else:
                     block_property = BlockProperty.STONE
 
                     # minerais
                     for ore, params in ORE_PARAMS.items():
                         if world_y <= params["min_y"]:
+                            offset_x = self.seed * 137.5
+                            offset_y = self.seed * 289.3
+
                             noise_val = pnoise2(
-                                world_x * params["scale"],
-                                world_y * params["scale"]
+                                world_x * params["scale"] + offset_x,
+                                world_y * params["scale"] + offset_y
                             )
                             if noise_val > params["threshold"]:
                                 block_property = ore
                                 break
 
+                # 🧱 BEDROCK
                 if world_y == game_property.CHUNK_MIN_HEIGHT:
                     block_property = BlockProperty.BEDROCK
 
-                block = Block(block_rect, block_property)
-                self.blocks[(block_x, block_y)] = block
+                block = Block(world_x, world_y, block_property)
+                self.blocks[(world_x, world_y)] = block
 
-    def generate_old(self):
-        scale = 0.03
-        amplitude = 20
-        base_height = 40
-
-        seed_offset = self.seed * 1000  # transforme la seed en offset
-
-        for x in range(game_property.CHUNK_WIDTH):
-            world_x = self.x * game_property.CHUNK_WIDTH + x
-
-            noise_value = pnoise1((world_x + seed_offset) * scale)
-            surface_height = int(base_height + noise_value * amplitude)
-
-            for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
-                world_y = y
-                block_x = world_x
-                block_y = world_y
-
-                block_rect = pygame.Rect(
-                    block_x * game_property.TILE_SIZE,
-                    block_y * game_property.TILE_SIZE,
-                    game_property.TILE_SIZE,
-                    game_property.TILE_SIZE
-                )
-
-                if world_y > surface_height:
-                    block_property = BlockProperty.AIR
-
-                elif world_y == surface_height:
-                    block_property = BlockProperty.GRASS
-
-                elif world_y > surface_height - 4:
-                    block_property = BlockProperty.DIRT
-
-                else:
-                    block_property = BlockProperty.STONE
-
-                    # minerais
-                    for ore, params in ORE_PARAMS.items():
-                        if world_y <= params["min_y"]:
-
-                            noise_val = pnoise2(
-                                (world_x + seed_offset) * params["scale"],
-                                (world_y + seed_offset) * params["scale"]
-                            )
-
-                            if noise_val > params["threshold"]:
-                                block_property = ore
-                                break
-
-                if world_y == game_property.CHUNK_MIN_HEIGHT:
-                    block_property = BlockProperty.BEDROCK
-
-                block = Block(block_rect, block_property)
-                self.blocks[(block_x, block_y)] = block
-
+        self.generate_structures()
+    
     def get_block(self, x, y):
         return self.blocks.get((x, y))
+    
+    def set_block_with_name(self, x, y, block_name):
+        block_type = game_type.get_block_property(block_name)
+        if block_type is None:
+            print(f"Block inconnu: {block_name}")
+            return False
+        self.set_block(x, y, Block(x, y, block_type))
+    
+    def set_block(self, x, y, block):
+        self.blocks[(x, y)] = block
+
+# ORE_PARAMS = {
+#     BlockProperty.COAL_ORE: {"scale": 0.1, "threshold": 0.55, "min_y": 60},
+#     BlockProperty.IRON_ORE: {"scale": 0.08, "threshold": 0.6, "min_y": 40},
+#     BlockProperty.GOLD_ORE: {"scale": 0.06, "threshold": 0.65, "min_y": 30},
+# }
 
 ORE_PARAMS = {
-    BlockProperty.COAL: {"scale": 0.1, "threshold": 0.55, "min_y": 60},
-    BlockProperty.IRON: {"scale": 0.08, "threshold": 0.6, "min_y": 40},
-    BlockProperty.GOLD: {"scale": 0.06, "threshold": 0.65, "min_y": 30},
-}
-
-ORE_PARAMS = {
-    BlockProperty.COAL: {
+    BlockProperty.COAL_ORE: {
         "scale": 0.12,
         "threshold": 0.45,
         "min_y": 60
     },
-    BlockProperty.IRON: {
+    BlockProperty.IRON_ORE: {
         "scale": 0.10,
         "threshold": 0.50,
         "min_y": 40
     },
-    BlockProperty.GOLD: {
+    BlockProperty.GOLD_ORE: {
         "scale": 0.08,
         "threshold": 0.55,
         "min_y": 25
@@ -616,7 +598,14 @@ ORE_PARAMS = {
 class Block:
     texture_manager = None
 
-    def __init__(self, rect, block_property, debug=False):
+    def __init__(self, x, y, block_property, debug=False):
+
+        rect = pygame.Rect(
+            x * game_property.TILE_SIZE,
+            y * game_property.TILE_SIZE,
+            game_property.TILE_SIZE,
+            game_property.TILE_SIZE
+        )
         self.rect = rect
         self.block_property = block_property
 
