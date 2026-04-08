@@ -1,0 +1,682 @@
+import pygame
+from noise import pnoise1, pnoise2
+from classes.solo import inventory
+from classes.solo import entity as EntityClass, game_property, game_type
+import random
+from classes.solo import entity
+from classes.solo.texture_manager import TextureManager
+from classes.solo.game_type import BlockProperty
+import json
+import os
+
+def load_world_json(world_name):
+    """
+    Charge le fichier JSON d'un monde à partir de son nom.
+
+    :param world_name: Nom du monde (str)
+    :return: dictionnaire Python avec les données du monde ou None si erreur
+    """
+    # construire le chemin du fichier
+    world_path = os.path.join("worlds", f"{world_name}.json")
+
+    if not os.path.isfile(world_path):
+        print(f"Le monde '{world_name}' n'existe pas à {world_path}")
+        return None
+
+    try:
+        with open(world_path, "r") as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        print(f"Erreur lors du chargement du monde '{world_name}': {e}")
+        return None
+
+class World:
+    def __init__(self, screen_size, name="Unamed world", seed=None, json_data=None):
+        """
+        Constructeur unique qui gère soit :
+        - la génération d'un monde depuis une seed
+        - la reconstruction d'un monde depuis un JSON
+        """
+        self.screen_size = screen_size
+        self.name = name
+
+        if json_data is not None:
+            # charger depuis le JSON
+            self.set_json(json_data)
+        else:
+            # générer depuis la seed
+            self.seed = seed if seed is not None else random.randint(0, 100000)
+            self.random = random.Random(self.seed)
+
+            self.entitys = []  
+            self.modified_blocks = {}  
+
+        # initialisation commune
+        self.init()
+        
+    def init(self):
+        self.hit_box_visible = False
+
+        self.chunks = {}
+        self.generate_chunks()
+        
+
+    def save_world(self):
+        with open(f"worlds/{self.name}.json", "w") as f:
+            json.dump(self.get_json(), f, indent=4, default=str)
+        print("Save world in ", f"{self.name}.json")
+
+    def set_json(self, json):
+        seed = json.get("seed", None)
+        entitys = json.get("entitys", None)
+        modified_blocks = json.get("modified_blocks", None)
+
+        if seed is not None and entitys is not None and modified_blocks is not None:
+            self.seed = seed
+            print(f"World load with seed: {seed}")
+            self.entitys = entity.dict_to_entitys(entitys)
+            print(f"World load with entitys: {entitys}")
+            self.modified_blocks = modified_blocks
+            print(f"World load with modif_block: {modified_blocks}")
+
+            print("World chargé avec succés")
+        else:
+            print("World non recevable")
+            exit(1)
+    
+    def get_json(self):
+        return {
+            "seed": self.seed,
+            "entitys": [e.to_json() for e in self.entitys],
+            "modified_blocks": self.modified_blocks
+        }
+    
+    def create_entity(self, entity):
+        self.entitys.append(entity)
+
+    def generate_chunks(self):
+        for i in range(-game_property.RENDER_DISTANCE, game_property.RENDER_DISTANCE + 1):
+            self.add_chunk(i)
+
+    def add_chunk(self, chunk_x):
+        if chunk_x not in self.chunks:
+
+            chunk = Chunk(chunk_x, self.seed)
+            self.chunks[chunk_x] = chunk
+
+            # appliquer les modifications sauvegardées
+            if str(chunk_x) in self.modified_blocks:
+
+                for data in self.modified_blocks[str(chunk_x)]:
+
+                    x = data["x"]
+                    y = data["y"]
+
+                    block_name = data["block"].upper()
+
+                    if block_name not in BlockProperty.REGISTRY:
+                        raise ValueError(f"Block inconnu: {block_name}")
+
+                    block_type = BlockProperty.REGISTRY[block_name]
+
+                    rect = pygame.Rect(
+                        x * game_property.TILE_SIZE,
+                        y * game_property.TILE_SIZE,
+                        game_property.TILE_SIZE,
+                        game_property.TILE_SIZE
+                    )
+
+                    chunk.blocks[(x,y)] = Block(rect, block_type)
+
+    def update_chunks(self):
+        # recalcule les chunks à charger en fonction de la position de toutes les entités
+        chunks_to_keep = set()
+
+        for player_ in self.get_entities(EntityClass.Player):
+
+            # déterminer le chunk contenant l'entité
+            entity_chunk_x = (player_.get_pos()[0]) // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+            # inclure tous les chunks autour de cette position selon la render distance
+            for dx in range(-game_property.RENDER_DISTANCE, game_property.RENDER_DISTANCE + 1):
+                chunks_to_keep.add(entity_chunk_x + dx)
+
+        # Créer les chunks manquants et préparer la liste de déchargement
+        chunks_to_unload = set(self.chunks.keys())
+        for chunk_x in chunks_to_keep:
+            if chunk_x not in self.chunks:
+                self.add_chunk(chunk_x)
+            chunks_to_unload.discard(chunk_x)
+
+        # Décharger les chunks qui ne sont plus nécessaires
+        for chunk_coords in chunks_to_unload:
+            self.unload_chunk(chunk_coords)
+
+    def unload_chunk(self, chunk_cord):
+
+        # supprimer les entités dans ce chunk
+        to_remove = []
+
+        for entity in self.entitys:
+
+            entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+
+            if entity_chunk_x == chunk_cord:
+                to_remove.append(entity)
+
+        for entity in to_remove:
+            self.entitys.remove(entity)
+
+        # supprimer le chunk
+        del self.chunks[chunk_cord]
+
+    def update(self, dt):
+        self.update_chunks()
+
+        to_remove = []
+
+        for entity in self.get_entities():
+            entity.update(dt, self)
+
+            if not entity.is_alive:
+                to_remove.append(entity)
+                continue
+
+            # si c'est un block item et qu'il touche le joueur
+            if isinstance(entity, EntityClass.Item):
+                for player in self.get_players():
+                    if entity.rect.colliderect(player.rect):
+
+                        to_remove.append(entity)
+
+                        player.inventory.add_item(
+                            inventory.ItemStack(entity.item_type, 1)
+                        )
+            else:
+                entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+
+                # si le chunk n'est plus chargé → suppression
+                if entity_chunk_x not in self.chunks:
+                    to_remove.append(entity)
+                    continue
+
+        # suppression des entités ramassées
+        for entity in to_remove:
+            self.entitys.remove(entity)
+
+    def render_debug(self, screen):
+        font = pygame.font.SysFont(None, 24)
+
+        debug_text = f"Chunks loaded: {len(self.chunks.values())}, {list(self.chunks.keys())}"
+        text_surface = font.render(debug_text, True, (0, 0, 0))
+        screen.blit(text_surface, (10, 50))
+
+        debug_text = f"Entitys: {len(self.entitys)}"
+        text_surface = font.render(debug_text, True, (0, 0, 0))
+        screen.blit(text_surface, (10, 70))
+
+        # pygame.draw.rect(screen, (0, 255, 0), (self.screen_size[0] // 2 - 1, 0, 2, self.screen_size[1]))
+        # pygame.draw.rect(screen, (0, 255, 0), (0, self.screen_size[1] // 2 - 1, self.screen_size[0], 2))
+        pass
+
+    def render(self, screen, cam_rect):
+        tile = game_property.TILE_SIZE
+
+        start_x = cam_rect.left // tile
+        end_x = cam_rect.right // tile + 1
+
+        start_y = cam_rect.top // tile
+        end_y = cam_rect.bottom // tile + 1
+
+        for x in range(start_x, end_x):
+            chunk_x = x // game_property.CHUNK_WIDTH
+
+            if chunk_x not in self.chunks:
+                continue
+
+            chunk = self.chunks[chunk_x]
+
+            for y in range(start_y, end_y):
+
+                block = chunk.blocks.get((x, y))
+
+                if block:
+                    block.render(screen, cam_rect)
+
+    def render_entitys(self, screen, cam_rect):
+        for entity in self.entitys:
+            entity.render(screen, cam_rect)
+            if self.hit_box_visible:
+                entity.render_hit_box(screen, cam_rect)
+    
+    def get_block(self, X, Y):
+        chunk_x = X // game_property.CHUNK_WIDTH
+
+        if chunk_x not in self.chunks:
+            return None
+
+        chunk = self.chunks[chunk_x]
+
+        return chunk.blocks.get((X, Y))
+    
+    def set_block(self, X, Y, block):
+        # calcul du chunk
+        chunk_x = X // game_property.CHUNK_WIDTH
+        if chunk_x not in self.chunks:
+            return False
+
+        # créer le rectangle du bloc à placer
+        block_rect = pygame.Rect(
+            X * game_property.TILE_SIZE,
+            Y * game_property.TILE_SIZE,
+            game_property.TILE_SIZE,
+            game_property.TILE_SIZE
+        )
+
+        # vérification collision avec toutes les entités
+        if block.block_property != BlockProperty.AIR:
+            for entity in self.entitys:
+                if block_rect.colliderect(entity.rect):
+                    # on refuse de placer le bloc
+                    print(f"Impossible de placer {block.block_property.block_name} à {(X,Y)}: collision avec {entity.name}")
+                    return False
+
+        # placement du bloc si pas de collision
+        chunk = self.chunks[chunk_x]
+        chunk.blocks[(X, Y)] = block
+
+        if str(chunk_x) not in self.modified_blocks:
+            self.modified_blocks[str(chunk_x)] = []
+
+        self.modified_blocks[str(chunk_x)].append({
+            "x": X,
+            "y": Y,
+            "block": block.block_property.block_name
+        })
+        print(f"Bloc {block.block_property.block_name} placé à {(X, Y)}")
+        return True
+
+    def is_collide(self, entity):
+        return self.is_collide_at(entity.rect)
+
+
+    def is_collide_at(self, rect):
+        """Teste si un rect collide avec les blocs solides"""
+
+        tile = game_property.TILE_SIZE
+
+        # coordonnées des tuiles couvertes par le rect
+        start_x = rect.left // tile
+        end_x = rect.right // tile
+
+        start_y = rect.top // tile
+        end_y = rect.bottom // tile
+
+        for x in range(start_x, end_x + 1):
+
+            chunk_x = x // game_property.CHUNK_WIDTH
+
+            chunk = self.chunks.get(chunk_x)
+            if not chunk:
+                continue
+
+            for y in range(start_y, end_y + 1):
+
+                block = chunk.blocks.get((x, y))
+
+                if block and block.can_collide():
+                    return True
+
+        return False
+    
+    def destroy_block(self, block_pos):
+        current_block = self.get_block(block_pos[0], block_pos[1])
+        x = block_pos[0] * game_property.TILE_SIZE
+        y = block_pos[1] * game_property.TILE_SIZE
+
+        self.set_block(
+            block_pos[0],
+            block_pos[1],
+            Block(
+                pygame.Rect(x, y, game_property.TILE_SIZE, game_property.TILE_SIZE),
+                block_property=BlockProperty.AIR
+            )
+        )
+
+        r = random.Random()
+        pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
+
+        block_entity = EntityClass.Item(game_type.get_item_type(current_block.block_property), pos)
+        self.create_entity(block_entity)
+    
+    def try_destroy_block(self, block_pos, player):
+        current_block = self.get_block(block_pos[0], block_pos[1])
+        if not current_block or not current_block.is_breackable():
+            return
+
+        # position centre du bloc
+        block_center_x = block_pos[0] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
+        block_center_y = block_pos[1] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
+
+        # position centre joueur
+        player_center_x = player.rect.centerx
+        player_center_y = player.rect.centery
+
+        dx = block_center_x - player_center_x
+        dy = block_center_y - player_center_y
+
+        distance = (dx*dx + dy*dy) ** 0.5
+
+        if distance > game_property.MAX_ACTION_DISTANCE:
+            return
+        
+        current_block.try_destroy(player.get_force_selected_item())
+        if current_block.life < 0:
+            self.destroy_block(block_pos)
+    
+    def reset_block(self, block_pos):
+        current_block = self.get_block(block_pos[0], block_pos[1])
+        if not current_block or not current_block.is_breackable():
+            return
+        
+        current_block.life = current_block.max_life
+
+    def attack(self, player, entities):
+        pass
+
+    def get_player_by_name(self, player_name):
+        for current_entity in self.entitys:
+            if current_entity and isinstance(current_entity, EntityClass.Player):
+                if current_entity.name == player_name:
+                    return current_entity
+        return None
+
+    def get_player(self, uuid):
+        for current_entity in self.entitys:
+            if current_entity and isinstance(current_entity, EntityClass.Player):
+                if current_entity.get_uuid() == uuid:
+                    return current_entity
+        return None
+    
+    def get_entities(self, class_=None) -> list:
+        if class_ is None:
+            return self.entitys
+
+        if not isinstance(class_, type):
+            raise TypeError("class_ doit être une classe")
+
+        return [e for e in self.entitys if isinstance(e, class_)]
+    
+    def get_entities_by_pos(self, pos):
+        x, y = pos
+        result = []
+
+        for e in self.entitys:
+            if e is None:
+                continue
+
+            # Vérifie si l'entité est dans la case
+            if e.rect.collidepoint(x, y):
+                result.append(e)
+
+        return result
+    
+    def get_entities_by_rect(self, rect):
+        result = []
+
+        for e in self.entitys:
+            if e is None:
+                continue
+
+            if e.rect.colliderect(rect):
+                result.append(e)
+
+        return result
+    
+    def get_players(self):
+        return self.get_entities(entity.Player)
+
+
+class Chunk:
+    def __init__(self, x, seed):
+        self.x = x
+        self.seed = seed
+        
+        self.blocks = {}
+        self.generate()
+
+    # def generate(self):
+    #     for x in range(game_property.CHUNK_WIDTH):
+    #         for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+    #             block_x = self.x * game_property.CHUNK_WIDTH + x
+    #             block_y = y
+    #             block_rect = pygame.Rect(block_x * game_property.TILE_SIZE, block_y * game_property.TILE_SIZE, game_property.TILE_SIZE, game_property.TILE_SIZE)
+
+    #             if block_y < game_property.CHUNK_MAX_HEIGHT // 2:
+    #                 block_property = BlockProperty.STONE
+    #             else:
+    #                 block_property = BlockProperty.DIRT
+
+    #             # if x == 0:
+    #             #     block_property = BlockProperty.AIR
+    #             block = Block(block_rect, block_property)
+    #             self.blocks.append(block)
+
+    def generate(self):
+        scale = 0.01            
+        amplitude = 20 * 4
+        base_height = 20
+
+        seed = abs(hash(self.seed)) % 1024
+
+        for x in range(game_property.CHUNK_WIDTH):
+            world_x = self.x * game_property.CHUNK_WIDTH + x
+            noise_value = pnoise1(world_x * scale, base=seed)
+            surface_height = int(base_height + noise_value * amplitude)
+
+            for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                world_y = y
+                block_x = world_x
+                block_y = world_y
+
+                block_rect = pygame.Rect(
+                    block_x * game_property.TILE_SIZE,
+                    block_y * game_property.TILE_SIZE,
+                    game_property.TILE_SIZE,
+                    game_property.TILE_SIZE
+                )
+
+                # blocs de surface / souterrains
+                sea_level = game_property.WATER_Y
+
+                if world_y > max(surface_height, sea_level):
+                    block_property = BlockProperty.AIR
+
+                elif world_y > surface_height and world_y <= sea_level:
+                    block_property = BlockProperty.WATER
+
+                elif world_y == surface_height:
+
+                    # plage
+                    if surface_height <= sea_level:
+                        block_property = BlockProperty.SAND
+                    else:
+                        block_property = BlockProperty.GRASS
+
+                elif world_y > surface_height - 4:
+
+                    if surface_height <= sea_level:
+                        block_property = BlockProperty.SAND
+                    else:
+                        block_property = BlockProperty.DIRT
+
+                else:
+                    block_property = BlockProperty.STONE
+
+                    # minerais
+                    for ore, params in ORE_PARAMS.items():
+                        if world_y <= params["min_y"]:
+                            noise_val = pnoise2(
+                                world_x * params["scale"],
+                                world_y * params["scale"]
+                            )
+                            if noise_val > params["threshold"]:
+                                block_property = ore
+                                break
+
+                if world_y == game_property.CHUNK_MIN_HEIGHT:
+                    block_property = BlockProperty.BEDROCK
+
+                block = Block(block_rect, block_property)
+                self.blocks[(block_x, block_y)] = block
+
+    def generate_old(self):
+        scale = 0.03
+        amplitude = 20
+        base_height = 40
+
+        seed_offset = self.seed * 1000  # transforme la seed en offset
+
+        for x in range(game_property.CHUNK_WIDTH):
+            world_x = self.x * game_property.CHUNK_WIDTH + x
+
+            noise_value = pnoise1((world_x + seed_offset) * scale)
+            surface_height = int(base_height + noise_value * amplitude)
+
+            for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                world_y = y
+                block_x = world_x
+                block_y = world_y
+
+                block_rect = pygame.Rect(
+                    block_x * game_property.TILE_SIZE,
+                    block_y * game_property.TILE_SIZE,
+                    game_property.TILE_SIZE,
+                    game_property.TILE_SIZE
+                )
+
+                if world_y > surface_height:
+                    block_property = BlockProperty.AIR
+
+                elif world_y == surface_height:
+                    block_property = BlockProperty.GRASS
+
+                elif world_y > surface_height - 4:
+                    block_property = BlockProperty.DIRT
+
+                else:
+                    block_property = BlockProperty.STONE
+
+                    # minerais
+                    for ore, params in ORE_PARAMS.items():
+                        if world_y <= params["min_y"]:
+
+                            noise_val = pnoise2(
+                                (world_x + seed_offset) * params["scale"],
+                                (world_y + seed_offset) * params["scale"]
+                            )
+
+                            if noise_val > params["threshold"]:
+                                block_property = ore
+                                break
+
+                if world_y == game_property.CHUNK_MIN_HEIGHT:
+                    block_property = BlockProperty.BEDROCK
+
+                block = Block(block_rect, block_property)
+                self.blocks[(block_x, block_y)] = block
+
+    def get_block(self, x, y):
+        return self.blocks.get((x, y))
+
+ORE_PARAMS = {
+    BlockProperty.COAL: {"scale": 0.1, "threshold": 0.55, "min_y": 60},
+    BlockProperty.IRON: {"scale": 0.08, "threshold": 0.6, "min_y": 40},
+    BlockProperty.GOLD: {"scale": 0.06, "threshold": 0.65, "min_y": 30},
+}
+
+ORE_PARAMS = {
+    BlockProperty.COAL: {
+        "scale": 0.12,
+        "threshold": 0.45,
+        "min_y": 60
+    },
+    BlockProperty.IRON: {
+        "scale": 0.10,
+        "threshold": 0.50,
+        "min_y": 40
+    },
+    BlockProperty.GOLD: {
+        "scale": 0.08,
+        "threshold": 0.55,
+        "min_y": 25
+    },
+}
+
+class Block:
+    texture_manager = None
+
+    def __init__(self, rect, block_property, debug=False):
+        self.rect = rect
+        self.block_property = block_property
+
+        self.debug = debug
+        if self.block_property.life:
+            self.life = self.block_property.life
+            self.max_life = self.block_property.life
+        else:
+            self.life = 0
+            self.max_life = 0
+
+    def __str__(self):
+        return f"Block(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
+
+    def render(self, screen, cam_rect):
+        
+        # try to draw texture if available
+        if self.debug:
+            print(f"Render block {str(self)}")
+        texture = self.get_texture()
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+        if texture:
+            screen.blit(texture, (draw_x, draw_y))
+
+        if self.max_life > 0:
+            ratio = self.life / self.max_life
+
+            white_height = int(self.rect.height * (1 - ratio))
+
+            if white_height > 0:
+                overlay = pygame.Surface((self.rect.width, white_height), pygame.SRCALPHA)
+
+                overlay.fill((255, 255, 255, 180))
+
+                screen.blit(
+                    overlay,
+                    (draw_x, draw_y + self.rect.height - white_height)
+                )
+        
+    def get_texture(self):
+        return self.texture_manager.get_texture(self.block_property.texture)
+    
+    def is_breackable(self) -> bool:
+        return self.block_property.breakable
+    
+    def try_destroy(self, value) -> bool:
+        self.life -= value * game_property.BREAK_COEF
+        return self.life <= 0
+    
+    def reset_life(self):
+        self.life = self.max_life
+        
+    def can_collide(self) -> bool:
+        return self.block_property.collidable
+    
+    def to_json(self):
+        return {
+            "x": self.rect.x // game_property.TILE_SIZE,
+            "y": self.rect.y // game_property.TILE_SIZE,
+            "block": self.block_property.block_name,
+        }
