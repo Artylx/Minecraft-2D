@@ -1,4 +1,5 @@
-from classes.texture_manager import TextureType, TextureManager
+from classes.texture_manager import TextureType
+from classes import language
 
 class BlockProperty:
     REGISTRY = {}
@@ -53,14 +54,19 @@ class ItemProperty:
     REGISTRY = {}
     texture_manager = None
 
-    def __init__(self, name=None, texture=None, max_stack=None, placeable=None, block_type=None):
+    def __init__(self, name=None, texture=None, max_stack=None, placeable=None, block_type=None, description="Materiaux"):
+        self.description = description + '\n'
         self.item_name = name
         self.texture = texture
         self.max_stack = max_stack
         self.placeable = placeable
         self.block_type = block_type
+        self.description = description
         
         self.register()
+
+    def add_description(self, text, end='\n'):
+        self.description = self.description + text + end
 
     def register(self):
         if self.item_name:
@@ -116,8 +122,10 @@ class ItemProperty:
 
 
 class Tool(ItemProperty):
-    def __init__(self, name, texture, durability):
-        super().__init__(name, texture, 1, False, None)
+    def __init__(self, name, texture, durability, description=None):
+        if not description:
+            description = "Outils"
+        super().__init__(name, texture, 1, False, None, description)
         self.durability = durability
 
         self.break_ = False
@@ -128,24 +136,30 @@ class Tool(ItemProperty):
             self.break_ = True
 
 class Attack_tool(Tool):
-    def __init__(self, name, texture, durability, power):
-        super().__init__(name, texture, durability)
+    def __init__(self, name, texture, durability, power, description=None):
+        if not description:
+            description = "Points de dégats: " + str(power)
+        super().__init__(name, texture, durability, description)
         self.power = power
     
     def get_attack_damage(self):
         return self.power
     
 class Pickaxe_tool(Tool):
-    def __init__(self, name, texture, durability, power):
-        super().__init__(name, texture, durability)
+    def __init__(self, name, texture, durability, power, description=None):
+        if not description:
+            description = "Puissance de pioche: " + str(power)
+        super().__init__(name, texture, durability, description)
         self.power = power
 
     def get_power(self):
         return self.power
 
 class Consumable(ItemProperty):
-    def __init__(self, name, texture, max_stack):
-        super().__init__(name, texture, max_stack, False, None)
+    def __init__(self, name, texture, max_stack, description=None):
+        if not description:
+            description = "Consommable"
+        super().__init__(name, texture, max_stack, False, None, description)
 
 ItemProperty.DIRT = ItemProperty("dirt", TextureType.DIRT, 100, True, "DIRT")
 ItemProperty.GRASS = ItemProperty("grass", TextureType.GRASS, 100, True, "GRASS")
@@ -175,11 +189,21 @@ ItemProperty.GRASS_BROWN = ItemProperty("grass_brown", TextureType.GRASS_BROWN, 
 ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
 
-ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, durability=1561, power=10)
-ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, durability=1561, power=15)
+# EPE
+ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, durability=1561, power=18)
+ItemProperty.WOODEN_SWORD = Attack_tool("wooden_sword", TextureType.WOODEN_SWORD, durability=110, power=7)
+ItemProperty.STONE_SWORD = Attack_tool("stone_sword", TextureType.STONE_SWORD, durability=240, power=9)
 
+# PIOCHE
+ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, durability=1561, power=15)
+ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, durability=110, power=4)
+ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, durability=240, power=6)
+
+# CONSUMABLE
 ItemProperty.CHIPS = Consumable("chips", TextureType.CHIPS, 10)
 ItemProperty.STICK = ItemProperty("stick", TextureType.STICK, 100, False, None)
+
+ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "Item non utilisable")
 
 def get_item_type_by_name(name: str):
     if not name:

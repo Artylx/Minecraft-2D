@@ -1,5 +1,5 @@
 from operator import inv
-
+from classes import language
 import pygame
 from classes import game_property
 from classes.inventory import Crafting_types, ItemStack
@@ -53,14 +53,28 @@ class UI:
             self.render_hotbar(screen, player.inventory)
         else:
             self.render_chest(screen, self.open_inventory)
+        
+        self.render_tooltip(screen)
 
     def key_down(self, event):
         if event.key == pygame.K_ESCAPE:
             self.close_inv()
 
     def update(self, inv):
-        if not self.is_open_inv():
-            mouse_pos = pygame.mouse.get_pos()
+        mouse_pos = pygame.mouse.get_pos()
+        self.hovered_item = None
+
+        # inventaire ouvert
+        if self.is_open_inv():
+            for rect, slot in self.get_all_slots(self.open_inventory):
+                if rect.collidepoint(mouse_pos):
+                    item = slot.get()
+                    if item:
+                        self.hovered_item = item
+                    return
+
+        # hotbar (inventaire fermé)
+        else:
             case_size = game_property.INVENTORY_SIZE_CASE
             margin = 15
 
@@ -77,11 +91,55 @@ class UI:
                 y = start_y + margin
 
                 rect = pygame.Rect(x, y, case_size, case_size)
-                
+
                 if rect.collidepoint(mouse_pos):
-                    inv.ui.visible_name = i
+                    item = inv.items.get(i, None)
+                    if item:
+                        self.hovered_item = item
                     return
-            inv.ui.visible_name = None
+    
+    def render_tooltip(self, screen):
+        if not self.hovered_item:
+            return
+
+        if not self.hovered_item.item_property:
+            return
+
+        item = self.hovered_item
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        font_title = pygame.font.SysFont("Arial", 18, bold=True)
+        font_desc = pygame.font.SysFont("Arial", 14)
+
+        name = language.get_language_items(item.item_property.item_name, language.LANGUAGE_TYPE.FRANCE)
+        if not name:
+            name = item.item_property.item_name
+        
+        desc = item.item_property.description
+
+        title_surf = font_title.render(name, True, (255, 255, 255))
+        desc_surf = font_desc.render(desc, True, (200, 200, 200))
+
+        width = max(title_surf.get_width(), desc_surf.get_width()) + 10
+        height = title_surf.get_height() + desc_surf.get_height() + 10
+
+        x = mouse_x + 15
+        y = mouse_y + 15
+
+        if x + width > self.screen_size[0]:
+            x = mouse_x - width - 15
+        if y + height > self.screen_size[1]:
+            y = mouse_y - height - 15
+
+        # fond
+        bg = pygame.Surface((width, height), pygame.SRCALPHA)
+        bg.fill((0, 0, 0, 220))
+
+        screen.blit(bg, (x, y))
+
+        # texte
+        screen.blit(title_surf, (x + 5, y + 3))
+        screen.blit(desc_surf, (x + 5, y + 3 + title_surf.get_height()))
         
     def mouse_down(self, button):
         if not self.is_open_inv() or (button != 1 and button != 3):
@@ -402,17 +460,17 @@ class UI:
                 pygame.draw.rect(screen, (255, 255, 255), rect, width=2)
 
             # souris sur la case
-            if i == inv.ui.visible_name and item:
-                item_name = item.item_property.item_name.capitalize()
-                text = font.render(item_name, True, (255, 255, 255))
-                text_rect = text.get_rect()
-                # position au dessus de l'item
-                text_rect.midbottom = (rect.centerx, rect.top - 5)
-                # fond
-                bg = pygame.Surface((text_rect.width + 10, text_rect.height + 6), pygame.SRCALPHA)
-                bg.fill((0, 0, 0, 200))
-                screen.blit(bg, (text_rect.x - 5, text_rect.y - 3))
-                screen.blit(text, text_rect)
+            # if i == inv.ui.visible_name and item:
+            #     item_name = item.item_property.item_name.capitalize()
+            #     text = font.render(item_name, True, (255, 255, 255))
+            #     text_rect = text.get_rect()
+            #     # position au dessus de l'item
+            #     text_rect.midbottom = (rect.centerx, rect.top - 5)
+            #     # fond
+            #     bg = pygame.Surface((text_rect.width + 10, text_rect.height + 6), pygame.SRCALPHA)
+            #     bg.fill((0, 0, 0, 200))
+            #     screen.blit(bg, (text_rect.x - 5, text_rect.y - 3))
+            #     screen.blit(text, text_rect)
     
     def is_open_inv(self):
         if self.open_inventory:

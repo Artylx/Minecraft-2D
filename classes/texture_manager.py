@@ -58,7 +58,10 @@ class TextureType:
     ZOMBIE_ARM = "zombie_arm"
     ZOMBIE_LEG = "zombie_leg"
     DIAMOND_PICKAXE = "diamond_pickaxe"
+    WOODEN_PICKAXE = "wooden_pickaxe"
+    STONE_PICKAXE = "stone_pickaxe"
     CHIPS = "chips"
+    DEFAULT = "default"
 
 class TextureManager:
     def __init__(self, init_directory="resource_pack/"):
@@ -114,6 +117,8 @@ class TextureManager:
             self.load_texture(TextureType.IRON_SWORD, ITEMS_PATH + TOOLS_PATH + "iron_sword.png")
             self.load_texture(TextureType.GOLDEN_SWORD, ITEMS_PATH + TOOLS_PATH + "golden_sword.png")
             self.load_texture(TextureType.DIAMOND_PICKAXE, ITEMS_PATH + TOOLS_PATH + "diamond_pickaxe.png")
+            self.load_texture(TextureType.WOODEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "wooden_pickaxe.png")
+            self.load_texture(TextureType.STONE_PICKAXE, ITEMS_PATH + TOOLS_PATH + "stone_pickaxe.png")
 
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")
@@ -129,6 +134,9 @@ class TextureManager:
             self.load_texture(TextureType.ZOMBIE_ARM, ENTITIES_PATH + MOBS_PATH + "zombie/arm.png")
             self.load_texture(TextureType.ZOMBIE_BODY, ENTITIES_PATH + MOBS_PATH + "zombie/body.png")
             self.load_texture(TextureType.ZOMBIE_LEG, ENTITIES_PATH + MOBS_PATH + "zombie/leg.png")
+
+            #
+            self.load_texture(TextureType.DEFAULT, "default.png")
         except Exception as e:
             print(f"Erreur lors du chargement des textures: {e}")
 

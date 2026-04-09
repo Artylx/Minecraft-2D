@@ -1,12 +1,70 @@
+from matplotlib.pylab import matrix
+
 from classes.texture_manager import  TextureManager
 import pygame
 from classes import game_property, game_type
 import uuid
 
+class RotationMode:
+    NONE = 0          # aucune rotation
+    ALL = 1           # 0°, 90°, 180°, 270°
+    HALF = 2          # 0° et 180° uniquement
+
 RECIPES = {
-    ("oak_trunk", None, None, None): [(4, "oak_plank")],
-    ("oak_plank", None, "oak_plank", None): [(2, "stick")],
-    ("oak_plank", "oak_plank", "oak_plank", "oak_plank"): [(1, "crafting_table")],
+    (("oak_trunk",),): {
+        "result": [(4, "oak_plank")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank",),
+        ("oak_plank",)
+    ): {
+        "result": [(2, "stick")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank",),
+        ("oak_plank",),
+        ("stick",)
+    ): {
+        "result": [(1, "wooden_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank", "oak_plank", "oak_plank",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "wooden_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("stone", "stone", "stone",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "stone_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("stone",),
+        ("stone",),
+        ("stick",)
+    ): {
+        "result": [(1, "ston_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    }
 }
 
 class CraftManager():
@@ -24,31 +82,113 @@ class CraftManager():
         self.items[index] = item
         self.update_result()
 
+    def to_matrix(self):
+        return [
+            self.items[y * self.width:(y + 1) * self.width]
+            for y in range(self.height)
+        ]
+    
+    def mirror_matrix(self, matrix):
+        return [row[::-1] for row in matrix]
+    
+    def trim_matrix(self, matrix):
+        rows = len(matrix)
+        cols = len(matrix[0])
+
+        min_x, max_x = cols, 0
+        min_y, max_y = rows, 0
+
+        for y in range(rows):
+            for x in range(cols):
+                if matrix[y][x]:
+                    min_x = min(min_x, x)
+                    max_x = max(max_x, x)
+                    min_y = min(min_y, y)
+                    max_y = max(max_y, y)
+
+        if min_x > max_x or min_y > max_y:
+            return [[]]
+
+        return [
+            row[min_x:max_x+1]
+            for row in matrix[min_y:max_y+1]
+        ]
+
     def get_item(self, index):
         return self.items[index]
 
-    def get_recipe_key(self):
-        key = []
-        for item in self.items:
-            if item:
-                key.append(item.item_property.item_name)
-            else:
-                key.append(None)
-        return tuple(key)
+    def matrix_to_key(self, matrix):
+        return tuple(
+            tuple(
+                item.item_property.item_name if item else None
+                for item in row
+            )
+            for row in matrix
+        )
+
+    def rotate_matrix(self, matrix):
+        return [list(row) for row in zip(*matrix[::-1])]
+    
+    def get_all_transformations(self, matrix, rotation_mode, allow_mirror):
+        results = []
+
+        rotations = self.get_rotations_by_mode(matrix, rotation_mode)
+
+        for rot in rotations:
+            results.append(rot)
+
+            if allow_mirror:
+                mirrored = self.mirror_matrix(rot)
+                results.append(mirrored)
+
+        return results
+    
+    def get_rotations_by_mode(self, matrix, mode):
+        rotations = []
+
+        if mode == RotationMode.NONE:
+            return [matrix]
+
+        current = matrix
+
+        for i in range(4):
+            if mode == RotationMode.HALF and i >= 2:
+                break
+
+            rotations.append(current)
+            current = self.rotate_matrix(current)
+
+        return rotations
 
     def update_result(self):
-        key = self.get_recipe_key()
-        recipe = RECIPES.get(key)
+        base_matrix = self.to_matrix()
+        trimmed = self.trim_matrix(base_matrix)
 
-        if recipe:
-            count, name = recipe[0]
+        for recipe_key, recipe_data in RECIPES.items():
+            mode = recipe_data.get("rotation", RotationMode.NONE)
+            mirror = recipe_data.get("mirror", False)
 
-            self.result = ItemStack(
-                game_type.get_item_type_by_name(name),
-                count
-            )
-        else:
-            self.result = None
+            for transformed in self.get_all_transformations(trimmed, mode, mirror):
+                key = self.matrix_to_key(transformed)
+
+                if key == recipe_key:
+                    count, name = recipe_data["result"][0]
+
+                    item_pro = game_type.get_item_type_by_name(name)
+
+                    if item_pro:
+                        self.result = ItemStack(
+                            game_type.get_item_type_by_name(name),
+                            count
+                        )
+                    else:
+                        self.result = ItemStack(
+                            game_type.ItemProperty.NONE,
+                            0
+                        )
+                    return
+
+        self.result = None
 
     def close(self):
         if self.current_inv is not None:
@@ -79,10 +219,7 @@ class CraftManager():
         return crafted_item
     
     def has_result(self):
-        for item in self.result:
-            if item:
-                return True
-        return False
+        return self.result is not None
 
     def take_result(self):
         if not self.result:
@@ -94,6 +231,7 @@ class CraftManager():
 
         self.update_result()
         return crafted
+
 
 class Inventory():
     def __init__(self, size):
