@@ -7,6 +7,9 @@ import random
 PLAYER_NAME = "Player1"
 
 class Game:
+    pass
+
+class World_manager:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("TeraCraft")
@@ -411,8 +414,8 @@ class Game:
 
 if __name__ == "__main__": 
     try: 
-        game = Game() 
-        game.run() 
+        world_manager = World_manager() 
+        world_manager.run()
     except Exception as e: 
         import traceback 
         traceback.print_exc() 
