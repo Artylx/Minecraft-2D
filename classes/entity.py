@@ -674,8 +674,22 @@ class Player(Living_entity):
 
             self.inventory.delete_item(itemIndex)
 
-    def get_force_selected_item(self):
-        return 10
+    def get_force_selected_item(self, block_property):
+        item = self.get_selected_item()
+
+        item_pro = item.item_property
+        if item_pro and block_property:
+            if isinstance(item_pro, game_type.Pickaxe_tool):
+                if block_property.weakness == game_type.Pickaxe_tool:
+                    return item_pro.power
+                
+            if isinstance(item_pro, game_type.Axe_tool):
+                if block_property.weakness == game_type.Axe_tool:
+                    return item_pro.power
+        return game_property.DEFAULT_BREAK_POWER
+    
+    def get_selected_item(self):
+        return self.inventory.get_item(self.inventory.ui.selected_index)
 
     def is_attacking(self):
         if self.annim_type:

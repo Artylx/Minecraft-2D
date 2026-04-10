@@ -21,6 +21,7 @@ MARGIN_UI_SCREEN = 10
 MAX_ACTION_DISTANCE = TILE_SIZE * 4
 
 BREAK_COEF = 1/2
+DEFAULT_BREAK_POWER = 10
 DAMAGE_COEF = 1/3
 
 def world_to_screen(x, y, h, cam_rect):

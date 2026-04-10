@@ -17,6 +17,9 @@ class Slot:
     def set(self, item):
         self._set(item)
 
+    def __str__(self):
+        return f"Slot(type:{self.type}, meta:{self.meta})"
+
 class UI:
     def __init__(self, screen_size, inventory, tchat):
         self.inventory = inventory
@@ -156,6 +159,7 @@ class UI:
                     if crafted:
                         self.dragged_slot = Slot(lambda: crafted, lambda x: None, "temp")
                         self.drag_origin = slot
+                        self.drag_origin_index = self.get_slot_index(slot)
                     return
 
                 # NORMAL
@@ -167,6 +171,7 @@ class UI:
                             item.count -= half_count
                             self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
                             self.drag_origin = slot
+                            self.drag_origin_index = self.get_slot_index(slot)
                     else:
                         self.dragged_slot = Slot(lambda: item, lambda x: None, "temp")
                         self.drag_origin = slot
@@ -208,11 +213,12 @@ class UI:
                 # STACK
                 if item_a and item_b and item_a.item_property == item_b.item_property:
                     reste = item_b.add_item(item_a.count)
+
                     if reste == 0:
                         self.dragged_slot.set(None)
+                        dropped = True
                     else:
                         item_a.count = reste
-                    dropped = True
 
                 # SWAP
                 else:
@@ -229,10 +235,18 @@ class UI:
 
                 break
 
-        # drop hors inventaire → remettre à l’origine
         if not dropped and self.drag_origin:
             #self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
-            self.drag_origin.set(self.dragged_slot.get())
+
+            origin_item = self.inventory.get_item(self.drag_origin_index)
+
+            if origin_item:
+                item = self.dragged_slot.get()
+
+                item.count += origin_item.count
+                self.drag_origin.set(item)
+            else:
+                self.drag_origin.set(self.dragged_slot.get())
 
         self.dragged_slot = None
         self.drag_origin = None

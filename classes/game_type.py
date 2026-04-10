@@ -4,7 +4,7 @@ from classes import language
 class BlockProperty:
     REGISTRY = {}
 
-    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life):
+    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None):
         self.block_name = name
         self.block_id = block_id
         self.texture = texture
@@ -12,43 +12,22 @@ class BlockProperty:
         self.breakable = breakable
         self.item_type = item_type
         self.life = life
+        self.weakness = weakness
+        self.need_to_drop = need_to_drop
 
         BlockProperty.REGISTRY[name.upper()] = self
+
+    def can_drop(self, tool) -> bool:
+        if not self.need_to_drop:
+            return True
+        else:
+            if isinstance(tool, self.need_to_drop):
+                return True
+        return False
 
     def __str__(self):
         return f"BlockProperty(name:{self.block_name}, block_id:{self.block_id}, collidable:{self.collidable}, breakable:{self.breakable}, item_type:{self.item_type})"
 
-BlockProperty.STONE = BlockProperty("stone", 1, True, TextureType.STONE, True, "STONE", 300)
-BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIRT", 60)
-BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None, None)
-BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
-BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
-BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_ORE", 360)
-BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540)
-BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800)
-BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
-BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
-BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200)
-BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300)
-BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
-BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50)
-BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "REDSTONE_EMERALD", 50)
-BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 70)    
-BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20)
-
-BlockProperty.OAK_TRUNK = BlockProperty("oak_trunk", 11, True, TextureType.OAK_TRUNK, True, "OAK_TRUNK", 100)
-BlockProperty.OAK_LEAVES = BlockProperty("oak_leaves", 12, False, TextureType.OAK_LEAVES, True, None, 60)
-BlockProperty.OAK_TRUNK_BOTTOM = BlockProperty("oak_trunk_bottom", 13, False, TextureType.OAK_TRUNK_BOTTOM, True, "OAK_TRUNK", 100)
-BlockProperty.OAK_TRUNK_MID = BlockProperty("oak_trunk_mid", 13, False, TextureType.OAK_TRUNK_MID, True, "OAK_TRUNK", 100)
-BlockProperty.OAK_PLANK = BlockProperty("oak_plank", 27, True, TextureType.OAK_PLANK, True, "OAK_PLANK", 100)
-
-BlockProperty.GRASS_1 = BlockProperty("grass_1", 14, False, TextureType.GRASS_1, True, None, 30)
-BlockProperty.GRASS_2 = BlockProperty("grass_2", 15, False, TextureType.GRASS_2, True, None, 30)
-BlockProperty.GRASS_3 = BlockProperty("grass_3", 16, False, TextureType.GRASS_3, True, None, 30)
-BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4, True, None, 30)
-BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30)
-BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150)
-BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20)
   
 class ItemProperty:
     REGISTRY = {}
@@ -151,15 +130,22 @@ class Pickaxe_tool(Tool):
             description = "Puissance de pioche: " + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
-
-    def get_power(self):
-        return self.power
+    
+class Axe_tool(Tool):
+    def __init__(self, name, texture, durability, power, description=None):
+        if not description:
+            description = "Puissance de hache: " + str(power)
+        super().__init__(name, texture, durability, description)
+        self.power = power
 
 class Consumable(ItemProperty):
     def __init__(self, name, texture, max_stack, description=None):
         if not description:
             description = "Consommable"
         super().__init__(name, texture, max_stack, False, None, description)
+
+class Shovel_tool(Tool):
+    pass
 
 ItemProperty.DIRT = ItemProperty("dirt", TextureType.DIRT, 100, True, "DIRT")
 ItemProperty.GRASS = ItemProperty("grass", TextureType.GRASS, 100, True, "GRASS")
@@ -195,15 +181,52 @@ ItemProperty.WOODEN_SWORD = Attack_tool("wooden_sword", TextureType.WOODEN_SWORD
 ItemProperty.STONE_SWORD = Attack_tool("stone_sword", TextureType.STONE_SWORD, durability=240, power=9)
 
 # PIOCHE
-ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, durability=1561, power=15)
-ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, durability=110, power=4)
-ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, durability=240, power=6)
+ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, durability=1561, power=28)
+ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, durability=110, power=15)
+ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, durability=240, power=18)
+
+# HACHE
+ItemProperty.DIAMOND_AXE = Axe_tool("diamond_axe", TextureType.DIAMOND_AXE, durability=1561, power=28)
+ItemProperty.WOODEN_AXE = Axe_tool("wooden_axe", TextureType.WOODEN_AXE, durability=110, power=15)
 
 # CONSUMABLE
 ItemProperty.CHIPS = Consumable("chips", TextureType.CHIPS, 10)
 ItemProperty.STICK = ItemProperty("stick", TextureType.STICK, 100, False, None)
 
 ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "Item non utilisable")
+
+# BLOCKS
+BlockProperty.STONE = BlockProperty("stone", 1, True, TextureType.STONE, True, "STONE", 300, Pickaxe_tool, Pickaxe_tool)
+BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIRT", 60)
+BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None, None)
+BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
+BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
+BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_ORE", 360, Pickaxe_tool)
+BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool)
+BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool)
+BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
+BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
+BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200, Axe_tool)
+BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300, Pickaxe_tool)
+BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
+BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50, Pickaxe_tool)
+BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "REDSTONE_EMERALD", 50, Pickaxe_tool)
+BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 70)    
+BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20)
+
+BlockProperty.OAK_TRUNK = BlockProperty("oak_trunk", 11, True, TextureType.OAK_TRUNK, True, "OAK_TRUNK", 100, Axe_tool)
+BlockProperty.OAK_LEAVES = BlockProperty("oak_leaves", 12, False, TextureType.OAK_LEAVES, True, None, 60, Axe_tool)
+BlockProperty.OAK_TRUNK_BOTTOM = BlockProperty("oak_trunk_bottom", 13, False, TextureType.OAK_TRUNK_BOTTOM, True, "OAK_TRUNK", 100, Axe_tool)
+BlockProperty.OAK_TRUNK_MID = BlockProperty("oak_trunk_mid", 13, False, TextureType.OAK_TRUNK_MID, True, "OAK_TRUNK", 100, Axe_tool)
+BlockProperty.OAK_PLANK = BlockProperty("oak_plank", 27, True, TextureType.OAK_PLANK, True, "OAK_PLANK", 100, Axe_tool)
+
+BlockProperty.GRASS_1 = BlockProperty("grass_1", 14, False, TextureType.GRASS_1, True, None, 30)
+BlockProperty.GRASS_2 = BlockProperty("grass_2", 15, False, TextureType.GRASS_2, True, None, 30)
+BlockProperty.GRASS_3 = BlockProperty("grass_3", 16, False, TextureType.GRASS_3, True, None, 30)
+BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4, True, None, 30)
+BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30)
+BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool)
+BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20)
 
 def get_item_type_by_name(name: str):
     if not name:

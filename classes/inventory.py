@@ -10,9 +10,68 @@ class RotationMode:
     ALL = 1           # 0°, 90°, 180°, 270°
     HALF = 2          # 0° et 180° uniquement
 
+class Recipe():
+    def __init__(self, recipe, result, rotation=RotationMode.NONE, mirror=False):
+        self.recipe = recipe
+        self.result = result
+        self.rotation = rotation
+        self.mirror = mirror
+
+    def load(self, data):
+        mapping = {
+            "recipe": "recipe",
+            "result": "result",
+            "rotation": "rotation",
+            "mirror": "mirror",
+        }
+
+        # Vérification
+        required = list(mapping.keys())
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation complexe
+        for key, target in mapping.items():
+            if isinstance(target, tuple):
+                obj, attr = target
+                setattr(getattr(self, obj), attr, data[key])
+            else:
+                setattr(self, target, data[key])
+        return self
+    
+    def to_json(self) -> dict:
+        return {
+            "recipe": self.recipe,
+            "result": self.result,
+            "rotation": self.rotation,
+            "mirror": self.mirror,
+        }
+
+RECIPES_ = [
+    Recipe((
+        ("oak_trunk",),
+    ), 
+    [(4, "oak_plank")], 
+    )
+]
+
 RECIPES = {
-    (("oak_trunk",),): {
+    (
+        ("oak_trunk",),
+    ): {
         "result": [(4, "oak_plank")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank","oak_plank",),
+        ("oak_plank","oak_plank",),
+     
+    ): {
+        "result": [(1, "crafting_table")],
         "rotation": RotationMode.NONE,
         "mirror": False
     },
@@ -44,6 +103,16 @@ RECIPES = {
         "result": [(1, "wooden_pickaxe")],
         "rotation": RotationMode.NONE,
         "mirror": False
+    },
+
+    (
+        ("oak_plank", "oak_plank",),
+        ("stick", "oak_plank",),
+        ("stick",None,)
+    ): {
+        "result": [(1, "wooden_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": True
     },
 
     (
@@ -293,7 +362,7 @@ class Inventory():
         if len(self.items) != 0:
             if index <= len(self.items) - 1:
                 return self.items[index]
-        return None     
+        return None 
     
     def delete_item(self, index):
         itemStack = self.items[index]

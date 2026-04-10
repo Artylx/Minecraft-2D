@@ -44,10 +44,20 @@ class TextureType:
     TNT = "tnt"
 
     CRAFTING_TABLE = "crafting_table"
+
     DIAMOND_SWORD = "diamond_sword"
+    DIAMOND_PICKAXE = "diamond_pickaxe"
+    DIAMOND_AXE = "diamond_axe"
+
     WOODEN_SWORD = "wooden_sword"
+    WOODEN_PICKAXE = "wooden_pickaxe"
+    WOODEN_AXE = "wooden_axe"
+
     STONE_SWORD = "stone_sword"
+    STONE_PICKAXE = "stone_pickaxe"
+
     IRON_SWORD = "iron_sword"
+
     GOLDEN_SWORD = "golden_sword"
     PLAYER_HEAD = "player_head"
     PLAYER_BODY = "player_body"
@@ -57,9 +67,7 @@ class TextureType:
     ZOMBIE_BODY = "zombie_body"
     ZOMBIE_ARM = "zombie_arm"
     ZOMBIE_LEG = "zombie_leg"
-    DIAMOND_PICKAXE = "diamond_pickaxe"
-    WOODEN_PICKAXE = "wooden_pickaxe"
-    STONE_PICKAXE = "stone_pickaxe"
+    
     CHIPS = "chips"
     DEFAULT = "default"
 
@@ -116,9 +124,13 @@ class TextureManager:
             self.load_texture(TextureType.STONE_SWORD, ITEMS_PATH + TOOLS_PATH + "stone_sword.png")
             self.load_texture(TextureType.IRON_SWORD, ITEMS_PATH + TOOLS_PATH + "iron_sword.png")
             self.load_texture(TextureType.GOLDEN_SWORD, ITEMS_PATH + TOOLS_PATH + "golden_sword.png")
+
             self.load_texture(TextureType.DIAMOND_PICKAXE, ITEMS_PATH + TOOLS_PATH + "diamond_pickaxe.png")
             self.load_texture(TextureType.WOODEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "wooden_pickaxe.png")
             self.load_texture(TextureType.STONE_PICKAXE, ITEMS_PATH + TOOLS_PATH + "stone_pickaxe.png")
+
+            self.load_texture(TextureType.DIAMOND_AXE, ITEMS_PATH + TOOLS_PATH + "diamond_axe.png")
+            self.load_texture(TextureType.WOODEN_AXE, ITEMS_PATH + TOOLS_PATH + "wooden_axe.png")
 
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")

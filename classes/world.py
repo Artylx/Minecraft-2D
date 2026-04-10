@@ -9,6 +9,7 @@ from classes.game_type import BlockProperty
 import json
 import os
 from classes.biome import BiomeType, BiomeManager
+from collections import deque
 
 def load_world_json(world_name):
     """
@@ -321,7 +322,7 @@ class World:
 
         return False
     
-    def destroy_block(self, block_pos):
+    def destroy_block(self, block_pos, player):
         current_block = self.get_block(block_pos[0], block_pos[1])
         x = block_pos[0] * game_property.TILE_SIZE
         y = block_pos[1] * game_property.TILE_SIZE
@@ -336,12 +337,15 @@ class World:
             )
         )
 
-        if game_type.get_item_type_by_name(current_block.block_property.item_type) is not None:
-            r = random.Random()
-            pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
+        item = player.get_selected_item()
+        if current_block.block_property.can_drop(item.item_property):
 
-            block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos)
-            self.create_entity(block_entity)
+            if game_type.get_item_type_by_name(current_block.block_property.item_type) is not None:
+                r = random.Random()
+                pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
+
+                block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos)
+                self.create_entity(block_entity)
     
     def try_destroy_block(self, block_pos, player):
         current_block = self.get_block(block_pos[0], block_pos[1])
@@ -364,9 +368,9 @@ class World:
         if distance > game_property.MAX_ACTION_DISTANCE:
             return
         
-        current_block.try_destroy(player.get_force_selected_item())
+        current_block.try_destroy(player.get_force_selected_item(current_block.block_property))
         if current_block.life < 0:
-            self.destroy_block(block_pos)
+            self.destroy_block(block_pos, player)
     
     def reset_block(self, block_pos):
         current_block = self.get_block(block_pos[0], block_pos[1])
@@ -441,6 +445,7 @@ class Chunk:
         self.blocks = {}
         self.structures = []
         self.generate()
+        self.compute_sky_light()
 
     # def generate(self):
     #     for x in range(game_property.CHUNK_WIDTH):
@@ -570,6 +575,48 @@ class Chunk:
     
     def set_block(self, x, y, block):
         self.blocks[(x, y)] = block
+        self.compute_sky_light()
+
+    def compute_sky_light(self):
+        for x in range(game_property.CHUNK_WIDTH):
+            world_x = self.x * game_property.CHUNK_WIDTH + x
+
+            light = 15  # max lumière
+
+            for y in reversed(range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT)):
+                block = self.blocks.get((world_x, y))
+
+                if not block:
+                    continue
+
+                block.light = light
+
+                if block.can_collide():
+                    light -= 0.5  # absorption
+
+                if light < 0:
+                    light = 0
+    
+    def propagate_light(self, sources):
+        queue = deque(sources)
+
+        while queue:
+            x, y, light = queue.popleft()
+
+            if light <= 0:
+                continue
+
+            block = self.get_block(x, y)
+            if not block:
+                continue
+
+            if block.light >= light:
+                continue
+
+            block.light = light
+
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                queue.append((x+dx, y+dy, light-1))
 
 # ORE_PARAMS = {
 #     BlockProperty.COAL_ORE: {"scale": 0.1, "threshold": 0.55, "min_y": 60},
@@ -608,6 +655,7 @@ class Block:
         )
         self.rect = rect
         self.block_property = block_property
+        self.light = 0
 
         self.debug = debug
         if self.block_property.life:
@@ -631,6 +679,15 @@ class Block:
         )
         if texture:
             screen.blit(texture, (draw_x, draw_y))
+
+        light = self.light / 15  # normaliser
+
+        darkness = int(255 * (1 - light))
+
+        overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, darkness))
+
+        screen.blit(overlay, (draw_x, draw_y))
 
         if self.max_life > 0:
             ratio = self.life / self.max_life
