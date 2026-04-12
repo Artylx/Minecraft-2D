@@ -245,10 +245,15 @@ class World_manager:
                     
                     self.player.try_attack(self.cam_rect)
                         
-
+            # Pos or other
             if self.keys_.get(self.event_mouse_get(3)):
-                self.click_on_block(self.current_block_pos, self.player)
-                self.pos_block(self.current_block_pos, self.player)
+                if not self.prev_keys_.get(self.event_mouse_get(3)):
+                    
+                    self.click_on_block(self.current_block_pos, self.player)
+                    self.player.use_selected_item(self.cam_rect)    
+            else:
+                if self.prev_keys_.get(self.event_mouse_get(3)):
+                    self.player.stop_use_selected_item(self.cam_rect)
 
             if self.keys_.get(pygame.K_t):
                 self.tchat.oppened = True
@@ -309,7 +314,7 @@ class World_manager:
         dy = block_center_y - player_center_y
 
         if dx*dx + dy*dy > game_property.MAX_ACTION_DISTANCE**2:
-            return
+            return False
         
         old_block = self.World.get_block(pos_block[0], pos_block[1])
 
@@ -320,6 +325,8 @@ class World_manager:
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
                     self.UI.open_inv(player.inventory, Crafting_types.CRAFTING_TABLE)
+                    return True
+        return False
 
     def pos_block(self, pos_block, player):
         current_item = player.inventory.ui.get_selected_item()
@@ -347,6 +354,9 @@ class World_manager:
                     ):
 
                         player.inventory.delete_item(player.inventory.ui.selected_index)
+
+    def use_item(self, v, player):
+        pass
 
     # RENDER
     def render(self):

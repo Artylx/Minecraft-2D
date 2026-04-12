@@ -130,7 +130,7 @@ RECIPES = {
         ("stone",),
         ("stick",)
     ): {
-        "result": [(1, "ston_sword")],
+        "result": [(1, "stone_sword")],
         "rotation": RotationMode.NONE,
         "mirror": False
     }
@@ -544,6 +544,7 @@ class ItemStack():
                 return 0
         
     def render(self, screen, pos, texture_size=None, draw_number=True):
+        self.update_texture()
         texture = self.texture
         if texture_size and self.texture:
             texture = pygame.transform.scale(self.texture, texture_size)
@@ -573,7 +574,7 @@ class ItemStack():
                 self.texture = pygame.transform.scale(self.texture, (game_property.INVENTORY_SIZE_CASE, game_property.INVENTORY_SIZE_CASE))
 
     def get_texture(self):
-        return self.texture_manager.get_texture(self.item_property.texture)
+        return self.item_property.get_texture()
     
     def is_posable(self):
         return self.item_property.placeable

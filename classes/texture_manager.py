@@ -16,9 +16,11 @@ class TextureType:
     STONE = "stone"
     GRASS = "grass"
     BEDROCK = "bedrock"
+
     COAL_ORE = "coal_ore"
     IRON_ORE = "iron_ore"
     GOLD_ORE = "gold_ore"
+
     SAND = "sand"
     WATER = "water"
     SNOW = "snow"
@@ -42,6 +44,10 @@ class TextureType:
     OAK_TRUNK_MID = "oak_trunk_mid"
     OAK_PLANK = "oak_plank"
     TNT = "tnt"
+
+    BOW = "bow"
+    ARROW = "arrow"
+    BOW_ARROW = "bow_arrow"
 
     CRAFTING_TABLE = "crafting_table"
 
@@ -135,11 +141,15 @@ class TextureManager:
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")
 
+            self.load_texture(TextureType.ARROW, ITEMS_PATH + TOOLS_PATH + "arrow.png")
+            self.load_texture(TextureType.BOW, ITEMS_PATH + TOOLS_PATH + "bow.png")
+            self.load_texture(TextureType.BOW_ARROW, ITEMS_PATH + TOOLS_PATH + "bow_arrow.png")
+
             # PLAYER
-            self.load_texture(TextureType.PLAYER_HEAD, ENTITIES_PATH + PLAYER_PATH + "head.png")
-            self.load_texture(TextureType.PLAYER_BODY, ENTITIES_PATH + PLAYER_PATH + "body.png")
-            self.load_texture(TextureType.PLAYER_ARM, ENTITIES_PATH + PLAYER_PATH + "arm.png")
-            self.load_texture(TextureType.PLAYER_LEG, ENTITIES_PATH + PLAYER_PATH + "leg.png")
+            self.load_texture(TextureType.PLAYER_HEAD, ENTITIES_PATH + PLAYER_PATH + "male/head.png")
+            self.load_texture(TextureType.PLAYER_BODY, ENTITIES_PATH + PLAYER_PATH + "male/body.png")
+            self.load_texture(TextureType.PLAYER_ARM, ENTITIES_PATH + PLAYER_PATH + "male/arm.png")
+            self.load_texture(TextureType.PLAYER_LEG, ENTITIES_PATH + PLAYER_PATH + "male/leg.png")
 
             # ZOMBIE
             self.load_texture(TextureType.ZOMBIE_HEAD, ENTITIES_PATH + MOBS_PATH + "zombie/head.png")

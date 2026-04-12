@@ -21,6 +21,8 @@ class BlockProperty:
         if not self.need_to_drop:
             return True
         else:
+            if not tool:
+                return False
             if isinstance(tool, self.need_to_drop):
                 return True
         return False
@@ -98,6 +100,12 @@ class ItemProperty:
             return None
 
         return item
+    
+    def __eq__(self, other):
+        if not isinstance(other, ItemProperty):
+            return False
+
+        return self.item_name == other.item_name and self.description == other.description
 
 
 class Tool(ItemProperty):
@@ -115,7 +123,19 @@ class Tool(ItemProperty):
             self.break_ = True
 
 class Attack_tool(Tool):
-    def __init__(self, name, texture, durability, power, description=None):
+    def __init__(self, name, texture, materialTool, description=None):
+        power, durability = 0, 0
+        if materialTool == MaterialTool.WOODEN:
+            power, durability = 7, 110
+        elif materialTool == MaterialTool.STONE:
+            power, durability = 9, 240
+        elif materialTool == MaterialTool.IRON:
+            power, durability = 12, 523
+        elif materialTool == MaterialTool.GOLDEN:
+            power, durability = 14, 432
+        elif materialTool == MaterialTool.DIAMOND:
+            power, durability = 19, 1561
+        
         if not description:
             description = "Points de dégats: " + str(power)
         super().__init__(name, texture, durability, description)
@@ -124,15 +144,68 @@ class Attack_tool(Tool):
     def get_attack_damage(self):
         return self.power
     
+class Bow_tool(Tool):
+    def __init__(self, name, texture, use_texture, power=11, description=None):
+        durability = 10
+
+        if not description:
+            description = "Dégats de l'Arc: " + str(power)
+        super().__init__(name, texture, durability, description)
+        self.power = power
+        self.use_texture = use_texture
+
+        self.used = False
+
+    def get_texture(self):
+        if ItemProperty.texture_manager is None:
+            print("TextureManager non défini")
+            return None
+
+        if self.used:
+            return ItemProperty.texture_manager.get_texture(self.use_texture)
+        
+        return ItemProperty.texture_manager.get_texture(self.texture)
+
+class MaterialTool:
+    WOODEN = 0
+    STONE = 1
+    IRON = 2
+    GOLDEN = 3
+    DIAMOND = 4
+
 class Pickaxe_tool(Tool):
-    def __init__(self, name, texture, durability, power, description=None):
+    def __init__(self, name, texture, materialTool, description=None):
+        power, durability = 0, 0
+        if materialTool == MaterialTool.WOODEN:
+            power, durability = 15, 110
+        elif materialTool == MaterialTool.STONE:
+            power, durability = 18, 240
+        elif materialTool == MaterialTool.IRON:
+            power, durability = 21, 523
+        elif materialTool == MaterialTool.GOLDEN:
+            power, durability = 24, 432
+        elif materialTool == MaterialTool.DIAMOND:
+            power, durability = 28, 1561
+
         if not description:
             description = "Puissance de pioche: " + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
     
 class Axe_tool(Tool):
-    def __init__(self, name, texture, durability, power, description=None):
+    def __init__(self, name, texture, materialTool, description=None):
+        power, durability = 0, 0
+        if materialTool == MaterialTool.WOODEN:
+            power, durability = 15, 110
+        elif materialTool == MaterialTool.STONE:
+            power, durability = 18, 240
+        elif materialTool == MaterialTool.IRON:
+            power, durability = 21, 523
+        elif materialTool == MaterialTool.GOLDEN:
+            power, durability = 24, 432
+        elif materialTool == MaterialTool.DIAMOND:
+            power, durability = 28, 1561
+
         if not description:
             description = "Puissance de hache: " + str(power)
         super().__init__(name, texture, durability, description)
@@ -144,8 +217,29 @@ class Consumable(ItemProperty):
             description = "Consommable"
         super().__init__(name, texture, max_stack, False, None, description)
 
+class Hanger_consumable(Consumable):
+    def __init__(self, name, texture, max_stack, life_regen, description=None):
+        super().__init__(name, texture, max_stack, description)
+        self.life_regen = life_regen
+
 class Shovel_tool(Tool):
-    pass
+    def __init__(self, name, texture, materialTool, description=None):
+        power, durability = 0, 0
+        if materialTool == MaterialTool.WOODEN:
+            power, durability = 15, 110
+        elif materialTool == MaterialTool.STONE:
+            power, durability = 18, 240
+        elif materialTool == MaterialTool.IRON:
+            power, durability = 21, 523
+        elif materialTool == MaterialTool.GOLDEN:
+            power, durability = 24, 432
+        elif materialTool == MaterialTool.DIAMOND:
+            power, durability = 28, 1561
+
+        if not description:
+            description = "Puissance de pelle: " + str(power)
+        super().__init__(name, texture, durability, description)
+        self.power = power
 
 ItemProperty.DIRT = ItemProperty("dirt", TextureType.DIRT, 100, True, "DIRT")
 ItemProperty.GRASS = ItemProperty("grass", TextureType.GRASS, 100, True, "GRASS")
@@ -176,18 +270,22 @@ ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
 
 # EPE
-ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, durability=1561, power=18)
-ItemProperty.WOODEN_SWORD = Attack_tool("wooden_sword", TextureType.WOODEN_SWORD, durability=110, power=7)
-ItemProperty.STONE_SWORD = Attack_tool("stone_sword", TextureType.STONE_SWORD, durability=240, power=9)
+ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)
+ItemProperty.WOODEN_SWORD = Attack_tool("wooden_sword", TextureType.WOODEN_SWORD, MaterialTool.WOODEN)
+ItemProperty.STONE_SWORD = Attack_tool("stone_sword", TextureType.STONE_SWORD, MaterialTool.STONE)
 
 # PIOCHE
-ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, durability=1561, power=28)
-ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, durability=110, power=15)
-ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, durability=240, power=18)
+ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, MaterialTool.DIAMOND)
+ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, MaterialTool.WOODEN)
+ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, MaterialTool.STONE)
 
 # HACHE
-ItemProperty.DIAMOND_AXE = Axe_tool("diamond_axe", TextureType.DIAMOND_AXE, durability=1561, power=28)
-ItemProperty.WOODEN_AXE = Axe_tool("wooden_axe", TextureType.WOODEN_AXE, durability=110, power=15)
+ItemProperty.DIAMOND_AXE = Axe_tool("diamond_axe", TextureType.DIAMOND_AXE, MaterialTool.DIAMOND)
+ItemProperty.WOODEN_AXE = Axe_tool("wooden_axe", TextureType.WOODEN_AXE, MaterialTool.WOODEN)
+
+# ARC
+ItemProperty.BOW = Bow_tool("bow", TextureType.BOW, TextureType.BOW_ARROW)
+ItemProperty.ARROW = ItemProperty("arrow", TextureType.ARROW, 100, False, None)
 
 # CONSUMABLE
 ItemProperty.CHIPS = Consumable("chips", TextureType.CHIPS, 10)

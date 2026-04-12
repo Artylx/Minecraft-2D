@@ -100,9 +100,12 @@ class World:
         self.entitys.append(entity)
 
     def add_chunk(self, chunk_x):
+        import time
         if chunk_x not in self.chunks:
-
+            
+            start = time.time()
             chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
+            print("Chunk gen time:", time.time() - start)
             self.chunks[chunk_x] = chunk
 
             # appliquer les modifications sauvegardées
@@ -123,25 +126,34 @@ class World:
                     chunk.set_block(x, y, Block(x, y, block_type))
 
     def update_chunks(self):
-        # recalcule les chunks à charger en fonction de la position de toutes les entités
         chunks_to_keep = set()
+        player_chunks = []
+
+        chunk_size = game_property.TILE_SIZE * game_property.CHUNK_WIDTH
 
         for player_ in self.get_entities(EntityClass.Player):
+            chunk_x = player_.get_pos()[0] // chunk_size
+            player_chunks.append(chunk_x)
 
-            # déterminer le chunk contenant l'entité
-            entity_chunk_x = (player_.get_pos()[0]) // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
-            # inclure tous les chunks autour de cette position selon la render distance
-            for dx in range(-game_property.RENDER_DISTANCE, game_property.RENDER_DISTANCE + 1):
-                chunks_to_keep.add(entity_chunk_x + dx)
+            for dx in range(-game_property.PRELOAD_DISTANCE, game_property.PRELOAD_DISTANCE + 1):
+                chunks_to_keep.add(chunk_x + dx)
 
-        # Créer les chunks manquants et préparer la liste de déchargement
+        def distance(cx):
+            if not player_chunks:
+                return 0
+            return min(abs(cx - px) for px in player_chunks)
+
+        sorted_chunks = sorted(chunks_to_keep, key=distance)
+
         chunks_to_unload = set(self.chunks.keys())
-        for chunk_x in chunks_to_keep:
-            if chunk_x not in self.chunks:
-                self.add_chunk(chunk_x)
+
+        for chunk_x in sorted_chunks:
             chunks_to_unload.discard(chunk_x)
 
-        # Décharger les chunks qui ne sont plus nécessaires
+            if chunk_x not in self.chunks:
+                self.add_chunk(chunk_x)
+                break
+
         for chunk_coords in chunks_to_unload:
             self.unload_chunk(chunk_coords)
 
@@ -276,7 +288,8 @@ class World:
 
         # placement du bloc si pas de collision
         chunk = self.chunks[chunk_x]
-        chunk.blocks[(X, Y)] = block
+
+        chunk.set_block(X, Y, block)
 
         if str(chunk_x) not in self.modified_blocks:
             self.modified_blocks[str(chunk_x)] = []
@@ -286,7 +299,6 @@ class World:
             "y": Y,
             "block": block.block_property.block_name
         })
-        print(f"Bloc {block.block_property.block_name} placé à {(X, Y)}")
         return True
 
     def is_collide(self, entity):
@@ -324,8 +336,8 @@ class World:
     
     def destroy_block(self, block_pos, player):
         current_block = self.get_block(block_pos[0], block_pos[1])
-        x = block_pos[0] * game_property.TILE_SIZE
-        y = block_pos[1] * game_property.TILE_SIZE
+        x = block_pos[0]
+        y = block_pos[1]
 
         self.set_block(
             block_pos[0],
@@ -338,9 +350,17 @@ class World:
         )
 
         item = player.get_selected_item()
-        if current_block.block_property.can_drop(item.item_property):
+
+        if not item:
+            item_pro = None
+        else:
+            item_pro = item.item_property
+        if current_block.block_property.can_drop(item_pro):
 
             if game_type.get_item_type_by_name(current_block.block_property.item_type) is not None:
+                x = x * game_property.TILE_SIZE
+                y = y * game_property.TILE_SIZE
+
                 r = random.Random()
                 pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
 
@@ -445,7 +465,7 @@ class Chunk:
         self.blocks = {}
         self.structures = []
         self.generate()
-        self.compute_sky_light()
+        self.update_light()
 
     # def generate(self):
     #     for x in range(game_property.CHUNK_WIDTH):
@@ -569,15 +589,48 @@ class Chunk:
     def set_block_with_name(self, x, y, block_name):
         block_type = game_type.get_block_property(block_name)
         if block_type is None:
-            print(f"Block inconnu: {block_name}")
             return False
         self.set_block(x, y, Block(x, y, block_type))
     
     def set_block(self, x, y, block):
+        """
+        Fonction pour modifier un block dans le chunk:
+        - appel du calcul de la lumière.
+        """
         self.blocks[(x, y)] = block
-        self.compute_sky_light()
+
+        self.update_light()
+
+    def update_light(self):
+        for block in self.blocks.values():
+            block.light = 15
+            
+        # self.compute_sky_light()
+        # self.update_propaged_light()
+
+    def update_propaged_light(self):
+        sources = []
+
+        for (x, y), block in self.blocks.items():
+            if block.light == 15:  # sources lumineuses (ciel)
+                sources.append((x, y, block.light))
+
+        self.propagate_light(sources)
+
+    def set_blocks(self, list_block):
+        """
+        Fonction pour modifier une liste de block sous forme (x, y, block):
+        - 1 seul appel du calcul de la lumière.
+        """
+        for x, y, block in list_block:
+            self.blocks[(x, y)] = block
+
+        self.update_light()
 
     def compute_sky_light(self):
+        """
+        Fonction pour calculer la lumière dans le chunk
+        """
         for x in range(game_property.CHUNK_WIDTH):
             world_x = self.x * game_property.CHUNK_WIDTH + x
 
@@ -592,10 +645,10 @@ class Chunk:
                 block.light = light
 
                 if block.can_collide():
-                    light -= 0.5  # absorption
+                    light -= 2  # absorption
 
                 if light < 0:
-                    light = 0
+                    break
     
     def propagate_light(self, sources):
         queue = deque(sources)
@@ -610,7 +663,7 @@ class Chunk:
             if not block:
                 continue
 
-            if block.light >= light:
+            if block.light > light:
                 continue
 
             block.light = light
@@ -680,14 +733,7 @@ class Block:
         if texture:
             screen.blit(texture, (draw_x, draw_y))
 
-        light = self.light / 15  # normaliser
-
-        darkness = int(255 * (1 - light))
-
-        overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, darkness))
-
-        screen.blit(overlay, (draw_x, draw_y))
+        self.render_darkness(screen, draw_x, draw_y)
 
         if self.max_life > 0:
             ratio = self.life / self.max_life
@@ -703,6 +749,16 @@ class Block:
                     overlay,
                     (draw_x, draw_y + self.rect.height - white_height)
                 )
+
+    def render_darkness(self, screen, draw_x, draw_y):
+        light = self.light / 15  # normaliser
+
+        darkness = int(255 * (1 - light))
+
+        overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, darkness))
+
+        screen.blit(overlay, (draw_x, draw_y))
         
     def get_texture(self):
         return self.texture_manager.get_texture(self.block_property.texture)

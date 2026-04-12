@@ -673,19 +673,51 @@ class Player(Living_entity):
             self.world.create_entity(entity)
 
             self.inventory.delete_item(itemIndex)
+    
+    def use_selected_item(self, cam_rect):
+        selected_item = self.inventory.ui.get_selected_item()
+        if selected_item:
+            if isinstance(selected_item.item_property, game_type.Tool):
+                sx, sy = pygame.mouse.get_pos()
+                mx, my = game_property.screen_to_world(sx, sy, 0, cam_rect)
+
+                direction = pygame.Vector2(mx - self.rect.centerx, my - self.rect.centery)
+
+                if direction.length() != 0:
+                    direction = direction.normalize()
+                    self.use_item(direction)
+
+    def stop_use_selected_item(self, cam_rect):
+        self.use_selected_item(cam_rect)
+    
+    def use_item(self, direction):
+        selected_item = self.inventory.ui.get_selected_item()
+
+        if isinstance(selected_item.item_property, game_type.Bow_tool):
+            bow_use = selected_item.item_property.used
+            if bow_use:
+                selected_item.item_property.used = False
+
+                print("Send arrow")
+            else:
+                selected_item.item_property.used = True
+
+                    
 
     def get_force_selected_item(self, block_property):
         item = self.get_selected_item()
 
-        item_pro = item.item_property
-        if item_pro and block_property:
-            if isinstance(item_pro, game_type.Pickaxe_tool):
-                if block_property.weakness == game_type.Pickaxe_tool:
-                    return item_pro.power
-                
-            if isinstance(item_pro, game_type.Axe_tool):
-                if block_property.weakness == game_type.Axe_tool:
-                    return item_pro.power
+        if item:
+
+            item_pro = item.item_property
+            if item_pro and block_property:
+                if isinstance(item_pro, game_type.Pickaxe_tool):
+                    if block_property.weakness == game_type.Pickaxe_tool:
+                        return item_pro.power
+                    
+                if isinstance(item_pro, game_type.Axe_tool):
+                    if block_property.weakness == game_type.Axe_tool:
+                        return item_pro.power
         return game_property.DEFAULT_BREAK_POWER
     
     def get_selected_item(self):
