@@ -64,6 +64,10 @@ class World:
         self.hit_box_visible = False
 
         self.chunks = {}
+        self.light_map = {} 
+        self.light_add_queue = deque()
+        self.light_remove_queue = deque()
+        self.dirty_chunks = set()
         
 
     def save_world(self):
@@ -208,6 +212,9 @@ class World:
         # suppression des entités ramassées
         for entity in to_remove:
             self.entitys.remove(entity)
+        
+        self.propagate_light_removal(50)
+        self.propagate_light_add(50)
 
     def render_debug(self, screen):
         font = pygame.font.SysFont(None, 24)
@@ -246,7 +253,7 @@ class World:
                 block = chunk.blocks.get((x, y))
 
                 if block:
-                    block.render(screen, cam_rect)
+                    block.render(screen, cam_rect, 15)
 
     def render_entitys(self, screen, cam_rect):
         for entity in self.entitys:
@@ -289,7 +296,12 @@ class World:
         # placement du bloc si pas de collision
         chunk = self.chunks[chunk_x]
 
+        old_light = self.get_block(X, Y).light
+
         chunk.set_block(X, Y, block)
+
+        self.light_remove_queue.append((X, Y, old_light))
+        self.light_add_queue.append((X, Y))
 
         if str(chunk_x) not in self.modified_blocks:
             self.modified_blocks[str(chunk_x)] = []
@@ -299,7 +311,107 @@ class World:
             "y": Y,
             "block": block.block_property.block_name
         })
+
+        self.update_light_at(X, Y)
         return True
+    
+    def propagate_light_removal(self, max_steps=100):
+        for _ in range(max_steps):
+            if not self.light_remove_queue:
+                return
+
+            x, y, old_light = self.light_remove_queue.popleft()
+            block = self.get_block(x, y)
+
+            if not block:
+                continue
+
+            if block.light != old_light:
+                continue
+
+            block.light = 0
+
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                neighbor = self.get_block(x+dx, y+dy)
+                if not neighbor:
+                    continue
+
+                if neighbor.light < old_light:
+                    self.light_remove_queue.append((x+dx, y+dy, neighbor.light))
+                else:
+                    self.light_add_queue.append((x+dx, y+dy))
+    
+    def compute_sky_column(self, x):
+        light = 15
+
+        for y in reversed(range(game_property.MAX_HEIGHT)):
+            block = self.get_block(x, y)
+            if not block:
+                continue
+
+            block.light = light
+
+            if block.can_collide():
+                light = 0
+
+    def propagate_light_add(self, max_steps=100):
+        for _ in range(max_steps):
+            if not self.light_add_queue:
+                return
+
+            x, y = self.light_add_queue.popleft()
+            block = self.get_block(x, y)
+
+            if not block:
+                continue
+
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                neighbor = self.get_block(x+dx, y+dy)
+                if not neighbor:
+                    continue
+
+                new_light = max(0, block.light - 1)
+
+                if neighbor.light < new_light and not neighbor.can_collide():
+                    neighbor.light = new_light
+                    self.light_add_queue.append((x+dx, y+dy))
+    
+    def update_light_at(self, x, y, radius=10):
+        self.light_queue.append((x, y))
+        visited = set()
+
+        while self.light_queue:
+            cx, cy = self.light_queue.popleft()
+
+            if (cx, cy) in visited:
+                continue
+            visited.add((cx, cy))
+
+            self.dirty_chunks.add(cx // game_property.CHUNK_WIDTH)
+
+            if abs(cx - x) > radius or abs(cy - y) > radius:
+                continue
+
+            block = self.get_block(cx, cy)
+            if not block:
+                continue
+
+            # recalcul lumière
+            max_light = 0
+
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                neighbor = self.get_block(cx+dx, cy+dy)
+                if neighbor:
+                    max_light = max(max_light, neighbor.light - 1)
+
+            if not block.can_collide():
+                max_light = max(max_light, 15 if cy > 100 else 0)  # sky light simplifié
+
+            if block.light != max_light:
+                block.light = max_light
+
+                for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                    self.light_queue.append((cx+dx, cy+dy))
 
     def is_collide(self, entity):
         return self.is_collide_at(entity.rect)
@@ -453,6 +565,10 @@ class World:
     
     def get_players(self):
         return self.get_entities(entity.Player)
+    
+
+    def update_light(self):
+        pass
 
 
 class Chunk:
@@ -465,24 +581,6 @@ class Chunk:
         self.blocks = {}
         self.structures = []
         self.generate()
-        self.update_light()
-
-    # def generate(self):
-    #     for x in range(game_property.CHUNK_WIDTH):
-    #         for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
-    #             block_x = self.x * game_property.CHUNK_WIDTH + x
-    #             block_y = y
-    #             block_rect = pygame.Rect(block_x * game_property.TILE_SIZE, block_y * game_property.TILE_SIZE, game_property.TILE_SIZE, game_property.TILE_SIZE)
-
-    #             if block_y < game_property.CHUNK_MAX_HEIGHT // 2:
-    #                 block_property = BlockProperty.STONE
-    #             else:
-    #                 block_property = BlockProperty.DIRT
-
-    #             # if x == 0:
-    #             #     block_property = BlockProperty.AIR
-    #             block = Block(block_rect, block_property)
-    #             self.blocks.append(block)
 
     def add_structure(self, struct_type: StructureType, base_x, base_y):
         self.structures.append((struct_type, base_x, base_y))
@@ -594,88 +692,17 @@ class Chunk:
     
     def set_block(self, x, y, block):
         """
-        Fonction pour modifier un block dans le chunk:
-        - appel du calcul de la lumière.
+        Fonction pour modifier un block dans le chunk
         """
         self.blocks[(x, y)] = block
 
-        self.update_light()
-
-    def update_light(self):
-        for block in self.blocks.values():
-            block.light = 15
-            
-        # self.compute_sky_light()
-        # self.update_propaged_light()
-
-    def update_propaged_light(self):
-        sources = []
-
-        for (x, y), block in self.blocks.items():
-            if block.light == 15:  # sources lumineuses (ciel)
-                sources.append((x, y, block.light))
-
-        self.propagate_light(sources)
-
     def set_blocks(self, list_block):
         """
-        Fonction pour modifier une liste de block sous forme (x, y, block):
-        - 1 seul appel du calcul de la lumière.
+        Fonction pour modifier une liste de block sous forme (x, y, block)
         """
         for x, y, block in list_block:
             self.blocks[(x, y)] = block
 
-        self.update_light()
-
-    def compute_sky_light(self):
-        """
-        Fonction pour calculer la lumière dans le chunk
-        """
-        for x in range(game_property.CHUNK_WIDTH):
-            world_x = self.x * game_property.CHUNK_WIDTH + x
-
-            light = 15  # max lumière
-
-            for y in reversed(range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT)):
-                block = self.blocks.get((world_x, y))
-
-                if not block:
-                    continue
-
-                block.light = light
-
-                if block.can_collide():
-                    light -= 2  # absorption
-
-                if light < 0:
-                    break
-    
-    def propagate_light(self, sources):
-        queue = deque(sources)
-
-        while queue:
-            x, y, light = queue.popleft()
-
-            if light <= 0:
-                continue
-
-            block = self.get_block(x, y)
-            if not block:
-                continue
-
-            if block.light > light:
-                continue
-
-            block.light = light
-
-            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
-                queue.append((x+dx, y+dy, light-1))
-
-# ORE_PARAMS = {
-#     BlockProperty.COAL_ORE: {"scale": 0.1, "threshold": 0.55, "min_y": 60},
-#     BlockProperty.IRON_ORE: {"scale": 0.08, "threshold": 0.6, "min_y": 40},
-#     BlockProperty.GOLD_ORE: {"scale": 0.06, "threshold": 0.65, "min_y": 30},
-# }
 
 ORE_PARAMS = {
     BlockProperty.COAL_ORE: {
@@ -708,6 +735,7 @@ class Block:
         )
         self.rect = rect
         self.block_property = block_property
+
         self.light = 0
 
         self.debug = debug
@@ -721,7 +749,7 @@ class Block:
     def __str__(self):
         return f"Block(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
 
-    def render(self, screen, cam_rect):
+    def render(self, screen, cam_rect, light):
         
         # try to draw texture if available
         if self.debug:
@@ -733,7 +761,7 @@ class Block:
         if texture:
             screen.blit(texture, (draw_x, draw_y))
 
-        self.render_darkness(screen, draw_x, draw_y)
+        self.render_darkness(screen, draw_x, draw_y, self.light)
 
         if self.max_life > 0:
             ratio = self.life / self.max_life
@@ -750,8 +778,11 @@ class Block:
                     (draw_x, draw_y + self.rect.height - white_height)
                 )
 
-    def render_darkness(self, screen, draw_x, draw_y):
-        light = self.light / 15  # normaliser
+    def render_darkness(self, screen, draw_x, draw_y, light):
+        light = light / game_property.MAX_LIGHT
+
+        if light == 1:
+            return
 
         darkness = int(255 * (1 - light))
 

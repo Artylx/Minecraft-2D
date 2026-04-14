@@ -26,6 +26,9 @@ BREAK_COEF = 1/2
 DEFAULT_BREAK_POWER = 10
 DAMAGE_COEF = 1/3
 
+MAX_LIGHT = 15
+LIGHT_COEF = 1
+
 def world_to_screen(x, y, h, cam_rect):
     sx = x - cam_rect.x
     sy = cam_rect.height - (y - cam_rect.y) - h
