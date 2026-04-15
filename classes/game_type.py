@@ -4,7 +4,7 @@ from classes import language
 class BlockProperty:
     REGISTRY = {}
 
-    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None):
+    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0):
         self.block_name = name
         self.block_id = block_id
         self.texture = texture
@@ -14,6 +14,7 @@ class BlockProperty:
         self.life = life
         self.weakness = weakness
         self.need_to_drop = need_to_drop
+        self.light_emission = light_emission
 
         BlockProperty.REGISTRY[name.upper()] = self
 
@@ -268,6 +269,7 @@ ItemProperty.GRASS_4 = ItemProperty("grass_4", TextureType.GRASS_4, 100, True, "
 ItemProperty.GRASS_BROWN = ItemProperty("grass_brown", TextureType.GRASS_BROWN, 100, True, "GRASS_BROWN")
 ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
+ItemProperty.TORCH = ItemProperty("torch", TextureType.DEFAULT, 100, True, "TORCH", "Produit de la lumière.")
 
 # EPE
 ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)
@@ -325,6 +327,8 @@ BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4,
 BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30)
 BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool)
 BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20)
+
+BlockProperty.TORCHE = BlockProperty("torch", 29, False, TextureType.DEFAULT, True, "TORCH", 1, light_emission=15)
 
 def get_item_type_by_name(name: str):
     if not name:

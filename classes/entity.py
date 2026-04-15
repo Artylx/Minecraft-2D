@@ -21,7 +21,7 @@ ATTACK_RANGE = 30
 class Entity:
     texture_manager = None
 
-    def __init__(self, world, rect, name="Unamed entity", texture=None, dif_pos_render=None, display_name=False, gravity=game_property.GRAVITY):
+    def __init__(self, world, rect, name="Unamed entity", texture=None, dif_pos_render=None, display_name=False, gravity=game_property.GRAVITY, collidable=True):
         self.uuid = uuid.uuid4()
         self.rect = rect
         self.name = name
@@ -31,6 +31,7 @@ class Entity:
         self.spawn_time = pygame.time.get_ticks()
         self.font = pygame.font.SysFont("Arial", 14)
         self.gravity = gravity
+        self.collidable = collidable
         self.is_alive = True
         if dif_pos_render is None:
             dif_pos_render = [0, 0]
@@ -54,6 +55,10 @@ class Entity:
         self.display_name_surface = pygame.Surface((self.display_name_surface_width, self.display_name_surface_height), pygame.SRCALPHA)
 
         self.temp_rect = None
+        self.attached_entities = []
+
+    def add_attached_entity(self, entity):
+        self.attached_entities.append(entity)
 
     def update_vars(self):
         self.display_name_text_surface = self.font.render(self.name, True, (255, 255, 255))
@@ -71,6 +76,8 @@ class Entity:
     
     def kill(self):
         self.is_alive = False
+        for entity in self.attached_entities:
+            entity.kill()
 
     def render(self, screen, cam_rect, color=(0, 0, 255)):
         draw_x, draw_y = game_property.world_to_screen(
@@ -119,7 +126,7 @@ class Entity:
         self.rect.x = x
         self.rect.y = y
 
-    def update(self, dt, world):
+    def update(self, dt):
 
         self.apply_gravity(dt)
 
@@ -133,13 +140,13 @@ class Entity:
         self.temp_rect = self.rect.copy()
         self.temp_rect.x = new_x
 
-        if not world.is_collide_at(self.temp_rect):
-            self.rect.x = new_x
+        if not self.world.is_collide_at(self.temp_rect):
+            self.move(new_x - self.rect.x, 0)
         else:
             step = 1 if self.velocity.x > 0 else -1
 
-            while not world.is_collide_at(self.rect.move(step, 0)):
-                self.rect.x += step
+            while not self.world.is_collide_at(self.rect.move(step, 0)):
+                self.move(step, 0)
 
             self.velocity.x = 0
 
@@ -148,19 +155,26 @@ class Entity:
         self.temp_rect = self.rect.copy()
         self.temp_rect.y = new_y
 
-        if not world.is_collide_at(self.temp_rect):
-            self.rect.y = new_y
+        if not self.world.is_collide_at(self.temp_rect):
+            self.move(0, new_y - self.rect.y)
             self.on_ground = False
         else:
             step = 1 if self.velocity.y > 0 else -1
 
-            while not world.is_collide_at(self.rect.move(0, step)):
-                self.rect.y += step
+            while not self.world.is_collide_at(self.rect.move(0, step)):
+                self.move(0, step)
 
             self.velocity.y = 0
 
             if step < 0:
                 self.on_ground = True
+
+    def move(self, dx, dy):
+        self.rect.x += dx
+        self.rect.y += dy
+
+        for entity in self.attached_entities:
+            entity.move(dx, dy)
 
     def apply_gravity(self, dt):
         if not self.on_ground:
@@ -250,10 +264,14 @@ class Entity:
         data.update(dict_)   # ajoute les champs supplémentaires
 
         return data
+    
+class Annimation:
+    ATTACK = "attack"
+    NONE = "none"
 
 class Living_entity(Entity):
-    def __init__(self, world, rect, name="Unamed entity", health=20, max_health=20, drops=None):
-        super().__init__(world, rect, name, None, None, False)
+    def __init__(self, world, rect, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True):
+        super().__init__(world, rect, name, None, None, False, collidable=collidable)
         self.max_health = max_health
         self.health = health
         self.drops = drops
@@ -264,7 +282,7 @@ class Living_entity(Entity):
         self.reset_annimation()
         self.reset_take_damage()
     
-    def update(self, dt, world):
+    def update(self, dt):
         if self.annim_time > 0:
             self.annim_time -= dt
         else:
@@ -279,7 +297,7 @@ class Living_entity(Entity):
         else:
             self.reset_take_damage()
         
-        return super().update(dt, world)
+        return super().update(dt)
 
     def set_orientation(self, orientation):
         if self.annim_time > 0 and self.annim_orientation:
@@ -292,13 +310,21 @@ class Living_entity(Entity):
             self.update_texture()
             return True
         return False
+    
+    def get_anim_direction(self) -> int:
+        if self.annim_orientation:
+            if self.annim_orientation == "right":
+                return 1
+            if self.annim_orientation == "left":
+                return -1
+        return 0
 
     def get_orientation(self):
         if self.annim_orientation:
             return self.annim_orientation
         return self.orientation
 
-    def start_annimation(self, time, dirrection, annim_type):
+    def start_annimation(self, time: float, dirrection: str, annim_type: Annimation):
         self.annim_time = time
         self.annim_orientation = dirrection
         self.annim_type = annim_type
@@ -368,6 +394,12 @@ class Living_entity(Entity):
             self.set_orientation("right")
         elif self.velocity.x < 0:
             self.set_orientation("left")
+
+    def get_int_direction(self):
+        if self.get_orientation() == "right":
+            return 1
+        else:
+            return -1
     
     def render_display_name(self, screen, cam_rect):
         return super().render_display_name(screen, cam_rect)
@@ -384,6 +416,8 @@ class Living_entity(Entity):
 
             self.add_velocity(vx, vy)
             self.take_damage()
+
+            print("Taking damage: ", damage * game_property.DAMAGE_COEF)
 
     def take_damage(self):
         self.is_taking_damage = True
@@ -447,8 +481,121 @@ class Living_entity(Entity):
 
         return super().to_json(type_, data)
 
-class Annimation:
-    ATTACK = "attack"
+class Arrow_entity(Living_entity):
+    def __init__(self, world, pos, v_initial, sender, name="Arrow entity", texture=None, damage=10, penetration_depth=3):
+        self.damage = damage
+        self.penetration_depth = penetration_depth
+        self.penetration_counter = 0
+
+        rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
+
+        super().__init__(world, rect, name)
+        self.sender = sender
+
+        if texture is None:
+            texture = self.texture_manager.get_texture(TextureType.ARROW)
+        self.texture = texture
+        self.stucked = False
+
+        self.add_velocity(v_initial.x, v_initial.y)
+
+    def get_damage(self):
+        return self.damage
+    
+    def render(self, screen, cam_rect):
+        texture = self.texture
+
+        # position écran
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+
+        # angle basé sur la vitesse
+        if self.velocity.length() > 0:
+            angle = -self.velocity.angle_to(pygame.Vector2(1, 0)) - 45
+        else:
+            angle = 0
+
+        # pivot = centre
+        pivot = pygame.Vector2(
+            draw_x + self.rect.width / 2,
+            draw_y + self.rect.height / 2
+        )
+
+        offset = pygame.Vector2(0, 0)
+
+        rotated_image, rotated_rect = rotate_around_pivot(
+            texture,
+            angle,
+            pivot,
+            offset
+        )
+
+        screen.blit(rotated_image, rotated_rect.topleft)
+
+    def move(self, x, y):
+        return super().move(x, y)
+
+    def update(self, dt):
+        if self.stucked:
+            return
+
+        # --- PHYSIQUE ---
+        self.apply_gravity(dt)
+        self.velocity.x *= 0.99
+
+        dx = self.velocity.x * dt
+        dy = self.velocity.y * dt
+
+        # nombre de steps (IMPORTANT)
+        steps = int(max(abs(dx), abs(dy)) / (game_property.TILE_SIZE / 4)) + 1
+
+        step_x = dx / steps
+        step_y = dy / steps
+
+        for _ in range(steps):
+
+            new_rect = self.rect.move(step_x, step_y)
+
+            # ----- COLLISION BLOCS -----
+            if self.world.is_collide_at(new_rect):
+
+                self.penetration_counter += 1
+
+                if self.penetration_counter >= self.penetration_depth:
+                    self.stuck()
+                    return
+
+                # on continue mais ralenti / ou on "pousse dans le mur"
+                self.rect = new_rect
+                continue
+
+            # ----- COLLISION ENTITÉS -----
+            for entity in self.world.get_entities():
+                if entity == self or entity == self.sender or isinstance(entity, Arrow_entity):
+                    continue
+
+                if isinstance(entity, Living_entity):
+                    if new_rect.colliderect(entity.rect):
+                        self.penetration_counter += 1
+
+                        if self.penetration_counter >= self.penetration_depth:
+                            self.stuck(entity)
+                            return
+
+                        # on continue mais ralenti / ou on "pousse dans le mur"
+                        self.rect = new_rect
+                        continue
+
+            # appliquer le step
+            self.rect = new_rect
+    
+    def stuck(self, entity=None):
+        self.stucked = True
+        if entity:
+            entity.add_attached_entity(self)
+            entity.apply_damage(self.damage * 2, 0)
+            
 
 class Player(Living_entity):
     def __init__(self, world, name="", rect=None, max_health=40):
@@ -522,47 +669,86 @@ class Player(Living_entity):
 
             if isinstance(item_property, game_type.Tool):
 
-                texture = self.texture_manager.get_texture(item_property.texture)
+                if isinstance(item_property, game_type.Bow_tool):
+                    texture = item_property.get_texture()
 
-                if texture:
-                    weapon_size = int(self.rect.width * 1.8)
-                    texture = pygame.transform.scale(texture, (weapon_size, weapon_size))
+                    if texture:
+                        weapon_size = int(self.rect.width * 1.8)
+                        texture = pygame.transform.scale(texture, (weapon_size, weapon_size))
 
-                    # 🎯 position main
-                    if orientation == "right":
-                        hand_x = base_x + int(self.rect.width * 0.75)
-                    else:
-                        hand_x = base_x + int(self.rect.width * 0.25)
+                        # 🎯 position main
+                        if orientation == "right":
+                            hand_x = base_x + int(self.rect.width * 0.75)
+                        else:
+                            hand_x = base_x + int(self.rect.width * 0.25)
 
-                    hand_y = base_y + int(self.rect.width * 1.2)
+                        hand_y = base_y + int(self.rect.width * 1.2)
 
-                    # 🎯 flip
-                    if orientation == "left":
-                        texture = pygame.transform.flip(texture, True, False)
+                        # 🎯 flip
+                        if orientation == "left":
+                            texture = pygame.transform.flip(texture, True, False)
 
-                    # 🎯 pivot
-                    if orientation == "right":
-                        offset = pygame.Vector2(weapon_size * 0.2, 0)
-                    else:
-                        offset = pygame.Vector2(-weapon_size * 0.2, 0)
+                        # 🎯 pivot
+                        if orientation == "right":
+                            offset = pygame.Vector2(weapon_size * 0.2, 0)
+                        else:
+                            offset = pygame.Vector2(-weapon_size * 0.2, 0)
 
-                    # 🎯 animation attaque
-                    if self.is_attacking():
-                        progress = self.annim_time
-                        angle = math.sin(progress * 10) * 80 * self.get_attack_direction()
-                    else:
-                        angle = 0
+                        angle = -30 * self.get_int_direction()
 
-                    pivot = pygame.Vector2(hand_x, hand_y)
+                        pivot = pygame.Vector2(hand_x, hand_y)
 
-                    rotated_image, rotated_rect = rotate_around_pivot(
-                        texture,
-                        angle,
-                        pivot,
-                        offset
-                    )
+                        rotated_image, rotated_rect = rotate_around_pivot(
+                            texture,
+                            angle,
+                            pivot,
+                            offset
+                        )
 
-                    screen.blit(rotated_image, rotated_rect.topleft)
+                        screen.blit(rotated_image, rotated_rect.topleft)
+                else:
+
+                    texture = item_property.get_texture()
+
+                    if texture:
+                        weapon_size = int(self.rect.width * 1.8)
+                        texture = pygame.transform.scale(texture, (weapon_size, weapon_size))
+
+                        # 🎯 position main
+                        if orientation == "right":
+                            hand_x = base_x + int(self.rect.width * 0.75)
+                        else:
+                            hand_x = base_x + int(self.rect.width * 0.25)
+
+                        hand_y = base_y + int(self.rect.width * 1.2)
+
+                        # 🎯 flip
+                        if orientation == "left":
+                            texture = pygame.transform.flip(texture, True, False)
+
+                        # 🎯 pivot
+                        if orientation == "right":
+                            offset = pygame.Vector2(weapon_size * 0.2, 0)
+                        else:
+                            offset = pygame.Vector2(-weapon_size * 0.2, 0)
+
+                        # 🎯 animation attaque
+                        if self.is_attacking():
+                            progress = self.annim_time
+                            angle = math.sin(progress * 10) * 80 * self.get_anim_direction()
+                        else:
+                            angle = 0
+
+                        pivot = pygame.Vector2(hand_x, hand_y)
+
+                        rotated_image, rotated_rect = rotate_around_pivot(
+                            texture,
+                            angle,
+                            pivot,
+                            offset
+                        )
+
+                        screen.blit(rotated_image, rotated_rect.topleft)
 
             else:
                 # 🎯 item normal
@@ -598,7 +784,7 @@ class Player(Living_entity):
     
     def get_rect_attack(self):
         self.temp_rect = self.rect.copy()
-        self.temp_rect.x += self.get_attack_direction() * ATTACK_RANGE
+        self.temp_rect.x += self.get_anim_direction() * ATTACK_RANGE
         return self.temp_rect
 
     def update_texture(self):
@@ -625,32 +811,20 @@ class Player(Living_entity):
         self.leg_texture_red = tint_surface(self.leg_texture, (200, 100, 100))
         self.arm_texture_red = tint_surface(self.arm_texture, (200, 100, 100))
     
-    def get_attack_direction(self) -> int:
-        if self.annim_orientation:
-            if self.annim_orientation == "right":
-                return 1
-            if self.annim_orientation == "left":
-                return -1
-        return 0
+    
 
-    def get_int_direction(self):
-        if self.get_orientation() == "right":
-            return 1
-        else:
-            return -1
-
-    def update(self, dt, world):
+    def update(self, dt):
 
         if self.is_attacking():
             selected_item = self.inventory.ui.get_selected_item()
             if selected_item:
                 if isinstance(selected_item.item_property, game_type.Attack_tool):
 
-                    entities = world.get_entities_by_rect(self.get_rect_attack())
+                    entities = self.world.get_entities_by_rect(self.get_rect_attack())
                     for entity in entities:
                         if entity is not self and isinstance(entity, Living_entity):
-                            entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_attack_direction())
-        return super().update(dt, world)
+                            entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
+        return super().update(dt)
 
     def set_orientation(self, orientation):
         if super().set_orientation(orientation):
@@ -678,9 +852,9 @@ class Player(Living_entity):
         selected_item = self.inventory.ui.get_selected_item()
         if selected_item:
             if isinstance(selected_item.item_property, game_type.Tool):
-                sx, sy = pygame.mouse.get_pos()
-                mx, my = game_property.screen_to_world(sx, sy, 0, cam_rect)
-
+                sx, sy = pygame.mouse.get_pos() 
+                mx, my = game_property.screen_to_world(sx, sy, 0, cam_rect) 
+                
                 direction = pygame.Vector2(mx - self.rect.centerx, my - self.rect.centery)
 
                 if direction.length() != 0:
@@ -697,8 +871,25 @@ class Player(Living_entity):
             bow_use = selected_item.item_property.used
             if bow_use:
                 selected_item.item_property.used = False
+                if direction.x > 0:
+                    direction_str = "right"
+                else:
+                    direction_str = "left"
 
-                print("Send arrow")
+                self.start_annimation(1/4, direction_str, Annimation.NONE)
+
+                speed = 30
+                v = direction * speed
+
+                origin = pygame.Vector2(self.rect.centerx, self.rect.centery)
+
+                arrow = Arrow_entity(
+                    self.world,
+                    (origin.x, origin.y),
+                    v,
+                    self
+                )
+                self.world.create_entity(arrow)
             else:
                 selected_item.item_property.used = True
 
@@ -808,8 +999,8 @@ class Item(Entity):
         super().render(screen, cam_rect, color)
         #super().render_hit_box(screen, cam_rect)
 
-    def update(self, dt, world):
-        super().update(dt, world)
+    def update(self, dt):
+        super().update(dt)
         self.t = pygame.time.get_ticks() / 500
 
     def load(self, data, add_map=None):
@@ -851,7 +1042,7 @@ class Mob(Living_entity):
         self.move_direction = 0
         self.move_speed = 3
 
-    def update(self, dt, world):
+    def update(self, dt):
         # Si le timer est écoulé, choisir une nouvelle direction
         if self.move_timer <= 0:
             self.move_direction = random.choice([-1, 1, 0])  # gauche ou droite
@@ -878,13 +1069,13 @@ class Mob(Living_entity):
             self.front_rect.x += self.move_direction * 5  # quelques pixels devant
             self.front_rect.y += 1  # au niveau du sol
 
-            if world.is_collide_at(self.front_rect) and self.on_ground:
+            if self.world.is_collide_at(self.front_rect) and self.on_ground:
                 # appliquer un saut
                 self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
                 self.on_ground = False
 
         # Appel du super pour appliquer le mouvement
-        super().update(dt, world)
+        super().update(dt)
 
     def load(self, data, add_map=None):
         if add_map is None:

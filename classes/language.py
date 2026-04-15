@@ -20,6 +20,8 @@ ITEMS_FR = {
     "diamond_axe": "Hache en diamant",
     "mushroom": "Champignon",
     "wooden_axe": "Hache en bois",
+    "torch": "Torche",
+    "bow": "Arc",
 }
 
 ITEMS_EN = {
