@@ -66,6 +66,7 @@ class World:
         self.chunks = {}
         self.light_map = {} 
         self.block_light_queue = deque()
+        self.sky_light_queue = deque()
 
         self.block_light = {}
         self.light_sources = set()
@@ -84,11 +85,8 @@ class World:
 
         if seed is not None and entitys is not None and modified_blocks is not None:
             self.seed = seed
-            #print(f"World load with seed: {seed}")
             self.entitys = entity.dict_to_entitys(entitys, self)
-            #print(f"World load with entitys: {entitys}")
             self.modified_blocks = modified_blocks
-            #print(f"World load with modif_block: {modified_blocks}")
 
             print("World chargé avec succés")
         else:

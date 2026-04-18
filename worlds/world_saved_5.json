@@ -4,11 +4,11 @@
         {
             "type": "Player",
             "uuid": "6f054331-51c8-44c8-9b09-ccac1d0cf789",
-            "x": -971,
-            "y": 512,
+            "x": -1644,
+            "y": 800,
             "w": 27,
             "h": 80,
-            "vx": -6.871824878115845e-82,
+            "vx": 4.843726146389191e-43,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -16,15 +16,12 @@
             "name": "Player1",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
-                "owner_uuid": "6f054331-51c8-44c8-9b09-ccac1d0cf789",
                 "uuid": "50936257-ec39-4235-9174-52cbdb2919a3",
                 "size": 24,
-                "case_number": 6,
                 "title": "Inventory of Player1",
-                "selected_index": 2,
                 "items": [
                     {
                         "slot": 0,
@@ -72,7 +69,7 @@
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 1
+                            "count": 4
                         }
                     },
                     {
@@ -100,14 +97,14 @@
                         "slot": 11,
                         "itemStack": {
                             "item_type_name": "grass",
-                            "count": 4
+                            "count": 5
                         }
                     },
                     {
                         "slot": 14,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "count": 2
+                            "count": 3
                         }
                     },
                     {
@@ -124,7 +121,8 @@
                             "count": 83
                         }
                     }
-                ]
+                ],
+                "owner_uuid": "6f054331-51c8-44c8-9b09-ccac1d0cf789"
             }
         }
     ],
@@ -988,6 +986,36 @@
             {
                 "x": -17,
                 "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -31,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -27,
+                "y": 24,
                 "block": "air"
             }
         ],

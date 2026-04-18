@@ -44,6 +44,7 @@ class TextureType:
     OAK_TRUNK_MID = "oak_trunk_mid"
     OAK_PLANK = "oak_plank"
     TNT = "tnt"
+    TORCH = "torch"
 
     BOW = "bow"
     ARROW = "arrow"
@@ -114,6 +115,7 @@ class TextureManager:
             self.load_texture(TextureType.REDSTONE_SAND, BLOCKS_PATH + "redstone_sand.png")
             self.load_texture(TextureType.OAK_PLANK, BLOCKS_PATH + "oak_plank.png")
             self.load_texture(TextureType.TNT, BLOCKS_PATH + "tnt.png")
+            self.load_texture(TextureType.TORCH, BLOCKS_PATH + "torch.png")
 
             # VARIATIONS 
             self.load_texture(TextureType.GRASS_1, BLOCKS_PATH + "grass1.png")

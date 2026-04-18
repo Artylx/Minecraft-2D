@@ -57,13 +57,19 @@ class ItemProperty:
     def __str__(self):
         return f"ItemProperty(name:{self.item_name}, texture:{str(self.texture)}, max_stack:{self.max_stack}, placeable:{self.placeable}, block_type:{self.block_type})"
 
-    def to_json(self):
-        return {
+    def to_json(self, add_data=None):
+        data = {
             "name": self.item_name,
             "max_stack": self.max_stack,
             "placeable": self.placeable,
             "block_type": self.block_type
         }
+
+        if add_data is None:
+            add_data = {}
+
+        data.update(add_data)
+        return data
     
     def load(self, data): 
         mapping = { "name": "item_name", "max_stack": "max_stack", "placeable": "placeable", "block_type": "block_type", } 
@@ -115,13 +121,56 @@ class Tool(ItemProperty):
             description = "Outils"
         super().__init__(name, texture, 1, False, None, description)
         self.durability = durability
+        self.max_durability = durability
 
         self.break_ = False
 
-    def use(self):
-        self.durability -= 1
+    def use(self, count=1):
+        self.durability -= count
+
+        print(f"Outils {self.item_name} durability: {self.durability}")
         if self.durability <= 0:
             self.break_ = True
+
+    def is_break(self):
+        return self.break_
+    
+    def load(self, data):
+        print("Load Tool")
+
+        mapping = { "durability": "durability", "max_durability": "max_durability", } 
+        # Vérification 
+        required = list(mapping.keys()) 
+        missing = [k for k in required if k not in data] 
+        if missing: 
+            print(f"Champs manquants: {missing}") 
+            return None 
+        
+        # Assignation complexe 
+        for key, target in mapping.items(): 
+            if isinstance(target, tuple): 
+                obj, attr = target 
+                setattr(getattr(self, obj), attr, data[key]) 
+            else: 
+                setattr(self, target, data[key]) 
+                self.register()
+        
+        return super().load(data)
+    
+    def to_json(self, add_data=None):
+        print("to_json")
+
+        data = {
+            "durability": self.durability,
+            "max_durability": self.max_durability,
+        }
+
+        if add_data is None:
+            add_data = {}
+
+        data.update(add_data)
+
+        return super().to_json(data)
 
 class Attack_tool(Tool):
     def __init__(self, name, texture, materialTool, description=None):
@@ -269,7 +318,7 @@ ItemProperty.GRASS_4 = ItemProperty("grass_4", TextureType.GRASS_4, 100, True, "
 ItemProperty.GRASS_BROWN = ItemProperty("grass_brown", TextureType.GRASS_BROWN, 100, True, "GRASS_BROWN")
 ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
-ItemProperty.TORCH = ItemProperty("torch", TextureType.DEFAULT, 100, True, "TORCH", "Produit de la lumière.")
+ItemProperty.TORCH = ItemProperty("torch", TextureType.TORCH, 100, True, "TORCH", "Produit de la lumière.")
 
 # EPE
 ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)
@@ -328,7 +377,7 @@ BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.
 BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool)
 BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20)
 
-BlockProperty.TORCHE = BlockProperty("torch", 29, False, TextureType.DEFAULT, True, "TORCH", 1, light_emission=15)
+BlockProperty.TORCH = BlockProperty("torch", 29, False, TextureType.TORCH, True, "TORCH", 1, light_emission=15)
 
 def get_item_type_by_name(name: str):
     if not name:

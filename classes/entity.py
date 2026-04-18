@@ -56,6 +56,11 @@ class Entity:
 
         self.temp_rect = None
         self.attached_entities = []
+        self.attached_to = None
+
+    def attach_self(self, entity):
+        self.attached_to = entity
+        entity.add_attached_entity(self)
 
     def add_attached_entity(self, entity):
         self.attached_entities.append(entity)
@@ -591,10 +596,11 @@ class Arrow_entity(Living_entity):
             self.rect = new_rect
     
     def stuck(self, entity=None):
-        self.stucked = True
         if entity:
-            entity.add_attached_entity(self)
+            self.attach_self(entity)
             entity.apply_damage(self.damage * 2, 0)
+        
+        self.stucked = True
             
 
 class Player(Living_entity):
@@ -824,6 +830,24 @@ class Player(Living_entity):
                     for entity in entities:
                         if entity is not self and isinstance(entity, Living_entity):
                             entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
+
+        for entity in self.world.get_entities():
+            if isinstance(entity, Arrow_entity):
+                if not entity.stucked:
+                    continue
+
+                if entity.attached_to is not None:
+                    continue
+
+                if self.rect.colliderect(entity.rect):
+
+                    # ajouter une flèche à l'inventaire
+                    self.inventory.add_item(
+                        inventory.ItemStack(game_type.ItemProperty.ARROW, 1)
+                    )
+
+                    entity.kill()
+                    
         return super().update(dt)
 
     def set_orientation(self, orientation):
@@ -870,6 +894,11 @@ class Player(Living_entity):
         if isinstance(selected_item.item_property, game_type.Bow_tool):
             bow_use = selected_item.item_property.used
             if bow_use:
+                if not self.inventory.has_item(game_type.ItemProperty.ARROW):
+                    return
+
+                self.inventory.delete_item_property(game_type.ItemProperty.ARROW, 1)
+
                 selected_item.item_property.used = False
                 if direction.x > 0:
                     direction_str = "right"
@@ -883,6 +912,8 @@ class Player(Living_entity):
 
                 origin = pygame.Vector2(self.rect.centerx, self.rect.centery)
 
+                selected_item.item_property.use()
+
                 arrow = Arrow_entity(
                     self.world,
                     (origin.x, origin.y),
@@ -891,7 +922,8 @@ class Player(Living_entity):
                 )
                 self.world.create_entity(arrow)
             else:
-                selected_item.item_property.used = True
+                if self.inventory.has_item(game_type.ItemProperty.ARROW):
+                    selected_item.item_property.used = True
 
                     
 

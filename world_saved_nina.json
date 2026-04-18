@@ -4,11 +4,11 @@
         {
             "type": "Player",
             "uuid": "bd7f1e4e-4d39-4f55-a673-5b59c823c20d",
-            "x": 258880,
-            "y": 928,
+            "x": 252064,
+            "y": 1216,
             "w": 27,
             "h": 80,
-            "vx": -0.7337572335552573,
+            "vx": 8.4793325353363415e-16,
             "vy": 0.0,
             "gravity": 80,
             "speed": 416,
@@ -16,7 +16,7 @@
             "name": "Player1",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
                 "uuid": "6b650904-568b-45f4-ae20-e91202ad60f9",
@@ -56,6 +56,20 @@
                         "itemStack": {
                             "item_type_name": "dirt",
                             "count": 100
+                        }
+                    },
+                    {
+                        "slot": 5,
+                        "itemStack": {
+                            "item_type_name": "bow",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "arrow",
+                            "count": 9
                         }
                     }
                 ],

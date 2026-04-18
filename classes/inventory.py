@@ -311,6 +311,23 @@ class Inventory():
 
         self.title = f"Inventory uuid:{self.uuid}"
 
+    def update(self):
+        to_remove = []
+
+        for slot, item in self.items.items():
+            if not item:
+                continue
+
+            if isinstance(item.item_property, game_type.Tool):
+                if item.item_property.is_break():
+                    to_remove.append(slot)
+
+        # suppression
+        for slot in to_remove:
+            print(f"Slot : {slot}")
+            self.items[slot] = None
+        
+
     def add_item(self, itemStack):
         reste = itemStack.count
 
@@ -337,6 +354,38 @@ class Inventory():
 
         if reste > 0:
             self.drop_item(ItemStack(itemStack.item_property, reste))
+
+    def delete_item_property(self, item_property, count):
+        reste = count
+
+        for slot in range(self.size):
+            item = self.items.get(slot)
+
+            if not item:
+                continue
+
+            if item.item_property != item_property:
+                continue
+
+            to_remove = min(item.count, reste)
+
+            item.count -= to_remove
+            reste -= to_remove
+
+            if item.count <= 0:
+                self.items[slot] = None
+
+            if reste <= 0:
+                return
+            
+    def has_item(self, item_property: game_type.ItemProperty, count=1) -> bool:
+        total = 0
+
+        for item in self.items.values():
+            if item and item.item_property == item_property:
+                total += item.count
+
+        return total >= count
             
     def is_full(self):
         for item in self.items.values():
@@ -359,6 +408,8 @@ class Inventory():
             i += 1
 
     def get_item(self, index):
+        self.update()
+
         if len(self.items) != 0:
             if index <= len(self.items) - 1:
                 return self.items[index]
@@ -372,6 +423,8 @@ class Inventory():
                 self.items[index] = None
             else:
                 itemStack.count -= 1
+        
+        self.update()
     
     def clear(self):
         self.items = {i: None for i in range(self.size)}

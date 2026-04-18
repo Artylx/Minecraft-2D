@@ -49,12 +49,14 @@ class World_manager:
 
         seed = random.randint(100000, 999999)
 
-        json = world.load_world_json("world_saved")
+        WORLD_NAME = "world_saved_4"
+
+        json = world.load_world_json(WORLD_NAME)
         print(json)
 
         # self.World = world.World(seed=seed, screen_size=(self.WIDTH_SCREEN, self.HEIGHT_SCREEN), name="world_saved")
 
-        self.World = world.World((WIDTH, HEIGHT), name="world_saved", json_data=json)
+        self.World = world.World((WIDTH, HEIGHT), name=WORLD_NAME, json_data=json)
 
         player = self.World.get_player_by_name(PLAYER_NAME)
         if player:
