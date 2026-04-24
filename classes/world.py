@@ -11,18 +11,17 @@ import os
 from classes.biome import BiomeType, BiomeManager
 from collections import deque
 
-def load_world_json(world_name):
+def load_world_json(world_path):
     """
     Charge le fichier JSON d'un monde à partir de son nom.
 
     :param world_name: Nom du monde (str)
     :return: dictionnaire Python avec les données du monde ou None si erreur
     """
-    # construire le chemin du fichier
-    world_path = os.path.join("worlds", f"{world_name}.json")
+    world_path = os.path.join("worlds", world_path, "world.json")
 
     if not os.path.isfile(world_path):
-        print(f"Le monde '{world_name}' n'existe pas à {world_path}")
+        print(f"Le monde '{world_path}' n'existe pas à {world_path}")
         return None
 
     try:
@@ -30,11 +29,26 @@ def load_world_json(world_name):
             data = json.load(f)
         return data
     except Exception as e:
-        print(f"Erreur lors du chargement du monde '{world_name}': {e}")
+        print(f"Erreur lors du chargement du monde '{world_path}': {e}")
         return None
+    
+def save_world_json(world, world_path, world_name):
+    """
+    Sauvegarde les données d'un monde dans un fichier JSON.
+
+    :param world: instance de la classe World à sauvegarder
+    :param world_name: Nom du monde (str)
+    :return: None
+    """
+    try:
+        with open(os.path.join("worlds", world_path, f"{world_name}.json"), "w") as f:
+            json.dump(world.get_json(), f, indent=4, default=str)
+        print(f"Monde sauvegardé avec succès dans {world_path}")
+    except Exception as e:
+        print(f"Erreur lors de la sauvegarde du monde '{world_path}': {e}")
 
 class World:
-    def __init__(self, screen_size, name="Unamed world", seed=None, json_data=None):
+    def __init__(self, screen_size, name="Unamed world", seed=None, json_data=None, callback_loading=None):
         """
         Constructeur unique qui gère soit :
         - la génération d'un monde depuis une seed
@@ -42,6 +56,7 @@ class World:
         """
         self.screen_size = screen_size
         self.name = name
+        self.callback_loading = callback_loading
 
         if json_data is not None:
             # charger depuis le JSON
@@ -71,12 +86,6 @@ class World:
         self.block_light = {}
         self.light_sources = set()
         self.dirty_chunks = set()
-        
-
-    def save_world(self):
-        with open(f"worlds/{self.name}.json", "w") as f:
-            json.dump(self.get_json(), f, indent=4, default=str)
-        print("Save world in ", f"{self.name}.json")
 
     def set_json(self, json):
         seed = json.get("seed", None)
@@ -127,7 +136,7 @@ class World:
 
                     block_type = BlockProperty.REGISTRY[block_name]
 
-                    chunk.set_block(x, y, Block(x, y, block_type))
+                    self.set_block(x, y, Block(x, y, block_type))
             
             for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
                 self.compute_sky_column(x)
@@ -156,15 +165,21 @@ class World:
 
         chunks_to_unload = set(self.chunks.keys())
 
+        end_loading = True
+
         for chunk_x in sorted_chunks:
             chunks_to_unload.discard(chunk_x)
 
             if chunk_x not in self.chunks:
                 self.add_chunk(chunk_x)
+                end_loading = False
                 break
 
         for chunk_coords in chunks_to_unload:
             self.unload_chunk(chunk_coords)
+        
+        if end_loading:
+            self.callback_loading()
 
     def unload_chunk(self, chunk_cord):
 
@@ -322,15 +337,28 @@ class World:
         self.update_light_area()
         self.compute_sky_column(X)
 
+        return True
+
+    def modif_block(self, X, Y, block):
+        self.add_modified_block(X, Y, block)
+        return self.set_block(X, Y, block)
+
+    def add_modified_block(self, x, y, block):
+        chunk_x = x // game_property.CHUNK_WIDTH
         if str(chunk_x) not in self.modified_blocks:
             self.modified_blocks[str(chunk_x)] = []
 
         self.modified_blocks[str(chunk_x)].append({
-            "x": X,
-            "y": Y,
+            "x": x,
+            "y": y,
             "block": block.block_property.block_name
         })
-        return True
+        return
+    
+    def set_blocks(self, list_block):
+        """
+        Modifier tous les blocks et actualiser la limière une fois
+        """
     
     def seed_block_light(self, cx, cy, radius):
         for x in range(cx-radius, cx+radius+1):
@@ -421,7 +449,7 @@ class World:
                 if not neighbor:
                     continue
 
-                absorb = 2 if neighbor.can_collide() else 1
+                absorb = 2 if neighbor.can_collide() else 0.4
                 new_light = current - absorb
 
                 if new_light <= 0:
@@ -469,7 +497,7 @@ class World:
         x = block_pos[0]
         y = block_pos[1]
 
-        self.set_block(
+        self.modif_block(
             block_pos[0],
             block_pos[1],
             Block(
@@ -523,6 +551,9 @@ class World:
             self.destroy_block(block_pos, player)
     
     def reset_block(self, block_pos):
+        if not block_pos:
+            return
+        
         current_block = self.get_block(block_pos[0], block_pos[1])
         if not current_block or not current_block.is_breackable():
             return

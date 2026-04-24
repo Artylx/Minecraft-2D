@@ -4,11 +4,11 @@
         {
             "type": "Player",
             "uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941",
-            "x": -2166,
-            "y": 928,
+            "x": -2760,
+            "y": 960,
             "w": 27,
             "h": 80,
-            "vx": 0.003859256347533119,
+            "vx": -3.4327103475356233e-09,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -16,7 +16,7 @@
             "name": "Player1",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
                 "uuid": "54672b6d-b5ca-44d7-abc2-ec4d5d93ccf3",
@@ -47,15 +47,15 @@
                     {
                         "slot": 3,
                         "itemStack": {
-                            "item_type_name": "bow",
-                            "count": 1
+                            "item_type_name": "torch",
+                            "count": 98
                         }
                     },
                     {
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "arrow",
-                            "count": 68
+                            "count": 99
                         }
                     },
                     {
@@ -132,27 +132,13 @@
                         "slot": 16,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 66
+                            "count": 61
                         }
                     },
                     {
                         "slot": 17,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 21,
-                        "itemStack": {
-                            "item_type_name": "torch",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 22,
-                        "itemStack": {
-                            "item_type_name": "torch",
                             "count": 100
                         }
                     },
@@ -166,26 +152,6 @@
                 ],
                 "owner_uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941"
             }
-        },
-        {
-            "type": "Zombie",
-            "uuid": "b576e81c-fc45-4d9d-b905-0f0c43343cc2",
-            "x": -2046,
-            "y": 640,
-            "w": 27,
-            "h": 80,
-            "vx": -2.692284800844312e-07,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true
         }
     ],
     "modified_blocks": {
@@ -772,61 +738,6 @@
             {
                 "x": -64,
                 "y": 23,
-                "block": "air"
-            },
-            {
-                "x": -62,
-                "y": 29,
-                "block": "torch"
-            },
-            {
-                "x": -62,
-                "y": 29,
-                "block": "air"
-            },
-            {
-                "x": -64,
-                "y": 29,
-                "block": "torch"
-            },
-            {
-                "x": -64,
-                "y": 29,
-                "block": "air"
-            },
-            {
-                "x": -59,
-                "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -54,
-                "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -59,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -56,
-                "y": 20,
-                "block": "air"
-            },
-            {
-                "x": -55,
-                "y": 20,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 20,
                 "block": "air"
             }
         ],
@@ -1732,64 +1643,9 @@
                 "block": "air"
             },
             {
-                "x": -77,
-                "y": 21,
+                "x": -71,
+                "y": 20,
                 "block": "torch"
-            },
-            {
-                "x": -77,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -79,
-                "y": 22,
-                "block": "torch"
-            },
-            {
-                "x": -79,
-                "y": 22,
-                "block": "air"
-            },
-            {
-                "x": -79,
-                "y": 22,
-                "block": "torch"
-            },
-            {
-                "x": -67,
-                "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -78,
-                "y": 19,
-                "block": "torch"
-            },
-            {
-                "x": -79,
-                "y": 22,
-                "block": "air"
-            },
-            {
-                "x": -78,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -67,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -68,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -69,
-                "y": 19,
-                "block": "air"
             }
         ],
         "-6": [
@@ -3179,73 +3035,8 @@
                 "block": "air"
             },
             {
-                "x": -82,
-                "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -82,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -85,
-                "y": 30,
-                "block": "torch"
-            },
-            {
-                "x": -85,
-                "y": 30,
-                "block": "air"
-            },
-            {
-                "x": -91,
-                "y": 30,
-                "block": "torch"
-            },
-            {
-                "x": -91,
-                "y": 30,
-                "block": "air"
-            },
-            {
-                "x": -85,
-                "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -85,
-                "y": 21,
-                "block": "air"
-            },
-            {
-                "x": -88,
-                "y": 20,
-                "block": "torch"
-            },
-            {
-                "x": -83,
-                "y": 19,
-                "block": "torch"
-            },
-            {
-                "x": -83,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -88,
-                "y": 20,
-                "block": "air"
-            },
-            {
                 "x": -83,
                 "y": 21,
-                "block": "torch"
-            },
-            {
-                "x": -87,
-                "y": 19,
                 "block": "torch"
             },
             {
@@ -3254,39 +3045,9 @@
                 "block": "air"
             },
             {
-                "x": -87,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -89,
-                "y": 17,
+                "x": -84,
+                "y": 18,
                 "block": "torch"
-            },
-            {
-                "x": -82,
-                "y": 17,
-                "block": "torch"
-            },
-            {
-                "x": -90,
-                "y": 20,
-                "block": "torch"
-            },
-            {
-                "x": -82,
-                "y": 17,
-                "block": "air"
-            },
-            {
-                "x": -90,
-                "y": 20,
-                "block": "air"
-            },
-            {
-                "x": -89,
-                "y": 17,
-                "block": "air"
             }
         ],
         "-7": [

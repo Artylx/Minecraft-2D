@@ -274,6 +274,7 @@ class CommandManager:
                 self.send_error_message(f"L'item {item_type} n'existe pas")
                 return
             
+            print("Item " + str(item))
             for i in range(count):
                 player.inventory.add_item(itemStack=ItemStack(item, 1))
             self.tchat.send_message("", f"{count} Item {item.item_name} give to player {player.name}")

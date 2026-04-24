@@ -20,6 +20,15 @@ class Slot:
     def __str__(self):
         return f"Slot(type:{self.type}, meta:{self.meta})"
 
+class UI_menu:
+    def __init__(self, screen_size):
+        self.update_screen_size(screen_size)
+    
+    def update_screen_size(self, screen_size):
+        self.screen_size = screen_size
+        self.cam_rect = pygame.Rect(-self.screen_size[0] // 2 + game_property.CHUNK_WIDTH * game_property.TILE_SIZE // 2, 0, self.screen_size[0], self.screen_size[1])
+        self.tchat.update_screen_size(screen_size)
+
 class UI:
     def __init__(self, screen_size, inventory, tchat):
         self.inventory = inventory
@@ -37,6 +46,12 @@ class UI:
         self.case_size = game_property.INVENTORY_SIZE_CASE + self.margin
 
         self.current_title_space = 0
+
+        self._hotbar_font = pygame.font.SysFont("Arial", 16)
+        self._hotbar_numbers = [
+            self._hotbar_font.render(str(i+1), True, (255,255,255))
+            for i in range(10)
+        ]
 
     def update_screen_size(self, screen_size):
         self.screen_size = screen_size
@@ -419,10 +434,24 @@ class UI:
 
         return slots
 
-    def highlight_block(self, screen, current_block, cam_rect):
+    def highlight_block(self, screen, current_block, cam_rect, player):
         if not current_block:
             print("Erreur current_block is None")
             return
+
+        # centre du bloc
+        block_center_x = current_block[0] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
+        block_center_y = current_block[1] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
+
+        # centre du joueur
+        player_center_x = player.rect.centerx
+        player_center_y = player.rect.centery
+
+        dx = block_center_x - player_center_x
+        dy = block_center_y - player_center_y
+
+        if dx*dx + dy*dy > game_property.MAX_ACTION_DISTANCE**2:
+            return False
         
         world_x = current_block[0] * game_property.TILE_SIZE
         world_y = current_block[1] * game_property.TILE_SIZE
@@ -440,51 +469,43 @@ class UI:
     def render_hotbar(self, screen, inv):
         case_size = game_property.INVENTORY_SIZE_CASE
         margin = 15
+        case_count = inv.ui.case_number
+        selected_index = inv.ui.selected_index
 
+        total_case_size = case_size + margin
+
+        width = margin + total_case_size * case_count
         height = case_size + margin * 2
-        width = margin + (case_size + margin) * inv.ui.case_number
 
-        chat_surface = pygame.Surface((width, height), pygame.SRCALPHA)
-        chat_surface.fill((0, 0, 0, 150))
+        # Cache surface
+        if not hasattr(self, "_hotbar_surface") or self._hotbar_surface.get_size() != (width, height):
+            self._hotbar_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+            self._hotbar_surface.fill((0, 0, 0, 150))
 
         start_x = self.screen_size[0] // 2 - width // 2
         start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
-        screen.blit(chat_surface, (start_x, start_y))
 
-        font = pygame.font.SysFont("Arial", 16)
+        screen.blit(self._hotbar_surface, (start_x, start_y))
 
-        for i in range(inv.ui.case_number):
-            item = inv.items.get(i, None)
+        font = self._hotbar_font
 
-            col = i % inv.ui.case_number
-
-            x = start_x + col * (case_size + margin) + margin
+        for i in range(case_count):
+            x = start_x + i * total_case_size + margin
             y = start_y + margin
 
             rect = pygame.Rect(x, y, case_size, case_size)
 
-            # Rendu de l'item après le fond
             pygame.draw.rect(screen, (60, 60, 60), rect)
             pygame.draw.rect(screen, (120, 120, 120), rect, 2)
-            
+
+            item = inv.items.get(i)
             if item:
                 item.render(screen, (x, y))
 
-            if i == inv.ui.selected_index:
-                pygame.draw.rect(screen, (255, 255, 255), rect, width=2)
+            if i == selected_index:
+                pygame.draw.rect(screen, (255, 255, 255), rect, 2)
 
-            # souris sur la case
-            # if i == inv.ui.visible_name and item:
-            #     item_name = item.item_property.item_name.capitalize()
-            #     text = font.render(item_name, True, (255, 255, 255))
-            #     text_rect = text.get_rect()
-            #     # position au dessus de l'item
-            #     text_rect.midbottom = (rect.centerx, rect.top - 5)
-            #     # fond
-            #     bg = pygame.Surface((text_rect.width + 10, text_rect.height + 6), pygame.SRCALPHA)
-            #     bg.fill((0, 0, 0, 200))
-            #     screen.blit(bg, (text_rect.x - 5, text_rect.y - 3))
-            #     screen.blit(text, text_rect)
+            screen.blit(self._hotbar_numbers[i], (x + 5, y + 2))
     
     def is_open_inv(self):
         if self.open_inventory:

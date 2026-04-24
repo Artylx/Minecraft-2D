@@ -529,10 +529,16 @@ class UI_Inventory():
         self.selected_index = 0
 
     def move_selected_index(self, move):
+        index = (self.selected_index + move) % self.case_number
+        self.set_selected_index(index)
+        
+
+    def set_selected_index(self, index):
         if len(self.inv.items) == 0:
             self.selected_index = 0
             return
-        self.selected_index = (self.selected_index + move) % self.case_number
+
+        self.selected_index = max(0, min(index, self.case_number - 1))
         print(f"selected index: {self.selected_index}")
 
     def get_selected_item(self):

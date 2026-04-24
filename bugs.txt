@@ -1,0 +1,3 @@
+- Attribut qui sont partagé entre les classes qui dépendent de tool
+- Swap entre item de l'inventaire et result_crafting
+- Chargement des chunks trop long
