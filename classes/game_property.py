@@ -29,6 +29,8 @@ DAMAGE_COEF = 1/3
 MAX_LIGHT = 15
 LIGHT_COEF = 1
 
+VERSION = "1.0"
+
 def world_to_screen(x, y, h, cam_rect):
     sx = x - cam_rect.x
     sy = cam_rect.height - (y - cam_rect.y) - h
@@ -59,3 +61,6 @@ def get_resource_path(relative_path: str) -> str:
         base_path = Path(__file__).resolve().parent.parent
 
     return str(base_path / relative_path)
+
+def safe_div(a, b):
+    return a / b if b > 0 else 0

@@ -9,6 +9,7 @@ ENTITIES_PATH = "entities/"
 MOBS_PATH = "mobs/"
 PLAYER_PATH = "player/"
 OTHERS_PATH = "others/"
+UI_PATH = "ui/"
 
 class TextureType:
     NONE = ""
@@ -20,6 +21,9 @@ class TextureType:
     COAL_ORE = "coal_ore"
     IRON_ORE = "iron_ore"
     GOLD_ORE = "gold_ore"
+
+    COAL = "coal"
+    IRON = "iron"
 
     SAND = "sand"
     WATER = "water"
@@ -77,6 +81,10 @@ class TextureType:
     
     CHIPS = "chips"
     DEFAULT = "default"
+
+    # IAMGES UI
+    MAIN_MENU = "main_menu"
+    TITLE = "title"
 
 class TextureManager:
     def __init__(self, init_directory="resource_pack/"):
@@ -143,6 +151,9 @@ class TextureManager:
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")
 
+            self.load_texture(TextureType.COAL, ITEMS_PATH + OTHERS_PATH + "coal_ore.png")
+            self.load_texture(TextureType.IRON, ITEMS_PATH + OTHERS_PATH + "iron_ore.png")
+
             self.load_texture(TextureType.ARROW, ITEMS_PATH + TOOLS_PATH + "arrow.png")
             self.load_texture(TextureType.BOW, ITEMS_PATH + TOOLS_PATH + "bow.png")
             self.load_texture(TextureType.BOW_ARROW, ITEMS_PATH + TOOLS_PATH + "bow_arrow.png")
@@ -161,6 +172,10 @@ class TextureManager:
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")
+
+            # MENU
+            self.load_texture(TextureType.MAIN_MENU, UI_PATH + "main_menu.png", size=None)
+            self.load_texture(TextureType.TITLE, UI_PATH + "title.png", size=None)
         except Exception as e:
             print(f"Erreur lors du chargement des textures: {e}")
 
@@ -172,7 +187,8 @@ class TextureManager:
 
         try:
             texture = pygame.image.load(game_property.get_resource_path(full_path)).convert_alpha()
-            texture = pygame.transform.scale(texture, size)
+            if size:
+                texture = pygame.transform.scale(texture, size)
 
             self.textures[texture_type] = texture
 

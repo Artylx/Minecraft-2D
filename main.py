@@ -1,9 +1,11 @@
 import pygame
+from tomlkit import value
 from classes import game_property, entity, world, tchat, game_type, ui, interface
 from classes.texture_manager import TextureManager
 from classes.inventory import Crafting_types
 import random
 import os
+import shutil
 
 PLAYER_NAME = "Player1"
 
@@ -27,6 +29,8 @@ class Game:
         self.update_rate = game_property.UPDATE_RATE
         self.game_manager = None
 
+        self.fps_history = []
+
         self.press_reset()
 
         self.menu = interface.MainMenu(self)
@@ -35,12 +39,15 @@ class Game:
 
     def load_game(self, game_name, game_path):
         self.press_reset()
-        self.menu.set_menu(interface.MenusCollection.LOADING_WORLD)
+        self.menu.set_loading("On s'occupe de poser les blocks...", 10)
 
         self.game_manager = Game_manager(game_path, game_name, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self)
 
-    def end_loading(self):
-        if self.menu.is_menu(interface.MenusCollection.LOADING_WORLD):
+    def end_loading(self, message="", value=0):
+        self.menu.set_loading(message, value)
+
+        if value >= 100:
+            print(f"Value {value}")
             self.menu.set_menu(interface.MenusCollection.GAME)
 
     def create_world(self):
@@ -93,6 +100,10 @@ class Game:
         from classes.game_type import ItemProperty
         ItemProperty.texture_manager = self.texture_manager
 
+        from classes.interface import MainMenu
+        MainMenu.texture_manager = self.texture_manager
+        self.menu.reload()
+
     def update_screen_size(self, width, height):
         self.WIDTH_SCREEN = width
         self.HEIGHT_SCREEN = height
@@ -132,6 +143,13 @@ class Game:
                 self.frame_rate = 1.0 / frame_time
             else:
                 self.frame_rate = 0.0
+
+            self.fps_history.append(self.frame_rate)
+            if len(self.fps_history) > 60:
+                self.fps_history.pop(0)
+
+            self.fps = sum(self.fps_history) / len(self.fps_history)
+
             self.render()
 
         pygame.quit()
@@ -170,6 +188,12 @@ class Game:
 
         if self.menu.is_menu(interface.MenusCollection.GAME) and self.game_is_start():
             self.game_manager.handle_events()
+
+    def delete_world(self, world_name):
+        shutil.rmtree(game_property.get_resource_path(f"worlds\\{world_name}"))
+        print("self")
+        self.menu.reload()
+        self.menu.set_menu(interface.MenusCollection.SINGLEPLAYER)
     
     def is_press(self, key):
         return self.keys_.get(key) and not self.prev_keys_.get(key)
@@ -208,8 +232,6 @@ class Game:
         if self.game_is_start():
             if not self.menu.is_menu(interface.MenusCollection.LOADING_WORLD):
                 self.game_manager.render(self, self.screen)
-            else:
-                self.screen.fill((135, 206, 235))
 
             #Couche d'opacité
             if self.menu.menus[self.menu.menu] != [] and not self.menu.is_menu(interface.MenusCollection.LOADING_WORLD):
@@ -553,7 +575,7 @@ class Game_manager:
             biome_name = biome_name[0].upper() + biome_name[1:].lower()
 
             debug_text = (
-                f"FPS: {int(self.fps)}\n"
+                f"FPS: {int(self.game.fps)}\n"
                 f"X: {(self.player.rect.x / game_property.TILE_SIZE):.1f}, "
                 f"Y: {(self.player.rect.y / game_property.TILE_SIZE):.1f}\n"
                 f"Biome: {biome_name}"

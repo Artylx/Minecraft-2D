@@ -294,9 +294,16 @@ class Shovel_tool(Tool):
 ItemProperty.DIRT = ItemProperty("dirt", TextureType.DIRT, 100, True, "DIRT")
 ItemProperty.GRASS = ItemProperty("grass", TextureType.GRASS, 100, True, "GRASS")
 ItemProperty.STONE = ItemProperty("stone", TextureType.STONE, 100, True, "STONE")
+
+
 ItemProperty.COAL_ORE = ItemProperty("coal_ore", TextureType.COAL_ORE, 100, True, "COAL_ORE")
 ItemProperty.IRON_ORE = ItemProperty("iron_ore", TextureType.IRON_ORE, 100, True, "IRON_ORE")
 ItemProperty.GOLD_ORE = ItemProperty("gold_ore", TextureType.GOLD_ORE, 100, True, "GOLD_ORE")
+
+
+ItemProperty.COAL = ItemProperty("coal", TextureType.COAL, 100, False, None)
+
+
 ItemProperty.OAK_TRUNK = ItemProperty("oak_trunk", TextureType.OAK_TRUNK, 100, True, "OAK_TRUNK")
 ItemProperty.OAK_LEAVES = ItemProperty("oak_leaves", TextureType.OAK_LEAVES, 100, True, "OAK_LEAVES")
 ItemProperty.OAK_TRUNK_BOTTOM = ItemProperty("oak_trunk_bottom", TextureType.OAK_TRUNK_BOTTOM, 100, True, "OAK_TRUNK_BOTTOM")
@@ -350,9 +357,11 @@ BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIR
 BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None, None)
 BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
 BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
-BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_ORE", 360, Pickaxe_tool)
+
+BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL", 360, Pickaxe_tool)
 BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool)
 BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool)
+
 BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
 BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
 BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200, Axe_tool)

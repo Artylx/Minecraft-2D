@@ -22,6 +22,8 @@ ITEMS_FR = {
     "wooden_axe": "Hache en bois",
     "torch": "Torche",
     "bow": "Arc",
+    "arrow": "Flèche",
+    "coal": "Charbon",
 }
 
 ITEMS_EN = {

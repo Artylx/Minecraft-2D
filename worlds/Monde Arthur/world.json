@@ -1,14 +1,14 @@
 {
-    "seed": 165025,
+    "seed": 472695,
     "entitys": [
         {
             "type": "Player",
-            "uuid": "b993f2b7-52d4-4d3d-9698-5e0b39511105",
-            "x": 306,
-            "y": 768,
+            "uuid": "75c15784-03d8-4531-930f-e8ed56123098",
+            "x": -530,
+            "y": 928,
             "w": 27,
             "h": 80,
-            "vx": 9.273816778204495e-16,
+            "vx": -15.869591181273702,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -16,81 +16,16 @@
             "name": "Player1",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
-                "uuid": "eb802741-3983-4bf6-a87d-86a118619b55",
+                "uuid": "0f788ff4-7e9b-4af5-b07d-245c745e3f4f",
                 "size": 24,
                 "title": "Inventory of Player1",
-                "items": [
-                    {
-                        "slot": 0,
-                        "itemStack": {
-                            "item_type_name": "grass",
-                            "count": 5
-                        }
-                    },
-                    {
-                        "slot": 1,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 2,
-                        "itemStack": {
-                            "item_type_name": "mushroom",
-                            "count": 1
-                        }
-                    }
-                ],
-                "owner_uuid": "b993f2b7-52d4-4d3d-9698-5e0b39511105"
+                "items": [],
+                "owner_uuid": "75c15784-03d8-4531-930f-e8ed56123098"
             }
         }
     ],
-    "modified_blocks": {
-        "0": [
-            {
-                "x": 9,
-                "y": 24,
-                "block": "air"
-            },
-            {
-                "x": 8,
-                "y": 24,
-                "block": "air"
-            },
-            {
-                "x": 7,
-                "y": 24,
-                "block": "air"
-            },
-            {
-                "x": 6,
-                "y": 24,
-                "block": "air"
-            },
-            {
-                "x": 5,
-                "y": 24,
-                "block": "air"
-            },
-            {
-                "x": 5,
-                "y": 25,
-                "block": "air"
-            },
-            {
-                "x": 8,
-                "y": 25,
-                "block": "air"
-            },
-            {
-                "x": 6,
-                "y": 25,
-                "block": "air"
-            }
-        ]
-    }
+    "modified_blocks": {}
 }

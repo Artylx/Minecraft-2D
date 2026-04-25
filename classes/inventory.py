@@ -133,6 +133,15 @@ RECIPES = {
         "result": [(1, "stone_sword")],
         "rotation": RotationMode.NONE,
         "mirror": False
+    },
+
+    (
+        ("coal",),
+        ("stick",)
+    ): {
+        "result": [(4, "torch")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
     }
 }
 

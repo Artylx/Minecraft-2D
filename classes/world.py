@@ -57,6 +57,7 @@ class World:
         self.screen_size = screen_size
         self.name = name
         self.callback_loading = callback_loading
+        self.is_loaded = False
 
         if json_data is not None:
             # charger depuis le JSON
@@ -82,10 +83,20 @@ class World:
         self.light_map = {} 
         self.block_light_queue = deque()
         self.sky_light_queue = deque()
+        self.sky_column_queue = deque()
 
         self.block_light = {}
         self.light_sources = set()
         self.dirty_chunks = set()
+
+        self.total_chunks_to_load = 0
+        self.loaded_chunks = 0
+
+        self.total_columns = 0
+        self.done_columns = 0
+
+        self.total_light_steps = 0
+        self.done_light_steps = 0
 
     def set_json(self, json):
         seed = json.get("seed", None)
@@ -113,15 +124,17 @@ class World:
         self.entitys.append(entity)
 
     def add_chunk(self, chunk_x):
-        import time
         if chunk_x not in self.chunks:
-            
+
+            import time
             start = time.time()
+
             chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
-            print("Chunk gen time:", time.time() - start)
             self.chunks[chunk_x] = chunk
 
             # appliquer les modifications sauvegardées
+            blc = 0
+            list_blocks = []
             if str(chunk_x) in self.modified_blocks:
 
                 for data in self.modified_blocks[str(chunk_x)]:
@@ -136,12 +149,20 @@ class World:
 
                     block_type = BlockProperty.REGISTRY[block_name]
 
-                    self.set_block(x, y, Block(x, y, block_type))
+                    list_blocks.append((x, y, Block(x, y, block_type)))
+                    blc += 1
+            
+            self.set_blocks(list_blocks)
             
             for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
-                self.compute_sky_column(x)
-            
-            self.propagate_sky_light()
+                self.sky_column_queue.append(x)
+
+                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((x, y))
+
+            end = time.time()
+            print(f"Chunk {chunk_x} loaded in {end - start:.2f}s => Modified blocks: {blc}")
+            self.loaded_chunks += 1
 
     def update_chunks(self):
         chunks_to_keep = set()
@@ -163,6 +184,10 @@ class World:
 
         sorted_chunks = sorted(chunks_to_keep, key=distance)
 
+        self.total_chunks_to_load = len(chunks_to_keep)
+        self.total_columns = self.total_chunks_to_load * game_property.CHUNK_WIDTH
+        self.total_light_steps = self.total_columns * (game_property.CHUNK_MAX_HEIGHT - game_property.CHUNK_MIN_HEIGHT)
+
         chunks_to_unload = set(self.chunks.keys())
 
         end_loading = True
@@ -177,9 +202,12 @@ class World:
 
         for chunk_coords in chunks_to_unload:
             self.unload_chunk(chunk_coords)
-        
-        if end_loading:
-            self.callback_loading()
+
+        if not end_loading:
+            if not self.is_loaded:
+                self.callback_loading("Chargement des chunks...", 20)
+
+        return end_loading
 
     def unload_chunk(self, chunk_cord):
 
@@ -200,7 +228,17 @@ class World:
         del self.chunks[chunk_cord]
 
     def update(self, dt):
-        self.update_chunks()
+        end_loading = self.update_chunks()
+
+        if end_loading:
+            self.compute_sky_column()
+            if not self.is_loaded:
+                self.callback_loading("Calcul de la lumière...", 30)
+
+            if not self.sky_column_queue:
+                self.propagate_sky_light()
+                if not self.is_loaded:
+                    self.callback_loading("Calcul de la lumière...", 80)
 
         to_remove = []
 
@@ -232,6 +270,10 @@ class World:
         # suppression des entités ramassées
         for entity in to_remove:
             self.entitys.remove(entity)
+
+        if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
+            self.callback_loading("C'est fini", 100)
+            self.is_loaded = True
 
     def render_debug(self, screen):
         font = pygame.font.SysFont(None, 24)
@@ -335,7 +377,11 @@ class World:
             self.light_sources.add((X, Y))
 
         self.update_light_area()
-        self.compute_sky_column(X)
+        self.sky_column_queue.append(X)
+
+        for x in range(X - 1, X + 1):
+            for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((x, y))
 
         return True
 
@@ -358,7 +404,30 @@ class World:
     def set_blocks(self, list_block):
         """
         Modifier tous les blocks et actualiser la limière une fois
+
+        :param list_block: liste de tuples (x, y, block)
         """
+
+        for x, y, block in list_block:
+            
+            chunk_x = x // game_property.CHUNK_WIDTH
+            if chunk_x not in self.chunks:
+                return False
+
+            chunk = self.chunks[chunk_x]
+
+            chunk.set_block(x, y, block)
+
+            if block.block_property.light_emission > 0:
+                self.light_sources.add((x, y))
+        
+            self.sky_column_queue.append(x)
+            for x in range(x - 1, x + 1):
+                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((x, y))
+
+        self.update_light_area()
+        return True
     
     def seed_block_light(self, cx, cy, radius):
         for x in range(cx-radius, cx+radius+1):
@@ -372,18 +441,26 @@ class World:
                     block.block_light = block.block_property.light_emission
                     self.block_light_queue.append((x, y))
     
-    def compute_sky_column(self, x):
-        light = 15
+    def compute_sky_column(self, max_steps=10):
+        for _ in range(max_steps):
+            if not self.sky_column_queue:
+                return
+            
+            x = self.sky_column_queue.popleft()
 
-        for y in reversed(range(game_property.CHUNK_MAX_HEIGHT)):
-            block = self.get_block(x, y)
-            if not block:
-                continue
+            self.done_columns += 1
 
-            block.sky_light = light
+            light = 15
 
-            if block.can_collide():
-                light = max(light - 2, 0)
+            for y in reversed(range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT)):
+                block = self.get_block(x, y)
+                if not block:
+                    continue
+
+                block.sky_light = light
+
+                if block.can_collide():
+                    light = max(light - 2, 0)
 
     def reset_light_area(self, cx, cy, radius):
         for x in range(cx-radius, cx+radius+1):
@@ -398,13 +475,15 @@ class World:
             return 2
         return 0
     
-    def propagate_sky_light(self, max_steps=10000):
+    def propagate_sky_light(self, max_steps=1000):
         for _ in range(max_steps):
             if not self.sky_light_queue:
                 return
 
             x, y = self.sky_light_queue.popleft()
             block = self.get_block(x, y)
+
+            self.done_light_steps += 1
 
             if not block:
                 continue
@@ -421,7 +500,7 @@ class World:
                 # Atténuation différente selon bloc
                 attenuation = 1
                 if neighbor.can_collide():
-                    attenuation = 2  # mur = bloque plus
+                    attenuation = 2 
 
                 new_light = current - attenuation
 
