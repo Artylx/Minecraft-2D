@@ -1,3 +1,8 @@
 - Attribut qui sont partagé entre les classes qui dépendent de tool
 - Swap entre item de l'inventaire et result_crafting
-- Chargement des chunks trop long
+- [FAIT] Chargement des chunks trop long
+- [FAIT] Choix du pseudo au lancement du monde
+- Interface du four pour cuir des items
+- Utiliser des consomables qui redonnnent de la vie (ou système de nourriture)
+- Système de tuto
+- Système de boite à choix défilante
