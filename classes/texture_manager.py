@@ -24,6 +24,7 @@ class TextureType:
 
     COAL = "coal"
     IRON = "iron"
+    GOLD = "gold"
 
     SAND = "sand"
     WATER = "water"
@@ -153,6 +154,7 @@ class TextureManager:
 
             self.load_texture(TextureType.COAL, ITEMS_PATH + OTHERS_PATH + "coal_ore.png")
             self.load_texture(TextureType.IRON, ITEMS_PATH + OTHERS_PATH + "iron_ore.png")
+            self.load_texture(TextureType.GOLD, ITEMS_PATH + OTHERS_PATH + "gold_ore.png")
 
             self.load_texture(TextureType.ARROW, ITEMS_PATH + TOOLS_PATH + "arrow.png")
             self.load_texture(TextureType.BOW, ITEMS_PATH + TOOLS_PATH + "bow.png")

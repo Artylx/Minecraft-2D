@@ -4,4 +4,4 @@ AUTO_START = {
     "player_name": "Player2"
 }
 
-LIGHT = True
+LIGHT = False

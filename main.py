@@ -1,3 +1,5 @@
+from importlib.resources import path
+
 import pygame
 from tomlkit import value
 from classes import game_property, entity, interface, world, tchat, game_type, ui
@@ -61,6 +63,14 @@ class Game:
             print(f"Value {value}")
             self.menu.set_menu(interface.MenusCollection.GAME)
 
+    def select_tuto(self):
+        world_name = "Monde tutoriel"
+
+        self.delete_world(world_name)
+
+        os.makedirs("worlds\\" + world_name)
+        self.select_world(world_name)
+
     def create_world(self):
         obj_lst = self.menu.menus[interface.MenusCollection.CREATE_WORLD]
 
@@ -74,10 +84,13 @@ class Game:
                 if obj.is_ref("world_name"):
                     if obj.text.strip() != "":
                         name = obj.text
-        
-        if name:
-            os.makedirs("worlds\\" + name)
-            self.load_game(name, name)
+        path = game_property.get_resource_path(f"worlds\\{name}")
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+            self.select_world(name)
+        else:
+            print("Le nom du monde existe déjà")
 
     def stop_game(self):
         if self.game_is_start():
@@ -202,11 +215,17 @@ class Game:
         if self.menu.is_menu(interface.MenusCollection.GAME) and self.game_is_start():
             self.game_manager.handle_events()
 
-    def delete_world(self, world_name):
-        shutil.rmtree(game_property.get_resource_path(f"worlds\\{world_name}"))
-        print("self")
+    def delete_world_func(self, world_name):
+        self.delete_world(world_name)
+
         self.menu.reload()
         self.menu.set_menu(interface.MenusCollection.SINGLEPLAYER)
+
+    def delete_world(self, world_name):
+        path = game_property.get_resource_path(f"worlds\\{world_name}")
+
+        if os.path.exists(path):
+            shutil.rmtree(path)
     
     def is_press(self, key):
         return self.keys_.get(key) and not self.prev_keys_.get(key)

@@ -4,11 +4,11 @@
         {
             "type": "Player",
             "uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941",
-            "x": -2494,
+            "x": -2528,
             "y": 960,
             "w": 27,
             "h": 80,
-            "vx": -5.81487603059634,
+            "vx": -14.735185192033049,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -27,6 +27,14 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone_sword",
+                            "dict_item": {
+                                "name": "stone_sword",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 240,
+                                "max_durability": 240
+                            },
                             "count": 1
                         }
                     },
@@ -34,6 +42,14 @@
                         "slot": 1,
                         "itemStack": {
                             "item_type_name": "stone_pickaxe",
+                            "dict_item": {
+                                "name": "stone_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 240,
+                                "max_durability": 240
+                            },
                             "count": 1
                         }
                     },
@@ -41,20 +57,40 @@
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "wooden_axe",
+                            "dict_item": {
+                                "name": "wooden_axe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
                             "count": 1
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
-                            "item_type_name": "iron_ore",
-                            "count": 13
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 35
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "torch",
+                            "dict_item": {
+                                "name": "torch",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "TORCH"
+                            },
                             "count": 100
                         }
                     },
@@ -62,6 +98,14 @@
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "bow",
+                            "dict_item": {
+                                "name": "bow",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 5,
+                                "max_durability": 10
+                            },
                             "count": 1
                         }
                     },
@@ -69,6 +113,12 @@
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "grass",
+                            "dict_item": {
+                                "name": "grass",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "GRASS"
+                            },
                             "count": 4
                         }
                     },
@@ -76,6 +126,12 @@
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "crafting_table",
+                            "dict_item": {
+                                "name": "crafting_table",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "CRAFTING_TABLE"
+                            },
                             "count": 1
                         }
                     },
@@ -83,6 +139,12 @@
                         "slot": 8,
                         "itemStack": {
                             "item_type_name": "dirt",
+                            "dict_item": {
+                                "name": "dirt",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "DIRT"
+                            },
                             "count": 12
                         }
                     },
@@ -90,6 +152,12 @@
                         "slot": 9,
                         "itemStack": {
                             "item_type_name": "coal_ore",
+                            "dict_item": {
+                                "name": "coal_ore",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "COAL_ORE"
+                            },
                             "count": 18
                         }
                     },
@@ -97,20 +165,38 @@
                         "slot": 10,
                         "itemStack": {
                             "item_type_name": "stick",
+                            "dict_item": {
+                                "name": "stick",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
                             "count": 1
                         }
                     },
                     {
                         "slot": 11,
                         "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 38
+                            "item_type_name": "iron_ore",
+                            "dict_item": {
+                                "name": "iron_ore",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "IRON_ORE"
+                            },
+                            "count": 13
                         }
                     },
                     {
                         "slot": 12,
                         "itemStack": {
                             "item_type_name": "oak_plank",
+                            "dict_item": {
+                                "name": "oak_plank",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_PLANK"
+                            },
                             "count": 16
                         }
                     },
@@ -118,6 +204,14 @@
                         "slot": 13,
                         "itemStack": {
                             "item_type_name": "wooden_pickaxe",
+                            "dict_item": {
+                                "name": "wooden_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
                             "count": 1
                         }
                     },
@@ -125,6 +219,12 @@
                         "slot": 14,
                         "itemStack": {
                             "item_type_name": "stick",
+                            "dict_item": {
+                                "name": "stick",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
                             "count": 1
                         }
                     },
@@ -132,11 +232,73 @@
                         "slot": 15,
                         "itemStack": {
                             "item_type_name": "wooden_sword",
+                            "dict_item": {
+                                "name": "wooden_sword",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
                             "count": 1
                         }
                     }
                 ],
                 "owner_uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941"
+            }
+        },
+        {
+            "type": "Player",
+            "uuid": "1965dba9-0fe5-4dee-bf2d-271a265e0bfd",
+            "x": -99,
+            "y": 832,
+            "w": 27,
+            "h": 80,
+            "vx": -0.0006666561650722313,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Arthur",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "5c48a285-c040-4d93-8faa-50448efe9197",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "bow",
+                            "dict_item": {
+                                "name": "bow",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 4,
+                                "max_durability": 10
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "arrow",
+                            "dict_item": {
+                                "name": "arrow",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
+                            "count": 95
+                        }
+                    }
+                ],
+                "owner_uuid": "1965dba9-0fe5-4dee-bf2d-271a265e0bfd"
             }
         }
     ],
@@ -635,6 +797,21 @@
                 "x": -50,
                 "y": 27,
                 "block": "air"
+            },
+            {
+                "x": -53,
+                "y": 15,
+                "block": "stone"
+            },
+            {
+                "x": -51,
+                "y": 12,
+                "block": "stone"
+            },
+            {
+                "x": -55,
+                "y": 18,
+                "block": "stone"
             }
         ],
         "-5": [

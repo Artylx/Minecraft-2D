@@ -1,0 +1,224 @@
+{
+    "seed": 400302,
+    "entitys": [
+        {
+            "type": "Player",
+            "uuid": "0a1084f8-b09a-4410-8574-fe79489706f7",
+            "x": -4622,
+            "y": 800,
+            "w": 27,
+            "h": 80,
+            "vx": -5.5339625732731195,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Arthur",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "cd2263bd-fb32-4840-acf3-c0abf338e73e",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 84
+                        }
+                    }
+                ],
+                "owner_uuid": "0a1084f8-b09a-4410-8574-fe79489706f7"
+            }
+        },
+        {
+            "type": "Player",
+            "uuid": "c107ce92-fd71-4b75-8985-d77777d04b87",
+            "x": 580,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player1",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "right",
+            "drops": [],
+            "inventory": {
+                "uuid": "709c63e9-59b6-40d5-ae8d-f450bf340d09",
+                "size": 24,
+                "title": "Inventory of Player1",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "grass",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 3
+                        }
+                    }
+                ],
+                "owner_uuid": "c107ce92-fd71-4b75-8985-d77777d04b87"
+            }
+        }
+    ],
+    "modified_blocks": {
+        "-1": [
+            {
+                "x": -2,
+                "y": -21,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -18,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -15,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -12,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -9,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -6,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": -3,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 0,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 3,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 6,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 9,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 12,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 14,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 17,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 20,
+                "block": "dirt"
+            },
+            {
+                "x": -2,
+                "y": 23,
+                "block": "dirt"
+            }
+        ],
+        "1": [
+            {
+                "x": 18,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 16,
+                "block": "air"
+            }
+        ]
+    }
+}

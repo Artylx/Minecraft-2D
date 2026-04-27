@@ -556,8 +556,11 @@ class UI_Inventory():
 class ItemStack():
     texture_manager = None
 
-    def __init__(self, item_property, count=1):
-        self.item_property = item_property
+    def __init__(self, item_property=None, count=1):
+        if item_property:
+            self.item_property = item_property.create_instance()
+        else:
+            self.item_property = None
 
         if type(count) != int:
             try:
@@ -591,9 +594,12 @@ class ItemStack():
                 
                 item_property = game_type.get_item_type_by_name(item_type_name)
                 if item_property:
-                    self.item_property = item_property
+                    if data.get("dict_item", None):
+                        item_property = item_property.load(data.get("dict_item", {}))
+
+                    self.item_property = item_property.create_instance()
                 else:
-                    return None
+                    self.item_property = None
             else:
                 setattr(self, attr, data[attr])
         self.update_texture()
@@ -649,6 +655,7 @@ class ItemStack():
     
     def to_json(self):
         return {
-            "item_type_name": self.item_property.item_name, 
+            "item_type_name": self.item_property.item_name,
+            "dict_item": self.item_property.to_json(), 
             "count": self.count,
         }

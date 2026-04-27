@@ -126,7 +126,7 @@ class MainMenu:
 
         def delete_world(event):
             if event:
-                self.game.delete_world(world_name)
+                self.game.delete_world_func(world_name)
             else:
                 self.open_settings_world(world_name)
 
@@ -179,7 +179,7 @@ class MainMenu:
 
             Image((self.center_x - TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, TITLE_W, TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
 
-            Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, BUTTON_HEIGHT * 4 + MARGIN_UI * 5), (0, 0, 0), 160),
+            Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, (BUTTON_HEIGHT + MARGIN_UI) * 5 + MARGIN_UI), (0, 0, 0), 160),
 
             Button(
                 "Solo",
@@ -192,13 +192,18 @@ class MainMenu:
                 lambda: self.set_menu(MenusCollection.MULTIPLAYER)
             ),
             Button(
-                "Versions et crédits",
+                "Tutoriel",
                 (self.center_x - 160, self.center_y + 100 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
+                lambda: self.game.select_tuto()
+            ),
+            Button(
+                "Versions et crédits",
+                (self.center_x - 160, self.center_y + 200 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
                 lambda: self.set_menu(MenusCollection.VERSIONS_CREDITS)
             ),
             Button(
                 "Quitter",
-                (self.center_x - 160, self.center_y + 200 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
+                (self.center_x - 160, self.center_y + 300 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
                 lambda: setattr(self.game, "running", False)
             ),
 

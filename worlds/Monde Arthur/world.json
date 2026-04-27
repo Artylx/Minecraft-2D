@@ -25,6 +25,31 @@
                 "items": [],
                 "owner_uuid": "d836aa7d-60b9-4431-a978-ed8e64635de0"
             }
+        },
+        {
+            "type": "Player",
+            "uuid": "68a62d8f-0a23-4b33-aada-967f7a911574",
+            "x": -10519,
+            "y": 32,
+            "w": 27,
+            "h": 80,
+            "vx": -3.726988186596519e-05,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player1",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "ce01254e-e823-4deb-9333-75f2b2c55207",
+                "size": 24,
+                "title": "Inventory of Player1",
+                "items": [],
+                "owner_uuid": "68a62d8f-0a23-4b33-aada-967f7a911574"
+            }
         }
     ],
     "modified_blocks": {}

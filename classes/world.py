@@ -65,7 +65,7 @@ class World:
             self.set_json(json_data)
         else:
             # générer depuis la seed
-            self.seed = seed if seed is not None else random.randint(0, 100000)
+            self.seed = seed if seed is not None else random.randint(10000, 99999)
             self.random = random.Random(self.seed)
 
             self.entitys = []  
@@ -769,7 +769,8 @@ class World:
 class Chunk:
     def __init__(self, x, seed, structure_manager, biome_manager):
         self.x = x
-        self.seed = abs(hash(seed)) % 1024
+        self.seed = abs(hash(seed))
+        self.noise_seed = self.seed & 0xff
         self.structure_manager = structure_manager
         self.biome_manager = biome_manager
 
@@ -787,26 +788,36 @@ class Chunk:
     def generate_vein(self, start_x, start_y, ore, max_size):
         vein_blocks = []
         to_process = [(start_x, start_y)]
+        visited = set()
 
         rng = random.Random(self.seed + start_x * 9182 + start_y * 1237)
 
         while to_process and len(vein_blocks) < max_size:
             x, y = to_process.pop(0)
 
+            if (x, y) in visited:
+                continue
+            visited.add((x, y))
+
             block = self.get_block(x, y)
 
-            # on remplace seulement la pierre
             if not block or block.block_property != BlockProperty.STONE:
                 continue
 
-            # place le minerai
             self.set_block(x, y, Block(x, y, ore))
             vein_blocks.append((x, y))
 
-            # propagation (effet filon)
             for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
-                if rng.random() < 0.7:  # contrôle la forme
-                    to_process.append((x + dx, y + dy))
+                if rng.random() < 0.7:
+                    nx, ny = x + dx, y + dy
+
+                    if nx < self.x * game_property.CHUNK_WIDTH or nx >= (self.x + 1) * game_property.CHUNK_WIDTH:
+                        continue
+
+                    if ny < game_property.CHUNK_MIN_HEIGHT or ny >= game_property.CHUNK_MAX_HEIGHT:
+                        continue
+
+                    to_process.append((nx, ny))
 
     def generate(self):
         terrain_scale = 0.01
@@ -816,41 +827,28 @@ class Chunk:
         for x in range(game_property.CHUNK_WIDTH):
             world_x = self.x * game_property.CHUNK_WIDTH + x
 
-            biome, amplitude, base_height = self.biome_manager.get_biome_generate_values(world_x, self.seed)
+            biome, amplitude, base_height = self.biome_manager.get_biome_generate_values(world_x, self.noise_seed)
 
             # 🌊 variation locale
-            variation = pnoise1(world_x * 0.02, base=self.seed)
+            variation = pnoise1(world_x * 0.02, base=self.noise_seed)
             amplitude += variation * 5
             base_height += variation * 3
 
-            terrain_noise = pnoise1(world_x * terrain_scale, base=self.seed)
+            terrain_noise = pnoise1(world_x * terrain_scale, base=self.noise_seed)
             surface_height = int(base_height + terrain_noise * amplitude)
 
             # ⛰️ TERRAIN
-            terrain_noise = pnoise1(world_x * terrain_scale, base=self.seed)
+            terrain_noise = pnoise1(world_x * terrain_scale, base=self.noise_seed)
             surface_height = int(base_height + terrain_noise * amplitude)
 
             for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
                 world_y = y
 
-                # 🌫️ AIR
-                if world_y > max(surface_height, sea_level):
-                    block_property = BlockProperty.AIR
-
-                    # 🌱 STRUCTURES
-                    if world_y - 1 == surface_height and surface_height >= sea_level:
-                        rng = random.Random(self.seed + world_x)
-                        r = rng.random()
-
-                        structure_type = self.biome_manager.get_structure(biome, r)
-                        if structure_type:
-                            self.add_structure(structure_type, world_x, world_y)
-
-                # 🌊 EAU
-                elif world_y > surface_height and world_y <= sea_level:
+                # EAU
+                if world_y > surface_height and world_y <= sea_level:
                     block_property = BlockProperty.WATER
 
-                # 🌿 SURFACE (IMPORTANT POUR VISUEL BIOME)
+                # SURFACE (IMPORTANT POUR VISUEL BIOME)
                 elif world_y == surface_height:
                     if surface_height <= sea_level:
                         block_property = BlockProperty.SAND
@@ -860,7 +858,7 @@ class Chunk:
                         else:
                             block_property = BlockProperty.GRASS
 
-                # 🌱 SOUS-SOL
+                # SOUS-SOL
                 elif world_y > surface_height - 4:
                     if surface_height <= sea_level:
                         block_property = BlockProperty.SAND
@@ -873,29 +871,53 @@ class Chunk:
                         else:
                             block_property = BlockProperty.DIRT
 
-                # 🪨 PROFOND
+                # PROFOND
                 else:
                     block_property = BlockProperty.STONE
 
-                # 🕳️ GROTTE (carving)
+                # GROTTE (carving)
                 cave_noise = pnoise2(
                     world_x * 0.05,
                     world_y * 0.05,
                     octaves=3,
-                    base=self.seed
+                    base=self.noise_seed
                 )
 
                 cave_noise2 = pnoise2(
                     world_x * 0.1,
                     world_y * 0.1,
                     octaves=2,
-                    base=self.seed + 42
+                    base=self.noise_seed + 42
                 )
 
-                if cave_noise > 0.1 and cave_noise2 > 0 and world_y <= surface_height:
+                cave = (cave_noise + 1) / 2
+                cave2 = (cave_noise2 + 1) / 2
+
+                combined = (cave + cave2) / 2  # fusion des bruits
+
+                depth_factor = (surface_height - world_y) / 50
+                threshold = 0.55 - depth_factor * 0.02
+
+                horizontal_factor = abs(pnoise1(world_x * 0.02, base=self.noise_seed))
+                threshold += horizontal_factor * 0.05
+
+                if combined > threshold and world_y <= surface_height - 3:
+                    block_property = BlockProperty.AIR
+                
+                # SURFACE
+                if world_y > max(surface_height, sea_level):
                     block_property = BlockProperty.AIR
 
-                # 🧱 BEDROCK
+                    # STRUCTURES
+                    if world_y - 1 == surface_height and surface_height >= sea_level:
+                        rng = random.Random(self.seed + world_x)
+                        r = rng.random()
+
+                        structure_type = self.biome_manager.get_structure(biome, r)
+                        if structure_type:
+                            self.add_structure(structure_type, world_x, world_y)
+
+                # BEDROCK
                 if world_y == game_property.CHUNK_MIN_HEIGHT:
                     block_property = BlockProperty.BEDROCK
 
@@ -903,6 +925,7 @@ class Chunk:
                 self.blocks[(world_x, world_y)] = block
 
         for ore, params in ORE_PARAMS.items():
+            print("Ore")
             rng = random.Random(self.seed + hash(ore) + self.x)
 
             for _ in range(params["max_chunks"]):  # nombre de filons par chunk
@@ -1022,7 +1045,7 @@ class Block:
 
     def render_darkness(self, screen, draw_x, draw_y):
         light = max(self.sky_light, self.block_light)
-        
+
         if not debug.LIGHT:
             light = game_property.MAX_LIGHT
 
