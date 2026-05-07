@@ -3,179 +3,6 @@
     "entitys": [
         {
             "type": "Player",
-            "uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941",
-            "x": 4256,
-            "y": 576,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Player1",
-            "health": 40,
-            "max_health": 40,
-            "orientation": "left",
-            "drops": [],
-            "inventory": {
-                "uuid": "54672b6d-b5ca-44d7-abc2-ec4d5d93ccf3",
-                "size": 24,
-                "title": "Inventory of Player1",
-                "items": [
-                    {
-                        "slot": 0,
-                        "itemStack": {
-                            "item_type_name": "stone_sword",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 1,
-                        "itemStack": {
-                            "item_type_name": "diamond_pickaxe",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 2,
-                        "itemStack": {
-                            "item_type_name": "wooden_axe",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 3,
-                        "itemStack": {
-                            "item_type_name": "torch",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 4,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 5,
-                        "itemStack": {
-                            "item_type_name": "arrow",
-                            "count": 99
-                        }
-                    },
-                    {
-                        "slot": 6,
-                        "itemStack": {
-                            "item_type_name": "grass",
-                            "count": 13
-                        }
-                    },
-                    {
-                        "slot": 7,
-                        "itemStack": {
-                            "item_type_name": "oak_trunk",
-                            "count": 3
-                        }
-                    },
-                    {
-                        "slot": 8,
-                        "itemStack": {
-                            "item_type_name": "mushroom",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 9,
-                        "itemStack": {
-                            "item_type_name": "coal",
-                            "count": 23
-                        }
-                    },
-                    {
-                        "slot": 10,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 49
-                        }
-                    },
-                    {
-                        "slot": 11,
-                        "itemStack": {
-                            "item_type_name": "dirt",
-                            "count": 27
-                        }
-                    },
-                    {
-                        "slot": 12,
-                        "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 8
-                        }
-                    },
-                    {
-                        "slot": 13,
-                        "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 14,
-                        "itemStack": {
-                            "item_type_name": "stone_pickaxe",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 15,
-                        "itemStack": {
-                            "item_type_name": "wooden_sword",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 16,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 17,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 100
-                        }
-                    },
-                    {
-                        "slot": 18,
-                        "itemStack": {
-                            "item_type_name": "coal_ore",
-                            "count": 33
-                        }
-                    },
-                    {
-                        "slot": 19,
-                        "itemStack": {
-                            "item_type_name": "diamond_sword",
-                            "count": 1
-                        }
-                    },
-                    {
-                        "slot": 23,
-                        "itemStack": {
-                            "item_type_name": "iron_ore",
-                            "count": 7
-                        }
-                    }
-                ],
-                "owner_uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941"
-            }
-        },
-        {
-            "type": "Player",
             "uuid": "52eee19c-8575-49b8-ab97-348cd699d02d",
             "x": -1984,
             "y": 928,
@@ -200,6 +27,12 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "oak_trunk",
+                            "dict_item": {
+                                "name": "oak_trunk",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_TRUNK"
+                            },
                             "count": 7
                         }
                     },
@@ -207,11 +40,343 @@
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "arrow",
+                            "dict_item": {
+                                "name": "arrow",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
                             "count": 100
                         }
                     }
                 ],
                 "owner_uuid": "52eee19c-8575-49b8-ab97-348cd699d02d"
+            }
+        },
+        {
+            "type": "Player",
+            "uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941",
+            "x": 4896,
+            "y": -192,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player1",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "54672b6d-b5ca-44d7-abc2-ec4d5d93ccf3",
+                "size": 24,
+                "title": "Inventory of Player1",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "stone_sword",
+                            "dict_item": {
+                                "name": "stone_sword",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 240,
+                                "max_durability": 240
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "diamond_pickaxe",
+                            "dict_item": {
+                                "name": "diamond_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 1561,
+                                "max_durability": 1561
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "wooden_axe",
+                            "dict_item": {
+                                "name": "wooden_axe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 3,
+                        "itemStack": {
+                            "item_type_name": "torch",
+                            "dict_item": {
+                                "name": "torch",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "TORCH"
+                            },
+                            "count": 90
+                        }
+                    },
+                    {
+                        "slot": 4,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 100
+                        }
+                    },
+                    {
+                        "slot": 5,
+                        "itemStack": {
+                            "item_type_name": "arrow",
+                            "dict_item": {
+                                "name": "arrow",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
+                            "count": 99
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "grass",
+                            "dict_item": {
+                                "name": "grass",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "GRASS"
+                            },
+                            "count": 13
+                        }
+                    },
+                    {
+                        "slot": 7,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "dict_item": {
+                                "name": "oak_trunk",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_TRUNK"
+                            },
+                            "count": 3
+                        }
+                    },
+                    {
+                        "slot": 8,
+                        "itemStack": {
+                            "item_type_name": "mushroom",
+                            "dict_item": {
+                                "name": "mushroom",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "MUSHROOM"
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 9,
+                        "itemStack": {
+                            "item_type_name": "coal",
+                            "dict_item": {
+                                "name": "coal",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
+                            "count": 23
+                        }
+                    },
+                    {
+                        "slot": 10,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 99
+                        }
+                    },
+                    {
+                        "slot": 11,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "dict_item": {
+                                "name": "dirt",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "DIRT"
+                            },
+                            "count": 27
+                        }
+                    },
+                    {
+                        "slot": 12,
+                        "itemStack": {
+                            "item_type_name": "oak_plank",
+                            "dict_item": {
+                                "name": "oak_plank",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_PLANK"
+                            },
+                            "count": 8
+                        }
+                    },
+                    {
+                        "slot": 13,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "dict_item": {
+                                "name": "wooden_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 14,
+                        "itemStack": {
+                            "item_type_name": "stone_pickaxe",
+                            "dict_item": {
+                                "name": "stone_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 240,
+                                "max_durability": 240
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 15,
+                        "itemStack": {
+                            "item_type_name": "wooden_sword",
+                            "dict_item": {
+                                "name": "wooden_sword",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 16,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 100
+                        }
+                    },
+                    {
+                        "slot": 17,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 100
+                        }
+                    },
+                    {
+                        "slot": 18,
+                        "itemStack": {
+                            "item_type_name": "coal_ore",
+                            "dict_item": {
+                                "name": "coal_ore",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "COAL_ORE"
+                            },
+                            "count": 33
+                        }
+                    },
+                    {
+                        "slot": 19,
+                        "itemStack": {
+                            "item_type_name": "diamond_sword",
+                            "dict_item": {
+                                "name": "diamond_sword",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 1561,
+                                "max_durability": 1561
+                            },
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 20,
+                        "itemStack": {
+                            "item_type_name": "gold_ore",
+                            "dict_item": {
+                                "name": "gold_ore",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "GOLD_ORE"
+                            },
+                            "count": 6
+                        }
+                    },
+                    {
+                        "slot": 23,
+                        "itemStack": {
+                            "item_type_name": "iron_ore",
+                            "dict_item": {
+                                "name": "iron_ore",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "IRON_ORE"
+                            },
+                            "count": 7
+                        }
+                    }
+                ],
+                "owner_uuid": "c06bf7d7-d0aa-4442-96a1-633b132e3941"
             }
         }
     ],
@@ -7890,6 +8055,336 @@
                 "x": 150,
                 "y": -23,
                 "block": "stone"
+            },
+            {
+                "x": 146,
+                "y": 15,
+                "block": "torch"
+            },
+            {
+                "x": 146,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": 147,
+                "y": 14,
+                "block": "torch"
+            },
+            {
+                "x": 147,
+                "y": 14,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": 5,
+                "block": "torch"
+            },
+            {
+                "x": 152,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": 150,
+                "y": -3,
+                "block": "torch"
+            },
+            {
+                "x": 150,
+                "y": -3,
+                "block": "air"
+            },
+            {
+                "x": 148,
+                "y": -21,
+                "block": "torch"
+            },
+            {
+                "x": 150,
+                "y": -29,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -29,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -28,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -27,
+                "block": "torch"
+            },
+            {
+                "x": 156,
+                "y": -31,
+                "block": "torch"
+            },
+            {
+                "x": 156,
+                "y": -40,
+                "block": "torch"
+            },
+            {
+                "x": 150,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 149,
+                "y": -37,
+                "block": "stone"
+            },
+            {
+                "x": 149,
+                "y": -37,
+                "block": "stone"
+            },
+            {
+                "x": 149,
+                "y": -36,
+                "block": "stone"
+            },
+            {
+                "x": 149,
+                "y": -37,
+                "block": "stone"
+            },
+            {
+                "x": 149,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 149,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": 149,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": 150,
+                "y": -40,
+                "block": "air"
+            },
+            {
+                "x": 150,
+                "y": -41,
+                "block": "stone"
+            },
+            {
+                "x": 149,
+                "y": -33,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -19,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -20,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -18,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": -17,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": -18,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -17,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": -16,
+                "block": "air"
+            },
+            {
+                "x": 151,
+                "y": -16,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": -14,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -14,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -15,
+                "block": "air"
+            },
+            {
+                "x": 152,
+                "y": -15,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -16,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -13,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -13,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -14,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -12,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -12,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -11,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -11,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -12,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -11,
+                "block": "torch"
+            },
+            {
+                "x": 155,
+                "y": -9,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -8,
+                "block": "air"
+            },
+            {
+                "x": 156,
+                "y": -8,
+                "block": "air"
+            },
+            {
+                "x": 156,
+                "y": -9,
+                "block": "air"
+            },
+            {
+                "x": 156,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -7,
+                "block": "air"
+            },
+            {
+                "x": 156,
+                "y": -7,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -7,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -6,
+                "block": "air"
+            },
+            {
+                "x": 155,
+                "y": -6,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -8,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -5,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -5,
+                "block": "air"
+            },
+            {
+                "x": 154,
+                "y": -4,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -4,
+                "block": "air"
+            },
+            {
+                "x": 153,
+                "y": -6,
+                "block": "air"
             }
         ],
         "8": [
@@ -8007,6 +8502,146 @@
                 "x": 128,
                 "y": -31,
                 "block": "air"
+            },
+            {
+                "x": 140,
+                "y": 6,
+                "block": "torch"
+            },
+            {
+                "x": 140,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": 135,
+                "y": 7,
+                "block": "torch"
+            },
+            {
+                "x": 135,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": 132,
+                "y": 6,
+                "block": "torch"
+            },
+            {
+                "x": 132,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": 140,
+                "y": 7,
+                "block": "torch"
+            },
+            {
+                "x": 140,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": 143,
+                "y": -37,
+                "block": "torch"
+            },
+            {
+                "x": 136,
+                "y": -32,
+                "block": "torch"
+            },
+            {
+                "x": 133,
+                "y": -31,
+                "block": "torch"
+            },
+            {
+                "x": 132,
+                "y": -33,
+                "block": "air"
+            },
+            {
+                "x": 132,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": 132,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": 131,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": 131,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": 132,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 131,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 130,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": 130,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 130,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": 129,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": 129,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": 128,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": 129,
+                "y": -36,
+                "block": "torch"
+            },
+            {
+                "x": 129,
+                "y": -41,
+                "block": "stone"
+            },
+            {
+                "x": 129,
+                "y": -42,
+                "block": "stone"
+            },
+            {
+                "x": 129,
+                "y": -38,
+                "block": "stone"
             }
         ],
         "7": [
@@ -8023,6 +8658,21 @@
             {
                 "x": 127,
                 "y": -28,
+                "block": "air"
+            },
+            {
+                "x": 127,
+                "y": -45,
+                "block": "torch"
+            },
+            {
+                "x": 125,
+                "y": -47,
+                "block": "torch"
+            },
+            {
+                "x": 125,
+                "y": -47,
                 "block": "air"
             }
         ],

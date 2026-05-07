@@ -557,10 +557,7 @@ class ItemStack():
     texture_manager = None
 
     def __init__(self, item_property=None, count=1):
-        if item_property:
-            self.item_property = item_property.create_instance()
-        else:
-            self.item_property = None
+        self.item_property = item_property
 
         if type(count) != int:
             try:

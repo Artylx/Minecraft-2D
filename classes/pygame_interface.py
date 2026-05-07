@@ -1,9 +1,10 @@
 import pygame
 
 class ObjectInterface:
-    def __init__(self, rect, callback=None):
+    def __init__(self, rect, callback=None, enable=True):
         self.rect = pygame.Rect(rect)
         self.callback = callback
+        self.enable = enable
 
     def render(self, screen, color=(200, 200, 200)):
         pygame.draw.rect(screen, color, self.rect)
@@ -11,8 +12,10 @@ class ObjectInterface:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(pygame.mouse.get_pos()):
-                if self.callback:
-                    self.callback()
+
+                if self.enable:
+                    if self.callback:
+                        self.callback()
 
     def is_hover(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -46,7 +49,7 @@ class Texte(ObjectInterface):
         screen.blit(self.text_surface, self.pos)
 
 class Button(ObjectInterface):
-    def __init__(self, text, rect, callback, 
+    def __init__(self, text, rect, callback, enable=True ,
                  text_color=(255, 255, 255), 
                  border_color=(255, 255, 255), 
                  background_color=(0, 0, 0), 
@@ -54,7 +57,7 @@ class Button(ObjectInterface):
                  border_color_hover=(255, 255, 255)
                  ):
         
-        super().__init__(rect, callback)
+        super().__init__(rect, callback, enable)
         self.text = text
         self.font = pygame.font.SysFont(None, 40)
 
@@ -130,8 +133,13 @@ class TextBox(ObjectReferencable):
         self.cursor_timer = 0
         self.cursor_interval = 0.5
 
+        self.cursor_index = 0
         self.max_char = 30
         self.scroll_x = 0
+
+    def move_cursor_index(self, value):
+        self.cursor_index += value
+        self.cursor_index = max(0, min(self.cursor_index, len(self.text)))
 
     def render(self, screen):
         bg_color = self.background_color_hover if self.selected else self.background_color
@@ -151,10 +159,23 @@ class TextBox(ObjectReferencable):
 
             max_width = self.rect.width - 20  # padding
 
-            if text_width > max_width:
-                self.scroll_x = text_width - max_width
-            else:
-                self.scroll_x = 0
+            cursor_text = self.text[:self.cursor_index]
+            cursor_surface = self.font.render(cursor_text, True, self.text_color)
+            cursor_x_local = cursor_surface.get_width()
+
+            padding = 10
+            visible_width = max_width
+
+            # Si le curseur dépasse à droite
+            if cursor_x_local - self.scroll_x > visible_width:
+                self.scroll_x = cursor_x_local - visible_width
+
+            # Si le curseur dépasse à gauche
+            elif cursor_x_local - self.scroll_x < 0:
+                self.scroll_x = cursor_x_local
+
+            self.scroll_x = max(0, self.scroll_x)
+            self.scroll_x = min(self.scroll_x, max(0, text_width - visible_width))
             
             text_rect = text_surface.get_rect(
                 midleft=(self.rect.midleft[0] + 10 - self.scroll_x, self.rect.midleft[1])
@@ -162,36 +183,53 @@ class TextBox(ObjectReferencable):
 
             screen.blit(text_surface, text_rect)
 
-        screen.set_clip(old_clip)
+            if self.cursor_visible:
+                cursor_x = text_rect.left + cursor_x_local
 
-        if self.selected and self.cursor_visible:
-            cursor_x = text_rect.right + 2
-            pygame.draw.line(
-                screen,
-                self.text_color,
-                (cursor_x, text_rect.top),
-                (cursor_x, text_rect.bottom),
-                2
-            )
+                pygame.draw.line(
+                    screen,
+                    self.text_color,
+                    (cursor_x, text_rect.top),
+                    (cursor_x, text_rect.bottom - 2),
+                    2
+                )
+
+        screen.set_clip(old_clip)
     
     def handle_event(self, event):
         if self.selected:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
+                    if self.cursor_index > 0:
+                        self.text = (
+                            self.text[:self.cursor_index - 1] +
+                            self.text[self.cursor_index:]
+                        )
+                        self.move_cursor_index(-1)
 
                     if self.write_callback:
                         self.write_callback()
                 elif event.unicode and event.unicode.isprintable():
 
                     if len(self.text) < self.max_char:
-                        self.text += event.unicode
+                        self.text = (
+                            self.text[:self.cursor_index] +
+                            event.unicode +
+                            self.text[self.cursor_index:]
+                        )
+                        self.move_cursor_index(1)
                 
                     if self.write_callback:
                         self.write_callback()
                 elif event.key == pygame.K_RETURN:
                     if self.enter_callback:
                         self.enter_callback()
+
+                elif event.key == pygame.K_LEFT:
+                    self.move_cursor_index(-1)
+                elif event.key == pygame.K_RIGHT:
+                    self.move_cursor_index(1)
+
                 pass
 
         if event.type == pygame.MOUSEBUTTONDOWN:

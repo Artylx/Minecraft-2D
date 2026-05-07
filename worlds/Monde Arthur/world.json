@@ -50,7 +50,91 @@
                 "items": [],
                 "owner_uuid": "68a62d8f-0a23-4b33-aada-967f7a911574"
             }
+        },
+        {
+            "type": "Player",
+            "uuid": "4e429834-7243-4e7b-848d-dcfd3dddb134",
+            "x": 328,
+            "y": 1097,
+            "w": 27,
+            "h": 80,
+            "vx": 138.10788982916182,
+            "vy": -374.4000000000003,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Arthur",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "right",
+            "drops": [],
+            "inventory": {
+                "uuid": "e47350b5-7d93-49ed-a199-283c9ab36bc7",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "dict_item": {
+                                "name": "oak_trunk",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_TRUNK"
+                            },
+                            "count": 0
+                        }
+                    }
+                ],
+                "owner_uuid": "4e429834-7243-4e7b-848d-dcfd3dddb134"
+            }
         }
     ],
-    "modified_blocks": {}
+    "modified_blocks": {
+        "-1": [
+            {
+                "x": -4,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -4,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -4,
+                "y": 26,
+                "block": "air"
+            }
+        ],
+        "0": [
+            {
+                "x": 12,
+                "y": 34,
+                "block": "air"
+            },
+            {
+                "x": 12,
+                "y": 35,
+                "block": "air"
+            },
+            {
+                "x": 12,
+                "y": 36,
+                "block": "air"
+            },
+            {
+                "x": 12,
+                "y": 37,
+                "block": "air"
+            },
+            {
+                "x": 12,
+                "y": 38,
+                "block": "air"
+            }
+        ]
+    }
 }

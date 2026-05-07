@@ -311,6 +311,11 @@ class World:
                 to_remove.append(entity)
                 continue
 
+            entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+            if entity_chunk_x not in self.chunks or entity.rect.y < -20000:
+                to_remove.append(entity)
+                continue
+
             # si c'est un block item et qu'il touche le joueur
             if isinstance(entity, EntityClass.Item):
                 for player in self.get_players():
@@ -321,13 +326,7 @@ class World:
                         player.inventory.add_item(
                             inventory.ItemStack(entity.item_type, 1)
                         )
-            else:
-                entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
-
-                # si le chunk n'est plus chargé → suppression
-                if entity_chunk_x not in self.chunks:
-                    to_remove.append(entity)
-                    continue
+                
 
         # suppression des entités ramassées
         for entity in to_remove:
@@ -925,7 +924,6 @@ class Chunk:
                 self.blocks[(world_x, world_y)] = block
 
         for ore, params in ORE_PARAMS.items():
-            print("Ore")
             rng = random.Random(self.seed + hash(ore) + self.x)
 
             for _ in range(params["max_chunks"]):  # nombre de filons par chunk

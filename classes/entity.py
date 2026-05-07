@@ -132,47 +132,50 @@ class Entity:
         self.rect.y = y
 
     def update(self, dt):
+        
+        try:
+            self.apply_gravity(dt)
 
-        self.apply_gravity(dt)
+            self.velocity.x *= 0.9
 
-        self.velocity.x *= 0.9
-
-        new_x = self.rect.x + self.velocity.x * dt
-        new_y = self.rect.y + self.velocity.y * dt
-
-
-        # ----- HORIZONTAL -----
-        self.temp_rect = self.rect.copy()
-        self.temp_rect.x = new_x
-
-        if not self.world.is_collide_at(self.temp_rect):
-            self.move(new_x - self.rect.x, 0)
-        else:
-            step = 1 if self.velocity.x > 0 else -1
-
-            while not self.world.is_collide_at(self.rect.move(step, 0)):
-                self.move(step, 0)
-
-            self.velocity.x = 0
+            new_x = self.rect.x + self.velocity.x * dt
+            new_y = self.rect.y + self.velocity.y * dt
 
 
-        # ----- VERTICAL -----
-        self.temp_rect = self.rect.copy()
-        self.temp_rect.y = new_y
+            # ----- HORIZONTAL -----
+            self.temp_rect = self.rect.copy()
+            self.temp_rect.x = new_x
 
-        if not self.world.is_collide_at(self.temp_rect):
-            self.move(0, new_y - self.rect.y)
-            self.on_ground = False
-        else:
-            step = 1 if self.velocity.y > 0 else -1
+            if not self.world.is_collide_at(self.temp_rect):
+                self.move(new_x - self.rect.x, 0)
+            else:
+                step = 1 if self.velocity.x > 0 else -1
 
-            while not self.world.is_collide_at(self.rect.move(0, step)):
-                self.move(0, step)
+                while not self.world.is_collide_at(self.rect.move(step, 0)):
+                    self.move(step, 0)
 
-            self.velocity.y = 0
+                self.velocity.x = 0
 
-            if step < 0:
-                self.on_ground = True
+
+            # ----- VERTICAL -----
+            self.temp_rect = self.rect.copy()
+            self.temp_rect.y = new_y
+
+            if not self.world.is_collide_at(self.temp_rect):
+                self.move(0, new_y - self.rect.y)
+                self.on_ground = False
+            else:
+                step = 1 if self.velocity.y > 0 else -1
+
+                while not self.world.is_collide_at(self.rect.move(0, step)):
+                    self.move(0, step)
+
+                self.velocity.y = 0
+
+                if step < 0:
+                    self.on_ground = True
+        except Exception as e:
+            print("Exception: ", e)
 
     def move(self, dx, dy):
         self.rect.x += dx

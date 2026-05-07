@@ -194,7 +194,8 @@ class MainMenu:
             Button(
                 "Tutoriel",
                 (self.center_x - 160, self.center_y + 100 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
-                lambda: self.game.select_tuto()
+                lambda: self.game.select_tuto(),
+                enable=False
             ),
             Button(
                 "Versions et crédits",
@@ -279,7 +280,8 @@ class MainMenu:
             TextBox(
                 (self.center_x - 160, self.center_y - BUTTON_HEIGHT // 2 - 100, 320, BUTTON_HEIGHT),
                 "Pseudo",
-                "pseudo"
+                "pseudo",
+                enter_callback=lambda: enter_game()
             ),
 
             Button(
