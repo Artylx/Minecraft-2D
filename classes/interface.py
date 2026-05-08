@@ -97,6 +97,9 @@ class MainMenu:
         self.center_x = self.screen_size[0] // 2
         self.center_y = self.screen_size[1] // 2
 
+        self.TITLE_W = self.screen_size[0] // 2
+        self.TITLE_H = self.screen_size[1] // 9
+
         self.reload()
 
     def open_confirm(self, q, callback):
@@ -171,13 +174,12 @@ class MainMenu:
         if self.texture_manager is None:
             return
 
-        TITLE_W = self.screen_size[0] // 2
-        TITLE_H = self.screen_size[1] // 9
+        
 
         self.menus[MenusCollection.MAIN] = [
             Image((0, 0, self.screen_size[0], self.screen_size[1]), self.texture_manager.get_texture(TextureType.MAIN_MENU)),
 
-            Image((self.center_x - TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, TITLE_W, TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
 
             Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, (BUTTON_HEIGHT + MARGIN_UI) * 5 + MARGIN_UI), (0, 0, 0), 160),
 
@@ -206,8 +208,6 @@ class MainMenu:
                 (self.center_x - 160, self.center_y + 300 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
                 lambda: setattr(self.game, "running", False)
             ),
-
-            Texte(f"Version {game_property.VERSION}", (MARGIN_UI, MARGIN_UI - 20, 160, 20))
         ]
 
         def return_to_game(self):
@@ -215,7 +215,7 @@ class MainMenu:
             self.set_menu(MenusCollection.GAME)
 
         self.menus[MenusCollection.GAME_PAUSED] = [
-            Image((self.center_x - TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, TITLE_W, TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
             
             Button(
                 "Reprendre",
@@ -249,7 +249,22 @@ class MainMenu:
 
         self.menus[MenusCollection.GAME] = []
 
-        self.menus[MenusCollection.VERSIONS_CREDITS] = []
+        self.menus[MenusCollection.VERSIONS_CREDITS] = [
+            Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
+
+            Texte("Créer par Arthur REY en Python", (self.center_x, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, 160, 50), center_pos=True),
+
+            Texte("Versions et crédit", (self.center_x, BUTTON_HEIGHT, 160, 50), center_pos=True),
+
+            Button(
+                "Retour",
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.MAIN)
+            )
+        ]
 
         def enter_game():
             self.game.press_reset()

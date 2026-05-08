@@ -173,26 +173,27 @@ class UI:
                     crafted = slot.meta.take_result()
                     if crafted:
                         self.dragged_slot = Slot(lambda: crafted, lambda x: None, "temp")
-                        self.drag_origin = slot
-                        self.drag_origin_index = self.get_slot_index(slot)
-                    return
+                        self.drag_origin = None
+                        self.drag_origin_index = None
+                        slot.set(None)
 
-                # NORMAL
-                item = slot.get()
-                if item:
-                    if button == 3:
-                        half_count = item.count // 2
-                        if half_count > 0:
-                            item.count -= half_count
-                            self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
+                else:
+                    # NORMAL
+                    item = slot.get()
+                    if item:
+                        if button == 3:
+                            half_count = item.count // 2
+                            if half_count > 0:
+                                item.count -= half_count
+                                self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
+                                self.drag_origin = slot
+                                self.drag_origin_index = self.get_slot_index(slot)
+                        else:
+                            self.dragged_slot = Slot(lambda: item, lambda x: None, "temp")
                             self.drag_origin = slot
                             self.drag_origin_index = self.get_slot_index(slot)
-                    else:
-                        self.dragged_slot = Slot(lambda: item, lambda x: None, "temp")
-                        self.drag_origin = slot
-                        self.drag_origin_index = self.get_slot_index(slot)
-                        slot.set(None)
-                return
+                            slot.set(None)
+
         if self.dragged_slot:
             print(f"{self.dragged_slot}")
 
@@ -217,6 +218,7 @@ class UI:
                     break
 
                 if slot.type == "craft_result":
+                    print("In craft result")
                     break
 
                 item_a = self.dragged_slot.get()
@@ -250,18 +252,21 @@ class UI:
 
                 break
 
-        if not dropped and self.drag_origin:
-            #self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
+        if not dropped:
+            if self.drag_origin:
+                #self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
 
-            origin_item = self.inventory.get_item(self.drag_origin_index)
+                origin_item = self.inventory.get_item(self.drag_origin_index)
 
-            if origin_item:
-                item = self.dragged_slot.get()
+                if origin_item:
+                    item = self.dragged_slot.get()
 
-                item.count += origin_item.count
-                self.drag_origin.set(item)
+                    item.count += origin_item.count
+                    self.drag_origin.set(item)
+                else:
+                    self.drag_origin.set(self.dragged_slot.get())
             else:
-                self.drag_origin.set(self.dragged_slot.get())
+                self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
 
         self.dragged_slot = None
         self.drag_origin = None

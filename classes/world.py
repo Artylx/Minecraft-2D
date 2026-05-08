@@ -451,7 +451,8 @@ class World:
             self.light_sources.add((X, Y))
 
         self.update_light_area()
-        self.sky_column_queue.append(X)
+        for dx in range(-10, 10):
+            self.sky_column_queue.append(X + dx)
 
         for x in range(X - update_range, X + update_range):
             for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):

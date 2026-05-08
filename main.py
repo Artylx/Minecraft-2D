@@ -419,7 +419,7 @@ class Game_manager:
             # Breaking
             selected_item = self.player.inventory.ui.get_selected_item()
             if selected_item is None or not isinstance(selected_item.item_property, game_type.Attack_tool):
-                if game.keys_.get(self.event_mouse_get(1)):
+                if game.is_holding(self.event_mouse_get(1)):
                     # Try break
                     if self.old_current_bock_pos == self.current_block_pos:
                         self.World.try_destroy_block(self.current_block_pos, self.player)
@@ -435,51 +435,49 @@ class Game_manager:
                 self.player.try_attack(self.cam_rect)
                         
             # Pos or other
-            if game.keys_.get(self.event_mouse_get(3)):
-                if not game.prev_keys_.get(self.event_mouse_get(3)):
-                    
-                    self.click_on_block(self.current_block_pos, self.player)
-                    self.player.use_selected_item(self.cam_rect)    
+            if game.is_press(self.event_mouse_get(3)):
+                self.click_on_block(self.current_block_pos, self.player)
+                self.player.use_selected_item(self.cam_rect)    
             else:
                 if game.prev_keys_.get(self.event_mouse_get(3)):
                     self.player.stop_use_selected_item(self.cam_rect)
 
-            if game.keys_.get(pygame.K_t):
+            if game.is_press(pygame.K_t):
                 self.tchat.oppened = True
 
             # Index selected hotbar
-            if game.keys_.get(pygame.K_1):
+            if game.is_press(pygame.K_1):
                 self.player.inventory.ui.set_selected_index(0)
-            if game.keys_.get(pygame.K_2):
+            if game.is_press(pygame.K_2):
                 self.player.inventory.ui.set_selected_index(1)
-            if game.keys_.get(pygame.K_3):
+            if game.is_press(pygame.K_3):
                 self.player.inventory.ui.set_selected_index(2)
-            if game.keys_.get(pygame.K_4):
+            if game.is_press(pygame.K_4):
                 self.player.inventory.ui.set_selected_index(3)
-            if game.keys_.get(pygame.K_5):
+            if game.is_press(pygame.K_5):
                 self.player.inventory.ui.set_selected_index(4)
-            if game.keys_.get(pygame.K_6):
+            if game.is_press(pygame.K_6):
                 self.player.inventory.ui.set_selected_index(5)
 
             # Spawning for debug
-            if game.keys_.get(pygame.K_m) and not game.prev_keys_.get(pygame.K_m):
+            if game.is_press(pygame.K_m):
                 z = entity.Zobmie(self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
-            if game.keys_.get(pygame.K_p) and not game.prev_keys_.get(pygame.K_p):
+            if game.is_press(pygame.K_p):
                 p = entity.Player(self.World, "Player2")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
 
                 self.tchat.send_message(p.name, "Salut les gens !")
             
-            if game.keys_.get(pygame.K_e):
+            if game.is_press(pygame.K_e):
                 self.UI.open_inv(self.player.inventory)
             
-            if game.keys_.get(pygame.K_a):
+            if game.is_press(pygame.K_a):
                 self.player.drop_item()
 
-            if game.keys_.get(pygame.K_ESCAPE) and not game.prev_keys_.get(pygame.K_ESCAPE):
+            if game.is_press(pygame.K_ESCAPE):
                 game.menu.set_menu(interface.MenusCollection.GAME_PAUSED)
 
         elif self.UI.is_open_inv():
@@ -497,7 +495,7 @@ class Game_manager:
                 if game.prev_keys_.get(game.event_mouse_get(3)):
                     self.UI.mouse_up(3)
 
-            if game.keys_.get(pygame.K_ESCAPE) and not game.prev_keys_.get(pygame.K_ESCAPE):
+            if game.is_press(pygame.K_ESCAPE) or game.is_press(pygame.K_e):
                 self.UI.close_inv()
             
 
