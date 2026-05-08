@@ -177,6 +177,7 @@ class UI:
                         self.drag_origin_index = None
                         slot.set(None)
 
+<<<<<<< HEAD
                 else:
                     # NORMAL
                     item = slot.get()
@@ -194,6 +195,29 @@ class UI:
                             self.drag_origin_index = self.get_slot_index(slot)
                             slot.set(None)
 
+=======
+                # NORMAL
+                item = slot.get()
+                if item:
+                    if button == 3:
+                        if item.count >= 2:
+                            half_count = item.count // 2
+                        else:
+                            half_count = 1
+                        
+                        item.count -= half_count
+                        self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
+                    else:
+                        self.dragged_slot = Slot(lambda: type(item)(item.item_property, item.count), lambda x: None, "temp")
+                        item.count = 0
+                    
+                    if item.count <= 0:
+                        slot.set(None)
+
+                    self.drag_origin = slot
+                    self.drag_origin_index = self.get_slot_index(slot)
+                return
+>>>>>>> 700744df5065b75b8ab6ae7e34a6ad7266ed38b3
         if self.dragged_slot:
             print(f"{self.dragged_slot}")
 

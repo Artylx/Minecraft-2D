@@ -17,12 +17,12 @@ class Game:
 
         pygame.init()
         pygame.display.set_caption(self.title)
-        info = pygame.display.Info()
+        self.info = pygame.display.Info()
 
-        WIDTH, HEIGHT = 1800, 1000 # info.current_w, info.current_h
+        self.WIDTH, self.HEIGHT = 1800, 1000
 
-        self.HEIGHT_SCREEN = HEIGHT
-        self.WIDTH_SCREEN = WIDTH
+        self.HEIGHT_SCREEN = self.HEIGHT
+        self.WIDTH_SCREEN = self.WIDTH
 
         self.screen = pygame.display.set_mode((self.WIDTH_SCREEN, self.HEIGHT_SCREEN), pygame.RESIZABLE)
 
@@ -33,6 +33,8 @@ class Game:
         self.game_name = ""
 
         self.fps_history = []
+
+        self.full_screen = False
 
         self.press_reset()
 
@@ -130,13 +132,28 @@ class Game:
         MainMenu.texture_manager = self.texture_manager
         self.menu.reload()
 
+    def update_full_screen(self):
+        if self.full_screen:
+            self.screen = pygame.display.set_mode(
+                (self.info.current_w, self.info.current_h),
+                pygame.FULLSCREEN
+            )
+        else:
+            self.screen = pygame.display.set_mode(
+                (self.WIDTH, self.HEIGHT),
+                pygame.RESIZABLE
+            )
+
+        self.update_screen_size(self.screen.get_width(), self.screen.get_height())
+
     def update_screen_size(self, width, height):
         self.WIDTH_SCREEN = width
         self.HEIGHT_SCREEN = height
 
-        screen_size = (self.WIDTH_SCREEN, self.HEIGHT_SCREEN)
-
         self.menu.update_screen_size(width, height)
+
+        if self.game_is_start():
+            self.game_manager.update_screen_size(width, height)
 
     def quit(self):
         self.running = False
@@ -183,7 +200,6 @@ class Game:
     def handle_events(self):    
         self.prev_keys_ = self.keys_.copy()
         self.mouse_scroll(0)
-        self.event_keyup(pygame.QUIT)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -198,6 +214,7 @@ class Game:
 
                 if self.game_is_start() and self.game_manager.tchat.oppened:
                     self.game_manager.tchat.key_down(event, self.game_manager.player)
+
             if event.type == pygame.KEYUP:
                 self.event_keyup(event.key)
             if event.type == pygame.VIDEORESIZE:
@@ -255,6 +272,11 @@ class Game:
         self.toogle_[key] = not self.toogle_.get(key, False)
 
     def update(self, dt):
+        if self.is_press(pygame.K_F11):
+            self.full_screen = not self.full_screen
+            self.update_full_screen()
+            print("Update full screen")
+
         if self.menu.is_menu(interface.MenusCollection.GAME) or self.menu.is_menu(interface.MenusCollection.LOADING_WORLD) and self.game_is_start():
             self.game_manager.update(dt, self)
         else:
@@ -390,8 +412,6 @@ class Game_manager:
 
         screen_size = (self.width_screen, self.height_screen)
 
-        self.screen = pygame.display.set_mode(screen_size, pygame.RESIZABLE)
-
         self.cam_rect.width = width
         self.cam_rect.height = height
 
@@ -403,6 +423,8 @@ class Game_manager:
     def update(self, dt, game):
         if game.toogle_.get(pygame.K_F3):
             self.update_debug(dt)
+        else:
+            self.update_debug(0)
 
         if not self.tchat.oppened and not self.UI.is_open_inv():
             # horizontal movement: adjust velocity directly
