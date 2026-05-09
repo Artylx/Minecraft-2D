@@ -1,36 +1,11 @@
 {
-    "seed": 483508,
+    "seed": 329946,
     "entitys": [
         {
             "type": "Player",
-            "uuid": "68a62d8f-0a23-4b33-aada-967f7a911574",
-            "x": -10519,
-            "y": 32,
-            "w": 27,
-            "h": 80,
-            "vx": -3.726988186596519e-05,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Player1",
-            "health": 40,
-            "max_health": 40,
-            "orientation": "left",
-            "drops": [],
-            "inventory": {
-                "uuid": "ce01254e-e823-4deb-9333-75f2b2c55207",
-                "size": 24,
-                "title": "Inventory of Player1",
-                "items": [],
-                "owner_uuid": "68a62d8f-0a23-4b33-aada-967f7a911574"
-            }
-        },
-        {
-            "type": "Player",
-            "uuid": "d836aa7d-60b9-4431-a978-ed8e64635de0",
-            "x": -10528,
-            "y": 32,
+            "uuid": "cd41c17d-d1cb-41c8-8076-3cad375ccf56",
+            "x": -1340,
+            "y": -1408,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -38,69 +13,61 @@
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
-            "name": "Player2",
-            "health": 40,
-            "max_health": 40,
-            "orientation": "left",
-            "drops": [],
-            "inventory": {
-                "uuid": "12b6e6a1-2ee1-42e2-a38c-ee276337d6bb",
-                "size": 24,
-                "title": "Inventory of Player2",
-                "items": [],
-                "owner_uuid": "d836aa7d-60b9-4431-a978-ed8e64635de0"
-            }
-        },
-        {
-            "type": "Player",
-            "uuid": "1ee85b50-e2f6-4abf-b227-a3f65c3e7843",
-            "x": -1954,
-            "y": 544,
-            "w": 27,
-            "h": 80,
-            "vx": -2.5e-323,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
-                "uuid": "5002552d-d4fe-46d5-aead-4f3eb13f990a",
+                "uuid": "e9fe88fb-5b7c-4a26-b3c6-e37405048b07",
                 "size": 24,
                 "title": "Inventory of Arthur",
                 "items": [
                     {
                         "slot": 0,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
+                            "item_type_name": "stone_pickaxe",
                             "dict_item": {
-                                "name": "oak_plank",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "OAK_PLANK"
+                                "name": "stone_pickaxe",
+                                "max_stack": 1,
+                                "placeable": false,
+                                "block_type": null,
+                                "durability": 240,
+                                "max_durability": 240
                             },
-                            "count": 22
+                            "count": 1
                         }
                     },
                     {
                         "slot": 1,
                         "itemStack": {
-                            "item_type_name": "stick",
+                            "item_type_name": "wooden_pickaxe",
                             "dict_item": {
-                                "name": "stick",
-                                "max_stack": 100,
+                                "name": "wooden_pickaxe",
+                                "max_stack": 1,
                                 "placeable": false,
-                                "block_type": null
+                                "block_type": null,
+                                "durability": 110,
+                                "max_durability": 110
                             },
-                            "count": 6
+                            "count": 1
                         }
                     },
                     {
                         "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "dict_item": {
+                                "name": "stone",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "STONE"
+                            },
+                            "count": 98
+                        }
+                    },
+                    {
+                        "slot": 3,
                         "itemStack": {
                             "item_type_name": "grass",
                             "dict_item": {
@@ -109,20 +76,46 @@
                                 "placeable": true,
                                 "block_type": "GRASS"
                             },
-                            "count": 2
+                            "count": 5
                         }
                     },
                     {
-                        "slot": 3,
+                        "slot": 4,
                         "itemStack": {
-                            "item_type_name": "oak_trunk",
+                            "item_type_name": "torch",
                             "dict_item": {
-                                "name": "oak_trunk",
+                                "name": "torch",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "OAK_TRUNK"
+                                "block_type": "TORCH"
                             },
-                            "count": 90
+                            "count": 14
+                        }
+                    },
+                    {
+                        "slot": 5,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "dict_item": {
+                                "name": "dirt",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "DIRT"
+                            },
+                            "count": 19
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "coal",
+                            "dict_item": {
+                                "name": "coal",
+                                "max_stack": 100,
+                                "placeable": false,
+                                "block_type": null
+                            },
+                            "count": 14
                         }
                     },
                     {
@@ -135,376 +128,1527 @@
                                 "placeable": true,
                                 "block_type": "OAK_PLANK"
                             },
-                            "count": 2
+                            "count": 8
                         }
                     },
                     {
-                        "slot": 13,
+                        "slot": 9,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
+                            "item_type_name": "iron_ore",
                             "dict_item": {
-                                "name": "oak_plank",
+                                "name": "iron_ore",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "OAK_PLANK"
+                                "block_type": "IRON_ORE"
                             },
-                            "count": 2
+                            "count": 7
                         }
-                    }
-                ],
-                "owner_uuid": "1ee85b50-e2f6-4abf-b227-a3f65c3e7843"
-            }
-        },
-        {
-            "type": "Player",
-            "uuid": "4e429834-7243-4e7b-848d-dcfd3dddb134",
-            "x": 328,
-            "y": 1097,
-            "w": 27,
-            "h": 80,
-            "vx": 138.10788982916182,
-            "vy": -374.4000000000003,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Arthur",
-            "health": 40,
-            "max_health": 40,
-            "orientation": "right",
-            "drops": [],
-            "inventory": {
-                "uuid": "e47350b5-7d93-49ed-a199-283c9ab36bc7",
-                "size": 24,
-                "title": "Inventory of Arthur",
-                "items": [
+                    },
                     {
-                        "slot": 0,
+                        "slot": 10,
                         "itemStack": {
-                            "item_type_name": "oak_trunk",
+                            "item_type_name": "stone",
                             "dict_item": {
-                                "name": "oak_trunk",
+                                "name": "stone",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "OAK_TRUNK"
+                                "block_type": "STONE"
                             },
-                            "count": 0
+                            "count": 25
                         }
                     }
                 ],
-                "owner_uuid": "4e429834-7243-4e7b-848d-dcfd3dddb134"
+                "owner_uuid": "cd41c17d-d1cb-41c8-8076-3cad375ccf56"
             }
         }
     ],
     "modified_blocks": {
-<<<<<<< HEAD
-        "-3": [
-            {
-                "x": -35,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -35,
-                "y": 14,
-                "block": "grass"
-            },
-            {
-                "x": -37,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -37,
-                "y": 14,
-                "block": "grass"
-            },
-            {
-                "x": -37,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -37,
-                "y": 14,
-                "block": "grass"
-            }
-        ],
-        "-2": [
-            {
-                "x": -30,
-                "y": 15,
-                "block": "air"
-            },
-            {
-                "x": -30,
-                "y": 15,
-                "block": "grass"
-            },
-            {
-                "x": -31,
-                "y": 15,
-                "block": "air"
-            },
-            {
-                "x": -31,
-                "y": 15,
-                "block": "grass"
-            }
-        ],
-        "-4": [
-            {
-                "x": -54,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 14,
-                "block": "grass"
-            },
-            {
-                "x": -54,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 13,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 13,
-                "block": "grass"
-            },
-            {
-                "x": -54,
-                "y": 14,
-                "block": "dirt"
-            },
-            {
-                "x": -54,
-                "y": 14,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 13,
-                "block": "air"
-            },
-            {
-                "x": -54,
-                "y": 13,
-                "block": "dirt"
-            },
-            {
-                "x": -54,
-                "y": 14,
-                "block": "grass"
-            },
-            {
-                "x": -59,
-                "y": 16,
-                "block": "air"
-            },
-            {
-                "x": -59,
-                "y": 17,
-                "block": "air"
-            },
-            {
-                "x": -59,
-                "y": 18,
-                "block": "air"
-            }
-        ],
-        "-5": [
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 18,
-                "block": "dirt"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -73,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -73,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -73,
-                "y": 18,
-                "block": "dirt"
-            },
-            {
-                "x": -73,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 18,
-                "block": "dirt"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "air"
-            },
-            {
-                "x": -72,
-                "y": 19,
-                "block": "grass"
-            },
-            {
-                "x": -69,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -70,
-                "y": 18,
-                "block": "air"
-            },
-            {
-                "x": -68,
-                "y": 18,
-=======
         "-1": [
             {
-                "x": -4,
+                "x": -3,
                 "y": 24,
                 "block": "air"
             },
             {
-                "x": -4,
+                "x": -3,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -3,
                 "y": 25,
                 "block": "air"
             },
             {
-                "x": -4,
-                "y": 26,
+                "x": -7,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -7,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -7,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -12,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -12,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -12,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -16,
+                "y": 16,
                 "block": "air"
             }
         ],
         "0": [
             {
-                "x": 12,
-                "y": 34,
+                "x": 0,
+                "y": 26,
+                "block": "crafting_table"
+            },
+            {
+                "x": 2,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 0,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 1,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 2,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 3,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 3,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 3,
+                "y": 28,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 28,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 29,
+                "block": "air"
+            },
+            {
+                "x": 3,
+                "y": 29,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 29,
+                "block": "air"
+            },
+            {
+                "x": 8,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": 2,
+                "y": 26,
+                "block": "crafting_table"
+            },
+            {
+                "x": 9,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 10,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 11,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": 9,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 8,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 22,
+                "block": "torch"
+            },
+            {
+                "x": 9,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": 9,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 8,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 8,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": 7,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": 5,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": 9,
+                "y": 17,
+                "block": "torch"
+            },
+            {
+                "x": 10,
+                "y": 16,
+                "block": "torch"
+            },
+            {
+                "x": 6,
+                "y": 17,
+                "block": "torch"
+            },
+            {
+                "x": 9,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": 6,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": 10,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": 10,
+                "y": 16,
+                "block": "torch"
+            },
+            {
+                "x": 6,
+                "y": 18,
+                "block": "torch"
+            },
+            {
+                "x": 6,
+                "y": 18,
                 "block": "air"
             },
             {
                 "x": 12,
-                "y": 35,
+                "y": 25,
+                "block": "torch"
+            },
+            {
+                "x": 12,
+                "y": 28,
+                "block": "torch"
+            },
+            {
+                "x": 12,
+                "y": 29,
+                "block": "torch"
+            },
+            {
+                "x": 12,
+                "y": 28,
                 "block": "air"
             },
             {
                 "x": 12,
-                "y": 36,
+                "y": 29,
+                "block": "air"
+            }
+        ],
+        "-3": [
+            {
+                "x": -46,
+                "y": 12,
                 "block": "air"
             },
             {
-                "x": 12,
-                "y": 37,
+                "x": -45,
+                "y": 12,
                 "block": "air"
             },
             {
-                "x": 12,
-                "y": 38,
->>>>>>> 700744df5065b75b8ab6ae7e34a6ad7266ed38b3
+                "x": -45,
+                "y": 11,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": 11,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": 13,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": 13,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": 8,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": 11,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": 8,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 8,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 4,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 3,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 2,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": 1,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 2,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 3,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": 1,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -2,
+                "block": "torch"
+            },
+            {
+                "x": -43,
+                "y": -1,
+                "block": "torch"
+            },
+            {
+                "x": -44,
+                "y": -2,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -3,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -4,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -4,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -3,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -5,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -5,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -6,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": -4,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -9,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -8,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -7,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -6,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -5,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -8,
+                "block": "torch"
+            },
+            {
+                "x": -40,
+                "y": -10,
+                "block": "torch"
+            },
+            {
+                "x": -41,
+                "y": -11,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -10,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -11,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -12,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -13,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -14,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -15,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -15,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -14,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -13,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -16,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -17,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -18,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -19,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -18,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -17,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -19,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -20,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -21,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -22,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -22,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -21,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -23,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -23,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -23,
+                "block": "torch"
+            },
+            {
+                "x": -40,
+                "y": -18,
+                "block": "torch"
+            },
+            {
+                "x": -40,
+                "y": -18,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -16,
+                "block": "torch"
+            },
+            {
+                "x": -41,
+                "y": -16,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -15,
+                "block": "torch"
+            },
+            {
+                "x": -41,
+                "y": -24,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -28,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -29,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -30,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -31,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -30,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -29,
+                "block": "air"
+            },
+            {
+                "x": -40,
+                "y": -31,
+                "block": "torch"
+            },
+            {
+                "x": -41,
+                "y": -34,
+                "block": "stone"
+            },
+            {
+                "x": -42,
+                "y": -36,
+                "block": "stone"
+            },
+            {
+                "x": -41,
+                "y": -34,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -35,
+                "block": "stone"
+            },
+            {
+                "x": -42,
+                "y": -38,
+                "block": "stone"
+            },
+            {
+                "x": -42,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": -39,
+                "block": "stone"
+            },
+            {
+                "x": -42,
+                "y": -38,
+                "block": "air"
+            },
+            {
+                "x": -41,
+                "y": -43,
+                "block": "stone"
+            },
+            {
+                "x": -42,
+                "y": -38,
+                "block": "torch"
+            },
+            {
+                "x": -43,
+                "y": -44,
+                "block": "torch"
+            },
+            {
+                "x": -44,
+                "y": -46,
+                "block": "stone"
+            },
+            {
+                "x": -44,
+                "y": -47,
+                "block": "stone"
+            },
+            {
+                "x": -44,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -48,
+                "block": "stone"
+            },
+            {
+                "x": -44,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": -52,
+                "block": "stone"
+            },
+            {
+                "x": -46,
+                "y": -53,
+                "block": "stone"
+            },
+            {
+                "x": -46,
+                "y": -52,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": -55,
+                "block": "stone"
+            },
+            {
+                "x": -45,
+                "y": -57,
+                "block": "stone"
+            },
+            {
+                "x": -45,
+                "y": -55,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": -56,
+                "block": "torch"
+            },
+            {
+                "x": -38,
+                "y": -57,
+                "block": "torch"
+            },
+            {
+                "x": -42,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -42,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -43,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -44,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -45,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -46,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -47,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -47,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -47,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -48,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -48,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -48,
+                "y": -27,
+                "block": "air"
+            }
+        ],
+        "-4": [
+            {
+                "x": -51,
+                "y": -49,
+                "block": "torch"
+            },
+            {
+                "x": -54,
+                "y": -46,
+                "block": "torch"
+            },
+            {
+                "x": -55,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -55,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -55,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -56,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -56,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -56,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -57,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -57,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -57,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -58,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -58,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -58,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -59,
+                "y": -46,
+                "block": "air"
+            },
+            {
+                "x": -59,
+                "y": -47,
+                "block": "air"
+            },
+            {
+                "x": -59,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -60,
+                "y": -48,
+                "block": "air"
+            },
+            {
+                "x": -63,
+                "y": -48,
+                "block": "torch"
+            },
+            {
+                "x": -64,
+                "y": -26,
+                "block": "torch"
+            },
+            {
+                "x": -49,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -49,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -49,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -50,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -50,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -50,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -50,
+                "y": -27,
+                "block": "torch"
+            },
+            {
+                "x": -51,
+                "y": -27,
+                "block": "air"
+            },
+            {
+                "x": -51,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -51,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -52,
+                "y": -25,
+                "block": "air"
+            },
+            {
+                "x": -52,
+                "y": -26,
+                "block": "air"
+            },
+            {
+                "x": -52,
+                "y": -24,
+                "block": "air"
+            },
+            {
+                "x": -51,
+                "y": -24,
+                "block": "air"
+            },
+            {
+                "x": -55,
+                "y": -23,
+                "block": "torch"
+            },
+            {
+                "x": -52,
+                "y": -17,
+                "block": "stone"
+            },
+            {
+                "x": -53,
+                "y": -13,
+                "block": "stone"
+            },
+            {
+                "x": -53,
+                "y": -12,
+                "block": "torch"
+            },
+            {
+                "x": -61,
+                "y": -9,
+                "block": "torch"
+            }
+        ],
+        "-2": [
+            {
+                "x": -27,
+                "y": -57,
+                "block": "torch"
+            },
+            {
+                "x": -26,
+                "y": -55,
+                "block": "air"
+            },
+            {
+                "x": -26,
+                "y": -56,
+                "block": "air"
+            },
+            {
+                "x": -26,
+                "y": -57,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": -57,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": -56,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": -55,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": -54,
+                "block": "air"
+            },
+            {
+                "x": -26,
+                "y": -54,
+                "block": "air"
+            },
+            {
+                "x": -24,
+                "y": -55,
+                "block": "air"
+            },
+            {
+                "x": -24,
+                "y": -53,
+                "block": "air"
+            },
+            {
+                "x": -24,
+                "y": -54,
+                "block": "air"
+            },
+            {
+                "x": -25,
+                "y": -53,
+                "block": "air"
+            },
+            {
+                "x": -23,
+                "y": -54,
+                "block": "air"
+            },
+            {
+                "x": -23,
+                "y": -55,
+                "block": "air"
+            },
+            {
+                "x": -23,
+                "y": -53,
+                "block": "air"
+            }
+        ],
+        "-5": [
+            {
+                "x": -67,
+                "y": -40,
+                "block": "torch"
+            },
+            {
+                "x": -68,
+                "y": -39,
+                "block": "air"
+            },
+            {
+                "x": -68,
+                "y": -38,
+                "block": "air"
+            },
+            {
+                "x": -68,
+                "y": -40,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -40,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -39,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -38,
+                "block": "air"
+            },
+            {
+                "x": -68,
+                "y": -36,
+                "block": "air"
+            },
+            {
+                "x": -76,
+                "y": -39,
+                "block": "torch"
+            },
+            {
+                "x": -76,
+                "y": -39,
+                "block": "air"
+            },
+            {
+                "x": -76,
+                "y": -40,
+                "block": "torch"
+            },
+            {
+                "x": -67,
+                "y": -34,
+                "block": "stone"
+            },
+            {
+                "x": -66,
+                "y": -31,
+                "block": "stone"
+            },
+            {
+                "x": -65,
+                "y": -28,
+                "block": "stone"
+            },
+            {
+                "x": -70,
+                "y": -30,
+                "block": "torch"
+            }
+        ],
+        "-6": [
+            {
+                "x": -84,
+                "y": -35,
+                "block": "torch"
+            },
+            {
+                "x": -84,
+                "y": -36,
+                "block": "torch"
+            },
+            {
+                "x": -84,
+                "y": -35,
+                "block": "air"
+            },
+            {
+                "x": -83,
+                "y": -33,
+                "block": "stone"
+            },
+            {
+                "x": -82,
+                "y": -29,
+                "block": "stone"
+            },
+            {
+                "x": -81,
+                "y": -25,
+                "block": "stone"
+            },
+            {
+                "x": -82,
+                "y": -28,
+                "block": "torch"
+            },
+            {
+                "x": -81,
+                "y": -26,
+                "block": "stone"
+            },
+            {
+                "x": -81,
+                "y": -25,
                 "block": "air"
             }
         ]

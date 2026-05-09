@@ -330,17 +330,20 @@ class World:
 
         # suppression des entités ramassées
         for entity in to_remove:
-            self.entitys.remove(entity)
+            self.remove_entity(entity)
 
         if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
             self.callback_loading("C'est fini", 100)
             self.is_loaded = True
 
+    def update_screen_size(self, screen_size):
+        self.screen_size = screen_size
+
     def render_debug(self, screen, cam_rect):
         font = pygame.font.SysFont(None, 24)
 
         debug_text = f"Chunks loaded: {len(self.chunks.values())}, {list(self.chunks.keys())}"
-        text_surface = font.render(debug_text, True, (0, 0, 0))
+        text_surface = font.render(debug_text, True, (255, 255, 255))
         screen.blit(text_surface, (10, 70))
 
         debug_text = f"Entitys: {len(self.entitys)}"

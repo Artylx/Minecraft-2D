@@ -177,7 +177,6 @@ class UI:
                         self.drag_origin_index = None
                         slot.set(None)
 
-<<<<<<< HEAD
                 else:
                     # NORMAL
                     item = slot.get()
@@ -195,29 +194,6 @@ class UI:
                             self.drag_origin_index = self.get_slot_index(slot)
                             slot.set(None)
 
-=======
-                # NORMAL
-                item = slot.get()
-                if item:
-                    if button == 3:
-                        if item.count >= 2:
-                            half_count = item.count // 2
-                        else:
-                            half_count = 1
-                        
-                        item.count -= half_count
-                        self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
-                    else:
-                        self.dragged_slot = Slot(lambda: type(item)(item.item_property, item.count), lambda x: None, "temp")
-                        item.count = 0
-                    
-                    if item.count <= 0:
-                        slot.set(None)
-
-                    self.drag_origin = slot
-                    self.drag_origin_index = self.get_slot_index(slot)
-                return
->>>>>>> 700744df5065b75b8ab6ae7e34a6ad7266ed38b3
         if self.dragged_slot:
             print(f"{self.dragged_slot}")
 
@@ -267,11 +243,10 @@ class UI:
                     slot.set(item_a)
 
                     if item_b:
-                        if self.drag_origin:
-                            if self.drag_origin.type != "craft_result":
-                                self.drag_origin.set(item_b)
-                            else:
-                                self.open_inventory.add_item(ItemStack(item_b.item_property, item_b.count))
+                        if self.drag_origin and self.drag_origin.type != "craft_result":
+                            self.drag_origin.set(item_b)
+                        else:
+                            self.open_inventory.add_item(ItemStack(item_b.item_property, item_b.count))
                     dropped = True
 
                 break

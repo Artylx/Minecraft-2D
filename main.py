@@ -418,6 +418,7 @@ class Game_manager:
         self.update_cam_rect()
 
         self.UI.update_screen_size(screen_size)
+        self.World.update_screen_size(screen_size)
 
     # UPDATE
     def update(self, dt, game):
