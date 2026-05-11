@@ -17,6 +17,11 @@ class Slot:
     def set(self, item):
         self._set(item)
 
+    def can_accept(self, stack):
+        if self.type == "craft_result":
+            return False
+        return True
+
     def __str__(self):
         return f"Slot(type:{self.type}, meta:{self.meta})"
 
@@ -203,6 +208,9 @@ class UI:
         mouse_pos = pygame.mouse.get_pos()
 
         if self.buttons[self.other_button(button)]:
+            
+            if button == 3:
+                self.pos_current_slot()
             return
         
         self.buttons[button] = True
@@ -262,16 +270,21 @@ class UI:
         self.buttons[button] = False
 
         print(self.buttons, "UP")
+        self.pos_current_slot()
 
+    def pos_current_slot(self, amout=None):
         mouse_pos = pygame.mouse.get_pos()
         dropped = False
 
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
             if rect.collidepoint(mouse_pos):
-                if hasattr(self, "drag_origin_index") and i == self.drag_origin_index:
-                    slot.set(self.dragged_slot.get())
-                    dropped = True
-                    break
+                if self.drag_origin_index == i:
+
+                    if slot.get() == None:
+                        slot.set(self.dragged_slot.get())
+
+                        dropped = True
+                        break
 
                 if slot.type == "craft_result":
                     print("In craft result")
@@ -286,6 +299,7 @@ class UI:
                 # STACK
                 if item_a and item_b and item_a.item_property == item_b.item_property:
                     reste = item_b.add_item(item_a.count)
+                    print(f"Add to {item_b.item_property}")
 
                     if reste == 0:
                         self.dragged_slot.set(None)

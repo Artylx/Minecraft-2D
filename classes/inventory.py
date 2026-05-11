@@ -561,7 +561,6 @@ class UI_Inventory():
             return
 
         self.selected_index = max(0, min(index, self.case_number - 1))
-        print(f"selected index: {self.selected_index}")
 
     def get_selected_item(self):
         return self.inv.get_item(self.selected_index)

@@ -505,9 +505,23 @@ class Game_manager:
             if game.is_press(pygame.K_ESCAPE):
                 game.menu.set_menu(interface.MenusCollection.GAME_PAUSED)
 
+            if game.mouse_scroll_y != 0:
+                if game.mouse_scroll_y > 0:
+                    self.player.inventory.ui.move_selected_index(1)
+                else:
+                    self.player.inventory.ui.move_selected_index(-1)
+
         elif self.UI.is_open_inv():
             if game.is_press(pygame.K_ESCAPE) or game.is_press(pygame.K_e):
                 self.UI.close_inv()
+
+        elif self.tchat.oppened:
+
+            if game.mouse_scroll_y != 0:
+                if game.mouse_scroll_y > 0:
+                    self.tchat.offset_msg_index_move(1)
+                else:
+                    self.tchat.offset_msg_index_move(-1)
 
         if game.keys_.get(game.event_mouse_get(1)):
             if not game.prev_keys_.get(game.event_mouse_get(1)):
