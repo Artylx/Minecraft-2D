@@ -172,26 +172,28 @@ class UI:
         return 0
         
     def mouse_down(self, button):
-        if not self.is_open_inv() and button == 1:
-            case_size = game_property.INVENTORY_SIZE_CASE
-            margin = 15
+        if not self.is_open_inv():
 
-            height = case_size + margin * 2
-            width = margin + (case_size + margin) * self.inventory.ui.case_number
+            if button == 1:
+                case_size = game_property.INVENTORY_SIZE_CASE
+                margin = 15
 
-            start_x = self.screen_size[0] // 2 - width // 2
-            start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
+                height = case_size + margin * 2
+                width = margin + (case_size + margin) * self.inventory.ui.case_number
 
-            for i in range(self.inventory.ui.case_number):
+                start_x = self.screen_size[0] // 2 - width // 2
+                start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
 
-                x = start_x + i * (case_size + margin) + margin
-                y = start_y + margin
+                for i in range(self.inventory.ui.case_number):
 
-                rect = pygame.Rect(x, y, case_size, case_size)
+                    x = start_x + i * (case_size + margin) + margin
+                    y = start_y + margin
 
-                if rect.collidepoint(pygame.mouse.get_pos()):
-                    self.inventory.ui.selected_index = i
-                    return
+                    rect = pygame.Rect(x, y, case_size, case_size)
+
+                    if rect.collidepoint(pygame.mouse.get_pos()):
+                        self.inventory.ui.selected_index = i
+                        return
 
             return
         
@@ -573,6 +575,12 @@ class UI:
     def open_inv(self, inv, Crafting_type=Crafting_types.INV):
         self.open_inventory = inv
         inv.open_crafting(Crafting_type)
+
+    def open_furnace(self, inv, block):
+        pass
+
+    def open_chest(self, inv, block):
+        pass
     
     def close_inv(self):
         if self.open_inventory:

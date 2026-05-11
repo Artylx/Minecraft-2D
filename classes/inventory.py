@@ -77,6 +77,17 @@ RECIPES = {
     },
 
     (
+        ("stone","stone","stone",),
+        ("stone", None,"stone",),
+        ("stone","stone","stone",),
+     
+    ): {
+        "result": [(1, "furnace")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
         ("oak_plank",),
         ("oak_plank",)
     ): {
@@ -328,8 +339,9 @@ class Inventory():
                 continue
 
             if isinstance(item.item_property, game_type.Tool):
-                if item.item_property.is_break():
+                if item.is_break():
                     to_remove.append(slot)
+                    print(f"Is break {item.is_break()}, #{item.item_property}")
 
         # suppression
         for slot in to_remove:
@@ -493,6 +505,7 @@ class Inventory():
 class Crafting_types:
     CRAFTING_TABLE = (3, 3)
     INV = (2, 2)
+    FURNACE = (2, 1)
 
 class Entity_Inventory(Inventory):
     def __init__(self, owner_entity, size=24):
@@ -556,7 +569,7 @@ class UI_Inventory():
 class ItemStack():
     texture_manager = None
 
-    def __init__(self, item_property=None, count=1):
+    def __init__(self, item_property=None, count=1, durability=None):
         self.item_property = item_property
 
         if type(count) != int:
@@ -565,6 +578,15 @@ class ItemStack():
             except:
                 count = 1
         self.count = count
+        self.durability = durability
+
+        if not durability and item_property:
+
+            if hasattr(item_property, "max_durability"):
+                self.durability = item_property.max_durability
+
+        self.break_ = False
+        self.used = False
 
         self.rect = pygame.Rect(0, 0, game_property.INVENTORY_SIZE_CASE, game_property.INVENTORY_SIZE_CASE)
 
@@ -574,7 +596,7 @@ class ItemStack():
     def load(self, data):
         # champs simples
         simple_fields = [
-            "item_type_name", "count"
+            "item_type_name", "count", "durability"
         ]
 
         # Vérification
@@ -588,19 +610,26 @@ class ItemStack():
         for attr in simple_fields:
             if attr == "item_type_name":
                 item_type_name = data["item_type_name"]
-                
-                item_property = game_type.get_item_type_by_name(item_type_name)
-                if item_property:
-                    if data.get("dict_item", None):
-                        item_property = item_property.load(data.get("dict_item", {}))
+                self.item_property = game_type.get_item_type_by_name(item_type_name)
 
-                    self.item_property = item_property.create_instance()
-                else:
-                    self.item_property = None
             else:
                 setattr(self, attr, data[attr])
+
         self.update_texture()
         return self
+    
+    def use(self):
+        self.durability -= 1
+        if self.durability <= 0:
+            self.break_ = True
+
+    def repare(self, durability):
+        self.durability = min(self.item_property.max_durability, self.durability + durability)
+        if self.durability > 0:
+            self.break_ = False
+
+    def is_break(self):
+        return self.break_
 
     def __str__(self):
         return f"ItemStack(type:{self.item_property}, count:{self.count})"
@@ -614,7 +643,7 @@ class ItemStack():
                 self.count += n
                 return 0
         
-    def render(self, screen, pos, texture_size=None, draw_number=True):
+    def render(self, screen, pos, texture_size=None, draw_number=True, draw_durability=True):
         self.update_texture()
         texture = self.texture
         if texture_size and self.texture:
@@ -636,6 +665,46 @@ class ItemStack():
                 text_rect.y -= 10
 
                 screen.blit(text, text_rect)
+        
+        if draw_durability:
+            if (self.item_property is not None and hasattr(self.item_property, "max_durability") and self.durability):
+
+                max_dura = self.item_property.max_durability
+                ratio = max(0, self.durability / max_dura)
+
+                if ratio != 1:
+
+                    # Taille de la barre
+                    bar_width = self.rect.width - 8
+                    bar_height = 6
+
+                    # Position
+                    bar_x = self.rect.x + 4
+                    bar_y = self.rect.bottom - 8
+
+                    # Fond noir/gris
+                    pygame.draw.rect(
+                        screen,
+                        (30, 30, 30),
+                        (bar_x, bar_y, bar_width, bar_height)
+                    )
+
+                    # Couleur dynamique
+                    if ratio > 0.6:
+                        color = (50, 220, 50)      # vert
+                    elif ratio > 0.3:
+                        color = (240, 180, 20)     # jaune
+                    else:
+                        color = (220, 50, 50)      # rouge
+
+                    # Largeur restante
+                    current_width = int(bar_width * ratio)
+
+                    pygame.draw.rect(
+                        screen,
+                        color,
+                        (bar_x, bar_y, current_width, bar_height)
+                    )
 
     def update_texture(self):
         if self.item_property is not None:
@@ -645,6 +714,12 @@ class ItemStack():
                 self.texture = pygame.transform.scale(self.texture, (game_property.INVENTORY_SIZE_CASE, game_property.INVENTORY_SIZE_CASE))
 
     def get_texture(self):
+        if self.used:
+            try:
+                return self.item_property.get_texture_used()
+            except:
+                pass
+
         return self.item_property.get_texture()
     
     def is_posable(self):
@@ -653,6 +728,6 @@ class ItemStack():
     def to_json(self):
         return {
             "item_type_name": self.item_property.item_name,
-            "dict_item": self.item_property.to_json(), 
             "count": self.count,
+            "durability": self.durability,
         }

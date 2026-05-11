@@ -1005,6 +1005,8 @@ class Block:
         self.sky_light = 0
         self.block_light = 0
 
+        self.item_contain = []
+
         self.debug = debug
         if self.block_property.life:
             self.life = self.block_property.life

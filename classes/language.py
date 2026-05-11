@@ -24,12 +24,14 @@ ITEMS_FR = {
     "bow": "Arc",
     "arrow": "Flèche",
     "coal": "Charbon",
+    "tnt": "Explosif",
 }
 
 ITEMS_EN = {
     "wooden_word": "Wooden sword",
     "mushroom": "Mushroom",
     "coal_ingot": "Coal ingot",
+    "tnt": "Tnt",
 }
 
 class LANGUAGE_TYPE:

@@ -42,93 +42,13 @@
             }
         },
         {
-            "type": "Item",
-            "uuid": "c9e8e813-e4cb-499f-a650-06d4cefc94ac",
-            "x": 2185,
-            "y": 416,
-            "w": 16,
-            "h": 16,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Item",
-            "item_type": {
-                "name": "grass",
-                "max_stack": 100,
-                "placeable": true,
-                "block_type": "GRASS"
-            }
-        },
-        {
-            "type": "Item",
-            "uuid": "9ae76a89-c84b-40f6-94bc-7738949b3d4e",
-            "x": 2116,
-            "y": 0,
-            "w": 16,
-            "h": 16,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Item",
-            "item_type": {
-                "name": "coal",
-                "max_stack": 100,
-                "placeable": false,
-                "block_type": null
-            }
-        },
-        {
-            "type": "Item",
-            "uuid": "56e29fd8-2f26-4291-9c3a-32904a736bed",
-            "x": 2154,
-            "y": 0,
-            "w": 16,
-            "h": 16,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Item",
-            "item_type": {
-                "name": "coal",
-                "max_stack": 100,
-                "placeable": false,
-                "block_type": null
-            }
-        },
-        {
-            "type": "Item",
-            "uuid": "af68400d-bbe3-4ea1-8284-6ec9698b1acc",
-            "x": 2088,
-            "y": -416,
-            "w": 16,
-            "h": 16,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Item",
-            "item_type": {
-                "name": "coal",
-                "max_stack": 100,
-                "placeable": false,
-                "block_type": null
-            }
-        },
-        {
             "type": "Player",
             "uuid": "9e0c08a5-8b5b-42ca-88db-5266725325d2",
-            "x": 4021,
+            "x": 3972,
             "y": 832,
             "w": 27,
             "h": 80,
-            "vx": 2.396273886414233e-30,
+            "vx": -0.1449711246784904,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -136,7 +56,7 @@
             "name": "ptitgamer81",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
                 "uuid": "c89dbed0-d623-4254-9cbe-ff45a695e5c2",
@@ -147,179 +67,104 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone_sword",
-                            "dict_item": {
-                                "name": "stone_sword",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 240,
-                                "max_durability": 240
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 1,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 33
+                            "count": 33,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "wooden_pickaxe",
-                            "dict_item": {
-                                "name": "wooden_pickaxe",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 110,
-                                "max_durability": 110
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
                             "item_type_name": "wooden_axe",
-                            "dict_item": {
-                                "name": "wooden_axe",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 110,
-                                "max_durability": 110
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "wooden_sword",
-                            "dict_item": {
-                                "name": "wooden_sword",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 110,
-                                "max_durability": 110
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "torch",
-                            "dict_item": {
-                                "name": "torch",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "TORCH"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "stone_sword",
-                            "dict_item": {
-                                "name": "stone_sword",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 240,
-                                "max_durability": 240
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "oak_trunk",
-                            "dict_item": {
-                                "name": "oak_trunk",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "OAK_TRUNK"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 8,
                         "itemStack": {
                             "item_type_name": "coal",
-                            "dict_item": {
-                                "name": "coal",
-                                "max_stack": 100,
-                                "placeable": false,
-                                "block_type": null
-                            },
-                            "count": 45
+                            "count": 45,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 9,
                         "itemStack": {
                             "item_type_name": "stick",
-                            "dict_item": {
-                                "name": "stick",
-                                "max_stack": 100,
-                                "placeable": false,
-                                "block_type": null
-                            },
-                            "count": 21
+                            "count": 21,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 10,
                         "itemStack": {
                             "item_type_name": "crafting_table",
-                            "dict_item": {
-                                "name": "crafting_table",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "CRAFTING_TABLE"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 11,
                         "itemStack": {
                             "item_type_name": "grass",
-                            "dict_item": {
-                                "name": "grass",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "GRASS"
-                            },
-                            "count": 8
+                            "count": 8,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 12,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "dict_item": {
-                                "name": "dirt",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "DIRT"
-                            },
-                            "count": 25
+                            "count": 25,
+                            "durability": null
                         }
                     }
                 ],

@@ -4,7 +4,7 @@ import copy
 class BlockProperty:
     REGISTRY = {}
 
-    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0):
+    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0, container=(0, 0)):
         self.block_name = name
         self.block_id = block_id
         self.texture = texture
@@ -15,6 +15,8 @@ class BlockProperty:
         self.weakness = weakness
         self.need_to_drop = need_to_drop
         self.light_emission = light_emission
+
+        self.container = container
 
         BlockProperty.REGISTRY[name.upper()] = self
 
@@ -37,7 +39,7 @@ class ItemProperty:
     REGISTRY = {}
     texture_manager = None
 
-    def __init__(self, name=None, texture=None, max_stack=None, placeable=None, block_type=None, description="Materiaux", heatable=False, warmer_item=None, fuel=False, fuel_level=0):
+    def __init__(self, name=None, texture=None, max_stack=None, placeable=None, block_type=None, description="Materiaux", heatable=False, warmer_item=None, fuel_level=0, electricity=0):
         self.description = description + '\n'
         self.item_name = name
         self.texture = texture
@@ -45,6 +47,14 @@ class ItemProperty:
         self.placeable = placeable
         self.block_type = block_type
         self.description = description
+
+        # POWER OF BLOCKS
+        self.electricity = electricity
+
+        # FURNACE
+        self.heatable = heatable
+        self.warmer_item = warmer_item
+        self.fuel_level = fuel_level
         
         self.register()
 
@@ -114,9 +124,6 @@ class ItemProperty:
             return False
 
         return self.item_name == other.item_name and self.description == other.description
-    
-    def create_instance(self):
-        return copy.copy(self)
 
 
 class Tool(ItemProperty):
@@ -126,18 +133,6 @@ class Tool(ItemProperty):
         super().__init__(name, texture, 1, False, None, description)
         self.durability = durability
         self.max_durability = durability
-
-        self.break_ = False
-
-    def use(self, count=1):
-        self.durability -= count
-
-        print(f"Outils {self.item_name} durability: {self.durability}")
-        if self.durability <= 0:
-            self.break_ = True
-
-    def is_break(self):
-        return self.break_
     
     def load(self, data):
         print("Load Tool")
@@ -207,17 +202,12 @@ class Bow_tool(Tool):
         self.power = power
         self.use_texture = use_texture
 
-        self.used = False
-
-    def get_texture(self):
+    def get_texture_used(self):
         if ItemProperty.texture_manager is None:
             print("TextureManager non défini")
             return None
-
-        if self.used:
-            return ItemProperty.texture_manager.get_texture(self.use_texture)
         
-        return ItemProperty.texture_manager.get_texture(self.texture)
+        return ItemProperty.texture_manager.get_texture(self.use_texture)
 
 class MaterialTool:
     WOODEN = 0
@@ -304,7 +294,7 @@ ItemProperty.IRON_ORE = ItemProperty("iron_ore", TextureType.IRON_ORE, 100, True
 ItemProperty.GOLD_ORE = ItemProperty("gold_ore", TextureType.GOLD_ORE, 100, True, "GOLD_ORE", heatable=True, warmer_item="GOLD")
 
 
-ItemProperty.COAL = ItemProperty("coal", TextureType.COAL, 100, False, None, fuel=True, fuel_level=10)
+ItemProperty.COAL = ItemProperty("coal", TextureType.COAL, 100, False, None, fuel_level=10)
 ItemProperty.IRON = ItemProperty("iron", TextureType.IRON, 100, False, None)
 ItemProperty.GOLD = ItemProperty("gold", TextureType.GOLD, 100, False, None)
 
@@ -314,6 +304,8 @@ ItemProperty.OAK_LEAVES = ItemProperty("oak_leaves", TextureType.OAK_LEAVES, 100
 ItemProperty.OAK_TRUNK_BOTTOM = ItemProperty("oak_trunk_bottom", TextureType.OAK_TRUNK_BOTTOM, 100, True, "OAK_TRUNK_BOTTOM")
 ItemProperty.OAK_TRUNK_MID = ItemProperty("oak_trunk_mid", TextureType.OAK_TRUNK_MID, 100, True, "OAK_TRUNK_MID")
 ItemProperty.CRAFTING_TABLE = ItemProperty("crafting_table", TextureType.CRAFTING_TABLE, 100, True, "CRAFTING_TABLE")
+ItemProperty.FURNACE = ItemProperty("furnace", TextureType.FURNACE, 100, True, "FURNACE", "Permet de cuir les objets")
+ItemProperty.CHEST = ItemProperty("chest", TextureType.CHEST, 100, True, "CHEST", "Permet de stocker des objets")
 ItemProperty.STONE_SNOW = ItemProperty("stone_snow", TextureType.STONE_SNOW, 100, True, "STONE_SNOW")
 ItemProperty.SNOW = ItemProperty("snow", TextureType.SNOW, 100, True, "SNOW")
 ItemProperty.BEDROCK = ItemProperty("bedrock", TextureType.BEDROCK, 100, True, "BEDROCK")
@@ -370,6 +362,8 @@ BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE
 BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
 BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
 BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200, Axe_tool)
+BlockProperty.FURNACE = BlockProperty("furnace", 30, True, TextureType.FURNACE, True, "FURNACE", 200, Pickaxe_tool, Pickaxe_tool)
+BlockProperty.CHEST = BlockProperty("chest", 31, True, TextureType.CHEST, True, "CHEST", 200, Axe_tool)
 BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300, Pickaxe_tool)
 BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
 BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50, Pickaxe_tool)

@@ -684,7 +684,7 @@ class Player(Living_entity):
             if isinstance(item_property, game_type.Tool):
 
                 if isinstance(item_property, game_type.Bow_tool):
-                    texture = item_property.get_texture()
+                    texture = selected_item.get_texture()
 
                     if texture:
                         weapon_size = int(self.rect.width * 1.8)
@@ -722,7 +722,7 @@ class Player(Living_entity):
                         screen.blit(rotated_image, rotated_rect.topleft)
                 else:
 
-                    texture = item_property.get_texture()
+                    texture = selected_item.get_texture()
 
                     if texture:
                         weapon_size = int(self.rect.width * 1.8)
@@ -897,17 +897,18 @@ class Player(Living_entity):
         self.use_selected_item(cam_rect)
     
     def use_item(self, direction):
+        print("Use item")
         selected_item = self.inventory.ui.get_selected_item()
 
         if isinstance(selected_item.item_property, game_type.Bow_tool):
-            bow_use = selected_item.item_property.used
+            bow_use = selected_item.used
             if bow_use:
                 if not self.inventory.has_item(game_type.ItemProperty.ARROW):
                     return
 
                 self.inventory.delete_item_property(game_type.ItemProperty.ARROW, 1)
 
-                selected_item.item_property.used = False
+                selected_item.used = False
                 if direction.x > 0:
                     direction_str = "right"
                 else:
@@ -920,7 +921,7 @@ class Player(Living_entity):
 
                 origin = pygame.Vector2(self.rect.centerx, self.rect.centery)
 
-                selected_item.item_property.use()
+                selected_item.use()
 
                 arrow = Arrow_entity(
                     self.world,
@@ -931,7 +932,7 @@ class Player(Living_entity):
                 self.world.create_entity(arrow)
             else:
                 if self.inventory.has_item(game_type.ItemProperty.ARROW):
-                    selected_item.item_property.used = True
+                    selected_item.used = True
 
                     
 

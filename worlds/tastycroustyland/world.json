@@ -777,13 +777,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     }
                 ],
@@ -816,13 +811,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     }
                 ],
@@ -855,13 +845,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -894,13 +879,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -933,13 +913,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -972,13 +947,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     }
                 ],
@@ -1011,13 +981,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -1050,13 +1015,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1114,13 +1074,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -1228,13 +1183,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -1292,13 +1242,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1331,13 +1276,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1370,13 +1310,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1409,13 +1344,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1448,13 +1378,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1487,13 +1412,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1526,13 +1446,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1565,13 +1480,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1604,13 +1514,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1643,13 +1548,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1682,13 +1582,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1721,13 +1616,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1760,13 +1650,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -1799,13 +1684,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1838,13 +1718,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -1977,13 +1852,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2066,13 +1936,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2105,13 +1970,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -2219,13 +2079,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 4
+                            "count": 4,
+                            "durability": null
                         }
                     }
                 ],
@@ -2258,13 +2113,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2297,13 +2147,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2336,13 +2181,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2375,13 +2215,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -2414,13 +2249,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2453,13 +2283,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     }
                 ],
@@ -2492,13 +2317,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -2531,13 +2351,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 5
+                            "count": 5,
+                            "durability": null
                         }
                     }
                 ],
@@ -2720,13 +2535,8 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 3
+                            "count": 3,
+                            "durability": null
                         }
                     }
                 ],
@@ -18861,11 +18671,11 @@
         {
             "type": "Player",
             "uuid": "eb24e027-bc9a-41d8-b963-8be388b776a0",
-            "x": 17031,
+            "x": 17062,
             "y": 768,
             "w": 27,
             "h": 80,
-            "vx": 5.531311340468045e-18,
+            "vx": -2.256662673574027e-07,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -18873,7 +18683,7 @@
             "name": "LaMeufDuFont",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
                 "uuid": "f1db017d-7ca1-4748-89b1-96d0a58a2f61",
@@ -18884,201 +18694,120 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "diamond_sword",
-                            "dict_item": {
-                                "name": "diamond_sword",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 1561,
-                                "max_durability": 1561
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 1,
                         "itemStack": {
                             "item_type_name": "diamond_pickaxe",
-                            "dict_item": {
-                                "name": "diamond_pickaxe",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 1561,
-                                "max_durability": 1561
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "crafting_table",
-                            "dict_item": {
-                                "name": "crafting_table",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "CRAFTING_TABLE"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
                             "item_type_name": "torch",
-                            "dict_item": {
-                                "name": "torch",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "TORCH"
-                            },
-                            "count": 2
+                            "count": 2,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "tnt",
-                            "dict_item": {
-                                "name": "tnt",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "TNT"
-                            },
-                            "count": 96
+                            "count": 96,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "mushroom",
-                            "dict_item": {
-                                "name": "mushroom",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "MUSHROOM"
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "dict_item": {
-                                "name": "dirt",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "DIRT"
-                            },
-                            "count": 46
+                            "count": 46,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "grass",
-                            "dict_item": {
-                                "name": "grass",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "GRASS"
-                            },
-                            "count": 30
+                            "count": 30,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 8,
                         "itemStack": {
                             "item_type_name": "coal",
-                            "dict_item": {
-                                "name": "coal",
-                                "max_stack": 100,
-                                "placeable": false,
-                                "block_type": null
-                            },
-                            "count": 13
+                            "count": 13,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 9,
                         "itemStack": {
                             "item_type_name": "stick",
-                            "dict_item": {
-                                "name": "stick",
-                                "max_stack": 100,
-                                "placeable": false,
-                                "block_type": null
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 10,
                         "itemStack": {
                             "item_type_name": "oak_plank",
-                            "dict_item": {
-                                "name": "oak_plank",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "OAK_PLANK"
-                            },
-                            "count": 10
+                            "count": 10,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 11,
                         "itemStack": {
                             "item_type_name": "oak_trunk",
-                            "dict_item": {
-                                "name": "oak_trunk",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "OAK_TRUNK"
-                            },
-                            "count": 18
+                            "count": 18,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 12,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 17
+                            "count": 17,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 13,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "dict_item": {
-                                "name": "stone",
-                                "max_stack": 100,
-                                "placeable": true,
-                                "block_type": "STONE"
-                            },
-                            "count": 100
+                            "count": 100,
+                            "durability": null
                         }
                     },
                     {
                         "slot": 16,
                         "itemStack": {
                             "item_type_name": "stone_pickaxe",
-                            "dict_item": {
-                                "name": "stone_pickaxe",
-                                "max_stack": 1,
-                                "placeable": false,
-                                "block_type": null,
-                                "durability": 240,
-                                "max_durability": 240
-                            },
-                            "count": 1
+                            "count": 1,
+                            "durability": null
                         }
                     }
                 ],

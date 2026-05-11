@@ -56,6 +56,8 @@ class TextureType:
     BOW_ARROW = "bow_arrow"
 
     CRAFTING_TABLE = "crafting_table"
+    FURNACE = "furnace"
+    CHEST = "chest"
 
     DIAMOND_SWORD = "diamond_sword"
     DIAMOND_PICKAXE = "diamond_pickaxe"
@@ -114,7 +116,6 @@ class TextureManager:
             self.load_texture(TextureType.WATER, BLOCKS_PATH + "water.png")
             self.load_texture(TextureType.OAK_TRUNK, BLOCKS_PATH + "oak_trunk.png")
             self.load_texture(TextureType.OAK_LEAVES, BLOCKS_PATH + "oak_leaves.png")
-            self.load_texture(TextureType.CRAFTING_TABLE, BLOCKS_PATH + "crafting_table.png")
             self.load_texture(TextureType.OAK_TRUNK_BOTTOM, BLOCKS_PATH + "oak_trunk_bottom.png")
             self.load_texture(TextureType.OAK_TRUNK_MID, BLOCKS_PATH + "oak_trunk_mid.png")
             self.load_texture(TextureType.SNOW, BLOCKS_PATH + "snow.png")
@@ -125,6 +126,10 @@ class TextureManager:
             self.load_texture(TextureType.OAK_PLANK, BLOCKS_PATH + "oak_plank.png")
             self.load_texture(TextureType.TNT, BLOCKS_PATH + "tnt.png")
             self.load_texture(TextureType.TORCH, BLOCKS_PATH + "torch.png")
+
+            self.load_texture(TextureType.CRAFTING_TABLE, BLOCKS_PATH + "crafting_table.png")
+            self.load_texture(TextureType.FURNACE, BLOCKS_PATH + "furnace.png")
+            self.load_texture(TextureType.CHEST, BLOCKS_PATH + "chest.png")
 
             # VARIATIONS 
             self.load_texture(TextureType.GRASS_1, BLOCKS_PATH + "grass1.png")

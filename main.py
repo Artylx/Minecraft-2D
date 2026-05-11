@@ -464,7 +464,7 @@ class Game_manager:
                 self.click_on_block(self.current_block_pos, self.player)
                 self.player.use_selected_item(self.cam_rect)    
             else:
-                if game.prev_keys_.get(self.event_mouse_get(3)):
+                if game.is_release(self.event_mouse_get(3)):
                     self.player.stop_use_selected_item(self.cam_rect)
 
             if game.is_press(pygame.K_t):
@@ -553,6 +553,14 @@ class Game_manager:
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
                     self.UI.open_inv(player.inventory, Crafting_types.CRAFTING_TABLE)
+                    return True
+                elif old_block.block_property == game_type.BlockProperty.FURNACE:
+
+                    self.UI.open_furnace(player.inventory, old_block)
+                    return True
+                elif old_block.block_property == game_type.BlockProperty.CHEST:
+
+                    self.UI.open_chest(player.inventory, old_block)
                     return True
         return False
 
