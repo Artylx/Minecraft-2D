@@ -26,6 +26,10 @@ class Game:
 
         self.screen = pygame.display.set_mode((self.WIDTH_SCREEN, self.HEIGHT_SCREEN), pygame.RESIZABLE)
 
+        # ICON
+        icon = pygame.image.load(game_property.get_resource_path("resource_pack/Default/texture/blocks/grass_block.png")).convert_alpha()
+        pygame.display.set_icon(icon)
+
         self.clock = pygame.time.Clock()
         self.running = True
         self.update_rate = game_property.UPDATE_RATE
@@ -434,10 +438,8 @@ class Game_manager:
             elif game.keys_.get(pygame.K_q) and not game.keys_.get(pygame.K_d) or (game.keys_.get(pygame.K_LEFT) and not game.keys_.get(pygame.K_RIGHT)):
                 self.player.add_velocity(-1, 0)
 
-            # jump input: only apply when player is on ground
             if (game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP)) and self.player.on_ground:
-                self.player.add_velocity(0, game_property.JUMP_VELOCITY)
-                self.player.on_ground = False
+                self.player.jump(game_property.JUMP_VELOCITY)
 
             # Breaking
             selected_item = self.player.inventory.ui.get_selected_item()
@@ -504,22 +506,22 @@ class Game_manager:
                 game.menu.set_menu(interface.MenusCollection.GAME_PAUSED)
 
         elif self.UI.is_open_inv():
-            if game.keys_.get(game.event_mouse_get(1)):
-                if not game.prev_keys_.get(game.event_mouse_get(1)):
-                    self.UI.mouse_down(1)
-            else:
-                if game.prev_keys_.get(game.event_mouse_get(1)):
-                    self.UI.mouse_up(1)
-            
-            if game.keys_.get(game.event_mouse_get(3)):
-                if not game.prev_keys_.get(game.event_mouse_get(3)):
-                    self.UI.mouse_down(3)
-            else:
-                if game.prev_keys_.get(game.event_mouse_get(3)):
-                    self.UI.mouse_up(3)
-
             if game.is_press(pygame.K_ESCAPE) or game.is_press(pygame.K_e):
                 self.UI.close_inv()
+
+        if game.keys_.get(game.event_mouse_get(1)):
+            if not game.prev_keys_.get(game.event_mouse_get(1)):
+                self.UI.mouse_down(1)
+        else:
+            if game.prev_keys_.get(game.event_mouse_get(1)):
+                self.UI.mouse_up(1)
+        
+        if game.keys_.get(game.event_mouse_get(3)):
+            if not game.prev_keys_.get(game.event_mouse_get(3)):
+                self.UI.mouse_down(3)
+        else:
+            if game.prev_keys_.get(game.event_mouse_get(3)):
+                self.UI.mouse_up(3)
             
 
         # forward world update handles gravity and actual movement
@@ -628,7 +630,7 @@ class Game_manager:
 
             lines = debug_text.split("\n")
             self.debug_surface = [
-                self.debug_font.render(line, True, (0, 0, 0))
+                self.debug_font.render(line, True, (255, 255, 255))
                 for line in lines
             ]
 

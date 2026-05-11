@@ -4,11 +4,11 @@
         {
             "type": "Player",
             "uuid": "cd41c17d-d1cb-41c8-8076-3cad375ccf56",
-            "x": -1340,
-            "y": -1408,
+            "x": -2180,
+            "y": -1280,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
+            "vx": 4.118900221940979e-87,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -63,20 +63,20 @@
                                 "placeable": true,
                                 "block_type": "STONE"
                             },
-                            "count": 98
+                            "count": 100
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
-                            "item_type_name": "grass",
+                            "item_type_name": "oak_plank",
                             "dict_item": {
-                                "name": "grass",
+                                "name": "oak_plank",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "GRASS"
+                                "block_type": "OAK_PLANK"
                             },
-                            "count": 5
+                            "count": 4
                         }
                     },
                     {
@@ -119,16 +119,16 @@
                         }
                     },
                     {
-                        "slot": 7,
+                        "slot": 8,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
+                            "item_type_name": "stone",
                             "dict_item": {
-                                "name": "oak_plank",
+                                "name": "stone",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "OAK_PLANK"
+                                "block_type": "STONE"
                             },
-                            "count": 8
+                            "count": 61
                         }
                     },
                     {
@@ -141,20 +141,46 @@
                                 "placeable": true,
                                 "block_type": "IRON_ORE"
                             },
-                            "count": 7
+                            "count": 3
                         }
                     },
                     {
-                        "slot": 10,
+                        "slot": 11,
                         "itemStack": {
-                            "item_type_name": "stone",
+                            "item_type_name": "grass",
                             "dict_item": {
-                                "name": "stone",
+                                "name": "grass",
                                 "max_stack": 100,
                                 "placeable": true,
-                                "block_type": "STONE"
+                                "block_type": "GRASS"
                             },
-                            "count": 25
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 13,
+                        "itemStack": {
+                            "item_type_name": "grass",
+                            "dict_item": {
+                                "name": "grass",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "GRASS"
+                            },
+                            "count": 4
+                        }
+                    },
+                    {
+                        "slot": 18,
+                        "itemStack": {
+                            "item_type_name": "oak_plank",
+                            "dict_item": {
+                                "name": "oak_plank",
+                                "max_stack": 100,
+                                "placeable": true,
+                                "block_type": "OAK_PLANK"
+                            },
+                            "count": -1
                         }
                     }
                 ],
@@ -1602,6 +1628,56 @@
             {
                 "x": -70,
                 "y": -30,
+                "block": "torch"
+            },
+            {
+                "x": -69,
+                "y": -43,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -42,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -41,
+                "block": "air"
+            },
+            {
+                "x": -69,
+                "y": -43,
+                "block": "stone"
+            },
+            {
+                "x": -69,
+                "y": -42,
+                "block": "stone"
+            },
+            {
+                "x": -69,
+                "y": -41,
+                "block": "stone"
+            },
+            {
+                "x": -67,
+                "y": -40,
+                "block": "air"
+            },
+            {
+                "x": -67,
+                "y": -40,
+                "block": "torch"
+            },
+            {
+                "x": -67,
+                "y": -40,
+                "block": "air"
+            },
+            {
+                "x": -67,
+                "y": -40,
                 "block": "torch"
             }
         ],

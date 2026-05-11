@@ -190,6 +190,10 @@ class Entity:
             self.add_velocity(0, -self.gravity * dt)
         else:
             self.velocity.y = 0
+
+    def jump(self, force):
+        self.add_velocity(0, force)
+        self.on_ground = False
     
     def add_velocity(self, vx, vy):
         self.velocity.x += (vx * self.speed)
@@ -658,6 +662,7 @@ class Player(Living_entity):
         # =========================
         # LEG
         screen.blit(leg, (base_x + 2, base_y + self.rect.width * 2))
+        screen.blit(leg, (base_x + 2 + (self.rect.width - 4) // 2, base_y + self.rect.width * 2))
 
         # =========================
         # ARM
@@ -804,7 +809,7 @@ class Player(Living_entity):
         self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
 
         self.leg_texture = self.texture_manager.get_texture(TextureType.PLAYER_LEG)
-        self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
+        self.leg_texture = pygame.transform.scale(self.leg_texture, ((self.rect.width - 2) // 2, self.rect.width))
         
         self.arm_texture = self.texture_manager.get_texture(TextureType.PLAYER_ARM)
         self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))

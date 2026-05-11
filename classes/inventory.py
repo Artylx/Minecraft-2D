@@ -626,7 +626,7 @@ class ItemStack():
             screen.blit(texture, pos)
 
         if draw_number:
-            if self.count > 1 and self.item_property is not None:
+            if self.count != 1 and self.item_property is not None:
                 font = pygame.font.SysFont(None, game_property.INVENTORY_SIZE_CASE // 2)
                 text = font.render(str(self.count), True, (255, 255, 255))
 

@@ -347,7 +347,7 @@ class World:
         screen.blit(text_surface, (10, 70))
 
         debug_text = f"Entitys: {len(self.entitys)}"
-        text_surface = font.render(debug_text, True, (0, 0, 0))
+        text_surface = font.render(debug_text, True, (255, 255, 255))
         screen.blit(text_surface, (10, 90))
 
         # pygame.draw.rect(screen, (0, 255, 0), (self.screen_size[0] // 2 - 1, 0, 2, self.screen_size[1]))

@@ -53,6 +53,11 @@ class UI:
             for i in range(10)
         ]
 
+        self.buttons = {
+            1: False,
+            3: False,
+        }
+
     def update_screen_size(self, screen_size):
         self.screen_size = screen_size
         self.cam_rect = pygame.Rect(-self.screen_size[0] // 2 + game_property.CHUNK_WIDTH * game_property.TILE_SIZE // 2, 0, self.screen_size[0], self.screen_size[1])
@@ -158,12 +163,49 @@ class UI:
         # texte
         screen.blit(title_surf, (x + 5, y + 3))
         screen.blit(desc_surf, (x + 5, y + 3 + title_surf.get_height()))
+
+    def other_button(self, current):
+        if current == 1:
+            return 3
+        elif current == 3:
+            return 1
+        return 0
         
     def mouse_down(self, button):
-        if not self.is_open_inv() or (button != 1 and button != 3):
+        if not self.is_open_inv() and button == 1:
+            case_size = game_property.INVENTORY_SIZE_CASE
+            margin = 15
+
+            height = case_size + margin * 2
+            width = margin + (case_size + margin) * self.inventory.ui.case_number
+
+            start_x = self.screen_size[0] // 2 - width // 2
+            start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
+
+            for i in range(self.inventory.ui.case_number):
+
+                x = start_x + i * (case_size + margin) + margin
+                y = start_y + margin
+
+                rect = pygame.Rect(x, y, case_size, case_size)
+
+                if rect.collidepoint(pygame.mouse.get_pos()):
+                    self.inventory.ui.selected_index = i
+                    return
+
+            return
+        
+        if (button != 1 and button != 3):
             return
     
         mouse_pos = pygame.mouse.get_pos()
+
+        if self.buttons[self.other_button(button)]:
+            return
+        
+        self.buttons[button] = True
+
+        print(self.buttons)
 
         for rect, slot in self.get_all_slots(self.open_inventory):
             if rect.collidepoint(mouse_pos):
@@ -182,12 +224,17 @@ class UI:
                     item = slot.get()
                     if item:
                         if button == 3:
-                            half_count = item.count // 2
-                            if half_count > 0:
+                            half_count = max(item.count // 2, 1)
+
+                            self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
+                            self.drag_origin = slot
+                            self.drag_origin_index = self.get_slot_index(slot)
+
+                            if item.count - half_count == 0:
+                                slot.set(None)
+                            else:
                                 item.count -= half_count
-                                self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
-                                self.drag_origin = slot
-                                self.drag_origin_index = self.get_slot_index(slot)
+                                
                         else:
                             self.dragged_slot = Slot(lambda: item, lambda x: None, "temp")
                             self.drag_origin = slot
@@ -206,6 +253,13 @@ class UI:
     def mouse_up(self, button):
         if not self.is_open_inv() or (button != 1 and button != 3) or not self.dragged_slot:
             return
+        
+        if not self.buttons[button]:
+            return
+        
+        self.buttons[button] = False
+
+        print(self.buttons, "UP")
 
         mouse_pos = pygame.mouse.get_pos()
         dropped = False
