@@ -7,26 +7,28 @@ from classes.inventory import Crafting_types, ItemStack, SlotWrapper
 class DragState:
     def __init__(self):
         self.stack = None
-        self.source_inventory = None
-        self.source_index = None
+        self.source_slot = None
     
 class InventoryController:
     def __init__(self, inventory):
         self.inventory = inventory
         self.drag = DragState()
 
-    def start_drag(self, index):
+    def start_drag(self, index, inv):
         slot = self.inventory.get_slot(index)
 
+        if not slot:
+            return
+        
         if slot.is_empty():
             return
 
         self.drag.stack = slot.get()
-        self.drag.source_index = index
+        self.drag.source_slot = slot
 
         slot.set(None)
 
-    def start_split_drag(self, index):
+    def start_split_drag(self, index, inv):
         slot = self.inventory.get_slot(index)
 
         if slot.is_empty():
@@ -37,6 +39,7 @@ class InventoryController:
         half = max(item.count // 2, 1)
 
         self.drag.stack = ItemStack(item.item_property, half)
+        self.drag.source_slot = slot
         item.count -= half
 
         self.drag.source_index = index
@@ -50,12 +53,20 @@ class InventoryController:
         if not self.drag.stack or not target:
             return
 
-        if target.type == "craft_result":
+        if target.get_type() == "craft_result":
+            self.inventory.add_item(self.drag.stack)
+
+            print("Craft result")
+
+            self._clear()
+            return
+        
+        if target.get_type() == "craft_input":
             return
 
         # EMPTY
         if target.is_empty():
-            target.stack = self.drag.stack
+            target.set(self.drag.stack)
             self._clear()
             return
 
@@ -63,12 +74,16 @@ class InventoryController:
         if self.inventory.try_stack_item(self.drag.stack, target):
             if self.drag.stack.count <= 0:
                 self._clear()
+            else:
+                self.drop_outside()
             return
 
         # SWAP
-        temp = target.stack
-        target.stack = self.drag.stack
-        self.drag.stack = temp
+        temp = target.get()
+        target.set(self.drag.stack)
+
+        self.drag.source_inventory.items[self.drag.source_index] = temp
+        self._clear()
 
     def drop_outside(self):
         self.inventory.insert(self.drag.stack)
@@ -272,10 +287,10 @@ class UI:
             return
 
         if button == 1:
-            self.controller.start_drag(index)
+            self.controller.start_drag(index, self.open_inventory)
 
         elif button == 3:
-            self.controller.start_split_drag(index)
+            self.controller.start_split_drag(index, self.open_inventory)
 
     def get_slot_index(self, target_slot):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
@@ -295,6 +310,7 @@ class UI:
 
         mouse_pos = pygame.mouse.get_pos()
         index = self.get_slot_index_from_mouse(mouse_pos)
+        print("Index ", index)
 
         if index is None:
             self.controller.drop_outside()
@@ -379,7 +395,7 @@ class UI:
             self.render_crafting(screen, inv.craft_manager, start_x, (start_y + self.current_title_space), height=height, inv=inv)
 
     def get_slots(self, inv, type="inventory"):
-        return [(rect, slot) for rect, slot in self.get_all_slots(inv) if slot.type == type]
+        return [(rect, slot) for rect, slot in self.get_all_slots(inv) if slot.get_type() == type]
 
     def get_all_slots(self, inv):
         slots = []
@@ -403,9 +419,10 @@ class UI:
 
             rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
-            slot = SlotWrapper("inventory", i)
-            slot.set(inv.items[i])
-                
+            slot = SlotWrapper(
+                getter=lambda i=i: inv.items.get(i),
+                setter=lambda item, i=i: inv.items.__setitem__(i, item)
+            )
 
             slots.append((rect, slot))
 
@@ -433,8 +450,11 @@ class UI:
 
                 rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
-                slot = Slot("craft_input")
-                slot.set(craft.get_item(i))
+                slot = SlotWrapper(
+                    getter=lambda i=i: craft.get_item(i),
+                    setter=lambda item, i=i: craft.set_item(i, item),
+                    slot_type="craft_input"
+                )
 
                 slots.append((rect, slot))
 
@@ -444,8 +464,11 @@ class UI:
 
             rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
 
-            result_slot = Slot("craft_result")
-            result_slot.set(craft.result)
+            result_slot = result_slot = SlotWrapper(
+                getter=lambda: craft.result,
+                setter=lambda item: None,
+                slot_type="craft_result"
+            )
 
             slots.append((rect, result_slot))
 

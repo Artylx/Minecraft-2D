@@ -34,7 +34,6 @@ class BlockProperty:
         return f"BlockProperty(name:{self.block_name}, block_id:{self.block_id}, collidable:{self.collidable}, breakable:{self.breakable}, item_type:{self.item_type})"
 
 
-
 class ItemProperty:
     REGISTRY = {}
     texture_manager = None

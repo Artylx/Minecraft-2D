@@ -322,24 +322,27 @@ class CraftManager():
         return crafted
     
 class SlotWrapper:
-    def __init__(self, inv, index):
-        self.inv = inv
-        self.index = index
+    def __init__(self, getter, setter, slot_type="inventory"):
+        self.getter = getter
+        self.setter = setter
+        self.slot_type = slot_type
 
     def get(self):
-        return self.inv.items.get(self.index)
+        return self.getter()
 
-    def set(self, value):
-        self.inv.items[self.index] = value
+    def set(self, item):
+        self.setter(item)
 
     def is_empty(self):
         return self.get() is None
+
+    def get_type(self):
+        return self.slot_type
 
 class Inventory():
     def __init__(self, size):
         self.uuid = uuid.uuid4()
         self.size = size
-
         self.clear()
 
         self.title = f"Inventory uuid:{self.uuid}"
@@ -419,7 +422,10 @@ class Inventory():
 
     def get_slot(self, index):
         if 0 <= index < self.size:
-            return SlotWrapper(self, index)
+            return SlotWrapper(
+                getter=lambda i=index: self.items.get(i),
+                setter=lambda item, i=index: self.items.__setitem__(i, item)
+            )
         return None
 
     def add_item(self, itemStack):
@@ -497,7 +503,7 @@ class Inventory():
 
     def debug_inv(self):
         i = 0
-        for item in self.items:
+        for item in self.items.values():
             print(f"[{i}] {str(item)}")
             i += 1
 
@@ -626,7 +632,6 @@ class UI_Inventory():
     def move_selected_index(self, move):
         index = (self.selected_index + move) % self.case_number
         self.set_selected_index(index)
-        
 
     def set_selected_index(self, index):
         if len(self.inv.items) == 0:
