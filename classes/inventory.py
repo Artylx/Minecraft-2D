@@ -320,7 +320,20 @@ class CraftManager():
 
         self.update_result()
         return crafted
+    
+class SlotWrapper:
+    def __init__(self, inv, index):
+        self.inv = inv
+        self.index = index
 
+    def get(self):
+        return self.inv.items.get(self.index)
+
+    def set(self, value):
+        self.inv.items[self.index] = value
+
+    def is_empty(self):
+        return self.get() is None
 
 class Inventory():
     def __init__(self, size):
@@ -330,6 +343,62 @@ class Inventory():
         self.clear()
 
         self.title = f"Inventory uuid:{self.uuid}"
+
+    def try_stack_item(self, src_stack, dst_slot):
+        if not dst_slot:
+            return False
+
+        dst_stack = dst_slot.get()
+
+        if not dst_stack:
+            return False
+
+        if src_stack.item_property != dst_stack.item_property:
+            return False
+
+        max_add = dst_stack.item_property.max_stack - dst_stack.count
+        moved = min(max_add, src_stack.count)
+
+        dst_stack.count += moved
+        src_stack.count -= moved
+
+        return True
+    
+    def swap_stack(self, src_stack, dst_slot):
+        if not dst_slot:
+            return None
+
+        dst_stack = dst_slot.get()
+        dst_slot.set(src_stack)
+        return dst_stack
+    
+    def insert(self, stack):
+        if not stack:
+            return None
+
+        # 1. STACK EXISTANT
+        for i in range(self.size):
+            slot = self.get_slot(i)
+            item = slot.get()
+
+            if item is None:
+                continue
+
+            if item.item_property == stack.item_property:
+                stack.count = item.add_item(stack.count)
+
+                if stack.count <= 0:
+                    return None
+
+        # 2. SLOT VIDE
+        for i in range(self.size):
+            slot = self.get_slot(i)
+
+            if slot.is_empty():
+                slot.set(stack)
+                return None
+
+        return stack
 
     def update(self):
         to_remove = []
@@ -347,7 +416,11 @@ class Inventory():
         for slot in to_remove:
             print(f"Slot : {slot}")
             self.items[slot] = None
-        
+
+    def get_slot(self, index):
+        if 0 <= index < self.size:
+            return SlotWrapper(self, index)
+        return None
 
     def add_item(self, itemStack):
         reste = itemStack.count

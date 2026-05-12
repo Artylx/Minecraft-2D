@@ -2,28 +2,80 @@ from operator import inv
 from classes import language
 import pygame
 from classes import game_property
-from classes.inventory import Crafting_types, ItemStack
+from classes.inventory import Crafting_types, ItemStack, SlotWrapper
+    
+class DragState:
+    def __init__(self):
+        self.stack = None
+        self.source_inventory = None
+        self.source_index = None
+    
+class InventoryController:
+    def __init__(self, inventory):
+        self.inventory = inventory
+        self.drag = DragState()
 
-class Slot:
-    def __init__(self, getter, setter, slot_type="normal", meta=None):
-        self._get = getter
-        self._set = setter
-        self.type = slot_type
-        self.meta = meta
+    def start_drag(self, index):
+        slot = self.inventory.get_slot(index)
 
-    def get(self):
-        return self._get()
+        if slot.is_empty():
+            return
 
-    def set(self, item):
-        self._set(item)
+        self.drag.stack = slot.get()
+        self.drag.source_index = index
 
-    def can_accept(self, stack):
-        if self.type == "craft_result":
-            return False
-        return True
+        slot.set(None)
 
-    def __str__(self):
-        return f"Slot(type:{self.type}, meta:{self.meta})"
+    def start_split_drag(self, index):
+        slot = self.inventory.get_slot(index)
+
+        if slot.is_empty():
+            return
+
+        item = slot.get()
+
+        half = max(item.count // 2, 1)
+
+        self.drag.stack = ItemStack(item.item_property, half)
+        item.count -= half
+
+        self.drag.source_index = index
+
+        if item.count <= 0:
+            slot.set(None)
+
+    def drop(self, index):
+        target = self.inventory.get_slot(index)
+
+        if not self.drag.stack or not target:
+            return
+
+        if target.type == "craft_result":
+            return
+
+        # EMPTY
+        if target.is_empty():
+            target.stack = self.drag.stack
+            self._clear()
+            return
+
+        # STACK
+        if self.inventory.try_stack_item(self.drag.stack, target):
+            if self.drag.stack.count <= 0:
+                self._clear()
+            return
+
+        # SWAP
+        temp = target.stack
+        target.stack = self.drag.stack
+        self.drag.stack = temp
+
+    def drop_outside(self):
+        self.inventory.insert(self.drag.stack)
+        self._clear()
+
+    def _clear(self):
+        self.drag = DragState()
 
 class UI_menu:
     def __init__(self, screen_size):
@@ -41,8 +93,6 @@ class UI:
 
         self.open_inventory = None
 
-        self.dragged_slot = None
-        self.drag_origin = None
         self.update_screen_size(screen_size)
         
         self.close_inv()
@@ -51,6 +101,8 @@ class UI:
         self.case_size = game_property.INVENTORY_SIZE_CASE + self.margin
 
         self.current_title_space = 0
+
+        self.controller = InventoryController(inventory)
 
         self._hotbar_font = pygame.font.SysFont("Arial", 16)
         self._hotbar_numbers = [
@@ -81,8 +133,19 @@ class UI:
             self.render_hotbar(screen, player.inventory)
         else:
             self.render_chest(screen, self.open_inventory)
+            self.render_drag(screen)
         
         self.render_tooltip(screen)
+
+    def render_drag(self, screen):
+        if self.controller.drag.stack:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+
+            self.controller.drag.stack.render(
+                screen,
+                (mouse_x - game_property.INVENTORY_SIZE_CASE // 2,
+                mouse_y - game_property.INVENTORY_SIZE_CASE // 2)
+            )
 
     def key_down(self, event):
         if event.key == pygame.K_ESCAPE:
@@ -179,166 +242,64 @@ class UI:
     def mouse_down(self, button):
         if not self.is_open_inv():
 
-            if button == 1:
-                case_size = game_property.INVENTORY_SIZE_CASE
-                margin = 15
+            # if button == 1:
+            #     case_size = game_property.INVENTORY_SIZE_CASE
+            #     margin = 15
 
-                height = case_size + margin * 2
-                width = margin + (case_size + margin) * self.inventory.ui.case_number
+            #     height = case_size + margin * 2
+            #     width = margin + (case_size + margin) * self.inventory.ui.case_number
 
-                start_x = self.screen_size[0] // 2 - width // 2
-                start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
+            #     start_x = self.screen_size[0] // 2 - width // 2
+            #     start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
 
-                for i in range(self.inventory.ui.case_number):
+            #     for i in range(self.inventory.ui.case_number):
 
-                    x = start_x + i * (case_size + margin) + margin
-                    y = start_y + margin
+            #         x = start_x + i * (case_size + margin) + margin
+            #         y = start_y + margin
 
-                    rect = pygame.Rect(x, y, case_size, case_size)
+            #         rect = pygame.Rect(x, y, case_size, case_size)
 
-                    if rect.collidepoint(pygame.mouse.get_pos()):
-                        self.inventory.ui.selected_index = i
-                        return
+            #         if rect.collidepoint(pygame.mouse.get_pos()):
+            #             self.inventory.ui.selected_index = i
+            #             return
 
             return
-        
-        if (button != 1 and button != 3):
-            return
-    
+
         mouse_pos = pygame.mouse.get_pos()
+        index = self.get_slot_index_from_mouse(mouse_pos)
 
-        if self.buttons[self.other_button(button)]:
-            
-            if button == 3:
-                self.pos_current_slot()
+        if index is None:
             return
-        
-        self.buttons[button] = True
 
-        print(self.buttons)
+        if button == 1:
+            self.controller.start_drag(index)
 
-        for rect, slot in self.get_all_slots(self.open_inventory):
-            if rect.collidepoint(mouse_pos):
-
-                # PRIORITÉ AU RESULT
-                if slot.type == "craft_result":
-                    crafted = slot.meta.take_result()
-                    if crafted:
-                        self.dragged_slot = Slot(lambda: crafted, lambda x: None, "temp")
-                        self.drag_origin = None
-                        self.drag_origin_index = None
-                        slot.set(None)
-
-                else:
-                    # NORMAL
-                    item = slot.get()
-                    if item:
-                        if button == 3:
-                            half_count = max(item.count // 2, 1)
-
-                            self.dragged_slot = Slot(lambda: type(item)(item.item_property, half_count), lambda x: None, "temp")
-                            self.drag_origin = slot
-                            self.drag_origin_index = self.get_slot_index(slot)
-
-                            if item.count - half_count == 0:
-                                slot.set(None)
-                            else:
-                                item.count -= half_count
-                                
-                        else:
-                            self.dragged_slot = Slot(lambda: item, lambda x: None, "temp")
-                            self.drag_origin = slot
-                            self.drag_origin_index = self.get_slot_index(slot)
-                            slot.set(None)
-
-        if self.dragged_slot:
-            print(f"{self.dragged_slot}")
+        elif button == 3:
+            self.controller.start_split_drag(index)
 
     def get_slot_index(self, target_slot):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
             if slot._get() is target_slot._get():  # on compare le getter pour trouver le slot réel
                 return i
         return None
-
-    def mouse_up(self, button):
-        if not self.is_open_inv() or (button != 1 and button != 3) or not self.dragged_slot:
-            return
-        
-        if not self.buttons[button]:
-            return
-        
-        self.buttons[button] = False
-
-        print(self.buttons, "UP")
-        self.pos_current_slot()
-
-    def pos_current_slot(self, amout=None):
-        mouse_pos = pygame.mouse.get_pos()
-        dropped = False
-
+    
+    def get_slot_index_from_mouse(self, mouse_pos):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
             if rect.collidepoint(mouse_pos):
-                if self.drag_origin_index == i:
+                return i
+        return None
 
-                    if slot.get() == None:
-                        slot.set(self.dragged_slot.get())
+    def mouse_up(self, button):
+        if not self.is_open_inv():
+            return
 
-                        dropped = True
-                        break
+        mouse_pos = pygame.mouse.get_pos()
+        index = self.get_slot_index_from_mouse(mouse_pos)
 
-                if slot.type == "craft_result":
-                    print("In craft result")
-                    break
-
-                item_a = self.dragged_slot.get()
-                item_b = slot.get()
-
-                if not item_a:
-                    break
-
-                # STACK
-                if item_a and item_b and item_a.item_property == item_b.item_property:
-                    reste = item_b.add_item(item_a.count)
-                    print(f"Add to {item_b.item_property}")
-
-                    if reste == 0:
-                        self.dragged_slot.set(None)
-                        dropped = True
-                    else:
-                        item_a.count = reste
-
-                # SWAP
-                else:
-                    print(f"Swap {item_a.item_property.item_name} with {item_b.item_property.item_name if item_b else 'None'}")
-                    slot.set(item_a)
-
-                    if item_b:
-                        if self.drag_origin and self.drag_origin.type != "craft_result":
-                            self.drag_origin.set(item_b)
-                        else:
-                            self.open_inventory.add_item(ItemStack(item_b.item_property, item_b.count))
-                    dropped = True
-
-                break
-
-        if not dropped:
-            if self.drag_origin:
-                #self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
-
-                origin_item = self.inventory.get_item(self.drag_origin_index)
-
-                if origin_item:
-                    item = self.dragged_slot.get()
-
-                    item.count += origin_item.count
-                    self.drag_origin.set(item)
-                else:
-                    self.drag_origin.set(self.dragged_slot.get())
-            else:
-                self.open_inventory.add_item(ItemStack(self.dragged_slot.get().item_property, self.dragged_slot.get().count))
-
-        self.dragged_slot = None
-        self.drag_origin = None
+        if index is None:
+            self.controller.drop_outside()
+        else:
+            self.controller.drop(index)
 
     def render_slots(self, screen, slots):
         i = 0
@@ -417,14 +378,6 @@ class UI:
         if hasattr(inv, "craft_manager"):
             self.render_crafting(screen, inv.craft_manager, start_x, (start_y + self.current_title_space), height=height, inv=inv)
 
-        # item drag
-        if self.dragged_slot and self.dragged_slot.get():
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            self.dragged_slot.get().render(
-                screen,
-                (mouse_x - self.case_size // 2, mouse_y - self.case_size // 2)
-            )
-
     def get_slots(self, inv, type="inventory"):
         return [(rect, slot) for rect, slot in self.get_all_slots(inv) if slot.type == type]
 
@@ -450,11 +403,9 @@ class UI:
 
             rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
-            slot = Slot(
-                lambda i=i: inv.items[i],
-                lambda item, i=i: inv.items.__setitem__(i, item),
-                "inventory"
-            )
+            slot = SlotWrapper("inventory", i)
+            slot.set(inv.items[i])
+                
 
             slots.append((rect, slot))
 
@@ -482,12 +433,8 @@ class UI:
 
                 rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
-                slot = Slot(
-                    lambda i=i: craft.get_item(i),
-                    lambda item, i=i: craft.set_item(i, item),
-                    "craft_input",
-                    craft
-                )
+                slot = Slot("craft_input")
+                slot.set(craft.get_item(i))
 
                 slots.append((rect, slot))
 
@@ -497,12 +444,8 @@ class UI:
 
             rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
 
-            result_slot = Slot(
-                lambda: craft.result,
-                lambda item: None,
-                "craft_result",
-                craft
-            )
+            result_slot = Slot("craft_result")
+            result_slot.set(craft.result)
 
             slots.append((rect, result_slot))
 
