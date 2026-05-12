@@ -338,6 +338,9 @@ class SlotWrapper:
 
     def get_type(self):
         return self.slot_type
+    
+    def __str__(self):
+        return f"SlotWrapper(type:{self.slot_type}, get:{self.get()})"
 
 class Inventory():
     def __init__(self, size):

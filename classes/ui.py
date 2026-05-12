@@ -14,9 +14,7 @@ class InventoryController:
         self.inventory = inventory
         self.drag = DragState()
 
-    def start_drag(self, index, inv):
-        slot = self.inventory.get_slot(index)
-
+    def start_drag(self, slot, inv):
         if not slot:
             return
         
@@ -28,9 +26,7 @@ class InventoryController:
 
         slot.set(None)
 
-    def start_split_drag(self, index, inv):
-        slot = self.inventory.get_slot(index)
-
+    def start_split_drag(self, slot, inv):
         if slot.is_empty():
             return
 
@@ -42,27 +38,35 @@ class InventoryController:
         self.drag.source_slot = slot
         item.count -= half
 
-        self.drag.source_index = index
-
         if item.count <= 0:
             slot.set(None)
 
-    def drop(self, index):
-        target = self.inventory.get_slot(index)
-
+    def drop(self, target):
         if not self.drag.stack or not target:
             return
 
         if target.get_type() == "craft_result":
-            self.inventory.add_item(self.drag.stack)
+            if self.drag.source_slot:
+                print("Craft result")
 
-            print("Craft result")
+                if self.drag.source_slot.is_empty():
+
+                    self.drag.source_slot.set(self.drag.stack)
+                    self._clear()
+                    return
+                
+                elif self.inventory.try_stack_item(self.drag.stack, self.drag.source_slot):
+                    if self.drag.stack.count <= 0:
+                        self._clear()
+                    else:
+                        self.drop_outside()
+                    return
+                
+            self.drop_outside()
 
             self._clear()
             return
-        
-        if target.get_type() == "craft_input":
-            return
+            
 
         # EMPTY
         if target.is_empty():
@@ -82,7 +86,7 @@ class InventoryController:
         temp = target.get()
         target.set(self.drag.stack)
 
-        self.drag.source_inventory.items[self.drag.source_index] = temp
+        self.drag.source_slot.set(temp)
         self._clear()
 
     def drop_outside(self):
@@ -281,16 +285,16 @@ class UI:
             return
 
         mouse_pos = pygame.mouse.get_pos()
-        index = self.get_slot_index_from_mouse(mouse_pos)
+        slot = self.get_slot_from_mouse(mouse_pos)
 
-        if index is None:
+        if slot is None:
             return
 
         if button == 1:
-            self.controller.start_drag(index, self.open_inventory)
+            self.controller.start_drag(slot, self.open_inventory)
 
         elif button == 3:
-            self.controller.start_split_drag(index, self.open_inventory)
+            self.controller.start_split_drag(slot, self.open_inventory)
 
     def get_slot_index(self, target_slot):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
@@ -298,10 +302,16 @@ class UI:
                 return i
         return None
     
-    def get_slot_index_from_mouse(self, mouse_pos):
+    def get_slot(self, index):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
+            if i == index:
+                return slot
+        return None
+    
+    def get_slot_from_mouse(self, mouse_pos):
+        for rect, slot in self.get_all_slots(self.open_inventory):
             if rect.collidepoint(mouse_pos):
-                return i
+                return slot
         return None
 
     def mouse_up(self, button):
@@ -309,13 +319,12 @@ class UI:
             return
 
         mouse_pos = pygame.mouse.get_pos()
-        index = self.get_slot_index_from_mouse(mouse_pos)
-        print("Index ", index)
+        slot = self.get_slot_from_mouse(mouse_pos)
 
-        if index is None:
+        if slot is None:
             self.controller.drop_outside()
         else:
-            self.controller.drop(index)
+            self.controller.drop(slot)
 
     def render_slots(self, screen, slots):
         i = 0
@@ -469,7 +478,7 @@ class UI:
                 setter=lambda item: None,
                 slot_type="craft_result"
             )
-
+ 
             slots.append((rect, result_slot))
 
         return slots

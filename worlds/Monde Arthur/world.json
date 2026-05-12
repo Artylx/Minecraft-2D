@@ -8,7 +8,7 @@
             "y": 416,
             "w": 27,
             "h": 80,
-            "vx": 7.509163246633862e-241,
+            "vx": 2.5e-323,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -58,8 +58,8 @@
                     {
                         "slot": 4,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 5,
+                            "item_type_name": "stick",
+                            "count": 3,
                             "durability": null
                         }
                     },
@@ -75,60 +75,60 @@
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 3,
-                            "durability": null
-                        }
-                    },
-                    {
-                        "slot": 7,
-                        "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1,
-                            "durability": 110
-                        }
-                    },
-                    {
-                        "slot": 8,
-                        "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1,
-                            "durability": 110
-                        }
-                    },
-                    {
-                        "slot": 9,
-                        "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1,
-                            "durability": 110
-                        }
-                    },
-                    {
-                        "slot": 10,
-                        "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 2,
-                            "durability": null
-                        }
-                    },
-                    {
-                        "slot": 11,
-                        "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1,
-                            "durability": 110
-                        }
-                    },
-                    {
-                        "slot": 12,
-                        "itemStack": {
-                            "item_type_name": "stick",
-                            "count": 1,
+                            "count": 100,
                             "durability": null
                         }
                     },
                     {
                         "slot": 13,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "count": 3,
+                            "durability": null
+                        }
+                    },
+                    {
+                        "slot": 16,
+                        "itemStack": {
+                            "item_type_name": "oak_plank",
+                            "count": 7,
+                            "durability": null
+                        }
+                    },
+                    {
+                        "slot": 19,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1,
+                            "durability": 110
+                        }
+                    },
+                    {
+                        "slot": 20,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1,
+                            "durability": 110
+                        }
+                    },
+                    {
+                        "slot": 21,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1,
+                            "durability": 110
+                        }
+                    },
+                    {
+                        "slot": 22,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1,
+                            "durability": 110
+                        }
+                    },
+                    {
+                        "slot": 23,
                         "itemStack": {
                             "item_type_name": "wooden_pickaxe",
                             "count": 1,
