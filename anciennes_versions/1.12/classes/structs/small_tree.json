@@ -1,0 +1,16 @@
+{
+  "origin": {"x": 0, "y": 0},
+  "condition_blocks":[
+    "grass"
+  ],
+  "blocks": [
+    {"x": 0, "y": 0, "block": "oak_trunk_bottom"},
+    {"x": 0, "y": 1, "block": "oak_trunk_mid"},
+    {"x": 0, "y": 2, "block": "oak_trunk_mid"},
+    {"x": -1, "y": 3, "block": "oak_leaves"},
+    {"x": 0, "y": 3, "block": "oak_leaves"},
+    {"x": 1, "y": 3, "block": "oak_leaves"},
+    {"x": 0, "y": 4, "block": "oak_leaves"}
+  ],
+  "entities": []
+}

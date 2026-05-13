@@ -1,0 +1,939 @@
+from matplotlib.pylab import matrix
+
+from classes.texture_manager import  TextureManager
+import pygame
+from classes import game_property, game_type
+import uuid
+
+class RotationMode:
+    NONE = 0          # aucune rotation
+    ALL = 1           # 0°, 90°, 180°, 270°
+    HALF = 2          # 0° et 180° uniquement
+
+class Recipe():
+    def __init__(self, recipe, result, rotation=RotationMode.NONE, mirror=False):
+        self.recipe = recipe
+        self.result = result
+        self.rotation = rotation
+        self.mirror = mirror
+
+    def load(self, data):
+        mapping = {
+            "recipe": "recipe",
+            "result": "result",
+            "rotation": "rotation",
+            "mirror": "mirror",
+        }
+
+        # Vérification
+        required = list(mapping.keys())
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation complexe
+        for key, target in mapping.items():
+            if isinstance(target, tuple):
+                obj, attr = target
+                setattr(getattr(self, obj), attr, data[key])
+            else:
+                setattr(self, target, data[key])
+        return self
+    
+    def to_json(self) -> dict:
+        return {
+            "recipe": self.recipe,
+            "result": self.result,
+            "rotation": self.rotation,
+            "mirror": self.mirror,
+        }
+
+RECIPES_ = [
+    Recipe((
+        ("oak_trunk",),
+    ), 
+    [(4, "oak_plank")], 
+    )
+]
+
+RECIPES = {
+    (
+        ("oak_trunk",),
+    ): {
+        "result": [(4, "oak_plank")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank","oak_plank",),
+        ("oak_plank","oak_plank",),
+     
+    ): {
+        "result": [(1, "crafting_table")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("stone","stone","stone",),
+        ("stone", None,"stone",),
+        ("stone","stone","stone",),
+     
+    ): {
+        "result": [(1, "furnace")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank",),
+        ("oak_plank",)
+    ): {
+        "result": [(2, "stick")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank",),
+        ("oak_plank",),
+        ("stick",)
+    ): {
+        "result": [(1, "wooden_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank", "oak_plank", "oak_plank",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "wooden_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("oak_plank", "oak_plank",),
+        ("stick", "oak_plank",),
+        ("stick",None,)
+    ): {
+        "result": [(1, "wooden_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": True
+    },
+
+    (
+        ("stone", "stone", "stone",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "stone_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("iron_ingot", "iron_ingot", "iron_ingot",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "iron_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        (None, "iron_ingot", "iron_ingot",),
+        (None, "stick", "iron_ingot",),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "iron_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("iron_ingot",),
+        ("iron_ingot",),
+        ("stick",)
+    ): {
+        "result": [(1, "iron_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("gold_ingot", "gold_ingot", "gold_ingot",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "golden_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("stone",),
+        ("stone",),
+        ("stick",)
+    ): {
+        "result": [(1, "stone_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("coal_ingot",),
+        ("stick",)
+    ): {
+        "result": [(4, "torch")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    }
+}
+
+class CraftManager():
+    def __init__(self, size=(3, 3), current_inv=None):
+        self.width = size[0]
+        self.height = size[1]
+        self.size = self.width * self.height
+        self.current_inv = current_inv
+
+        self.items = [None] * self.size
+
+        self.result = None
+
+    def set_item(self, index, item):
+        self.items[index] = item
+        self.update_result()
+
+    def to_matrix(self):
+        return [
+            self.items[y * self.width:(y + 1) * self.width]
+            for y in range(self.height)
+        ]
+    
+    def mirror_matrix(self, matrix):
+        return [row[::-1] for row in matrix]
+    
+    def trim_matrix(self, matrix):
+        rows = len(matrix)
+        cols = len(matrix[0])
+
+        min_x, max_x = cols, 0
+        min_y, max_y = rows, 0
+
+        for y in range(rows):
+            for x in range(cols):
+                if matrix[y][x]:
+                    min_x = min(min_x, x)
+                    max_x = max(max_x, x)
+                    min_y = min(min_y, y)
+                    max_y = max(max_y, y)
+
+        if min_x > max_x or min_y > max_y:
+            return [[]]
+
+        return [
+            row[min_x:max_x+1]
+            for row in matrix[min_y:max_y+1]
+        ]
+
+    def get_item(self, index):
+        return self.items[index]
+
+    def matrix_to_key(self, matrix):
+        return tuple(
+            tuple(
+                item.item_property.item_name if item else None
+                for item in row
+            )
+            for row in matrix
+        )
+
+    def rotate_matrix(self, matrix):
+        return [list(row) for row in zip(*matrix[::-1])]
+    
+    def get_all_transformations(self, matrix, rotation_mode, allow_mirror):
+        results = []
+
+        rotations = self.get_rotations_by_mode(matrix, rotation_mode)
+
+        for rot in rotations:
+            results.append(rot)
+
+            if allow_mirror:
+                mirrored = self.mirror_matrix(rot)
+                results.append(mirrored)
+
+        return results
+    
+    def get_rotations_by_mode(self, matrix, mode):
+        rotations = []
+
+        if mode == RotationMode.NONE:
+            return [matrix]
+
+        current = matrix
+
+        for i in range(4):
+            if mode == RotationMode.HALF and i >= 2:
+                break
+
+            rotations.append(current)
+            current = self.rotate_matrix(current)
+
+        return rotations
+
+    def update_result(self):
+        base_matrix = self.to_matrix()
+        trimmed = self.trim_matrix(base_matrix)
+
+        for recipe_key, recipe_data in RECIPES.items():
+            mode = recipe_data.get("rotation", RotationMode.NONE)
+            mirror = recipe_data.get("mirror", False)
+
+            for transformed in self.get_all_transformations(trimmed, mode, mirror):
+                key = self.matrix_to_key(transformed)
+
+                if key == recipe_key:
+                    count, name = recipe_data["result"][0]
+
+                    item_pro = game_type.get_item_type_by_name(name)
+
+                    if item_pro:
+                        self.result = ItemStack(
+                            game_type.get_item_type_by_name(name),
+                            count
+                        )
+                    else:
+                        self.result = ItemStack(
+                            game_type.ItemProperty.NONE,
+                            0
+                        )
+                    return
+
+        self.result = None
+
+    def close(self):
+        if self.current_inv is not None:
+
+            for item in self.items:
+
+                if item:
+                    self.current_inv.insert(item)
+
+    def craft(self):
+        if not self.result:
+            return None
+
+        crafted_item = ItemStack(
+            self.result.item_property,
+            self.result.count
+        )
+
+        # consommer uniquement 1 par slot utilisé
+        for i in range(self.size):
+            item = self.items[i]
+
+            print("Item ", item)
+
+            if item:
+                if item.count > 1:
+                    item.count -= 1
+                else:
+                    self.items[i] = None
+        return crafted_item
+    
+    def has_result(self):
+        return self.result is not None
+
+    def take_result(self):
+        if not self.result:
+            return None
+
+        crafted = self.craft()
+
+        self.update_result()
+        return crafted
+
+class FurnaceManager:
+    def __init__(self):
+        self.input = None
+        self.fuel = None
+        self.output = None
+
+        self.progress = 0
+        self.max_progress = 200
+
+        self.burn_time = 0
+        self.max_burn_time = 0
+
+    def set_input(self, item):
+        self.input = item
+
+    def set_fuel(self, item):
+        self.fuel = item
+
+    def set_output(self, item):
+        self.output = item
+
+    def update(self, dt):
+        if not self.can_smelt():
+            self.progress = 0
+            return
+
+        if self.burn_time <= 0:
+            self.consume_fuel()
+
+        if self.burn_time > 0:
+            self.burn_time -= 10 * dt
+            self.progress += 200 * dt
+
+            if self.progress >= self.max_progress:
+                self.smelt()
+                self.progress = 0
+            
+    def can_smelt(self):
+        if not self.input:
+            return False
+        
+        if self.input.count <= 0:
+            return False
+
+        return self.input.item_property.heatable
+    
+    def smelt(self):
+        result_item = game_type.get_item_type_by_name(self.input.item_property.warmer_item)
+
+        if not result_item:
+            return
+        
+        if self.output is None:
+            self.output = ItemStack(result_item, 1)
+
+        elif self.output.item_property == result_item:
+            self.output.count += 1
+
+        if self.input.count > 1:
+            self.input.count -= 1
+        else:
+            self.input = None
+        
+    def consume_fuel(self):
+        if not self.fuel:
+            return False
+
+        fuel_value = self.fuel.item_property.fuel_level
+
+        if fuel_value <= 0:
+            return False
+
+        self.fuel.count -= 1
+
+        if self.fuel.count <= 0:
+            self.fuel = None
+
+        self.burn_time = fuel_value
+        self.max_burn_time = fuel_value
+
+        return True
+    
+class SlotWrapper:
+    def __init__(self, ui_getter, setter, getter=None, slot_type="inventory"):
+        self.ui_getter = ui_getter
+
+        if not getter:
+            self.getter = ui_getter
+        else:
+            self.getter = getter
+        
+        self.setter = setter
+        self.slot_type = slot_type
+
+    def get_ui(self):
+        """
+        GET utilisé pour l'affichage sans actions potentiel
+        """
+        return self.ui_getter()
+
+    def get(self):
+        """
+        GET utilisé pour les controls comme le craft, le furnace, ne pas utiliser pour l'affichage
+        """
+        return self.getter()
+
+    def set(self, item):
+        self.setter(item)
+
+    def is_empty(self):
+        return self.get_ui() is None
+
+    def get_type(self):
+        return self.slot_type
+    
+    def __str__(self):
+        return f"SlotWrapper(type:{self.slot_type}, get:{self.get_ui()})"
+
+class Inventory():
+    def __init__(self, size):
+        self.uuid = uuid.uuid4()
+        self.size = size
+        self.clear()
+
+        self.title = f"Inventory uuid:{self.uuid}"
+
+    def try_stack_item(self, src_stack, dst_slot):
+        if not dst_slot:
+            return False
+
+        dst_stack = dst_slot.get()
+
+        if not dst_stack:
+            return False
+
+        if src_stack.item_property != dst_stack.item_property:
+            return False
+
+        max_add = dst_stack.item_property.max_stack - dst_stack.count
+        moved = min(max_add, src_stack.count)
+
+        dst_stack.count += moved
+        src_stack.count -= moved
+
+        return True
+    
+    def swap_stack(self, src_stack, dst_slot):
+        if not dst_slot:
+            return None
+
+        dst_stack = dst_slot.get()
+        dst_slot.set(src_stack)
+        return dst_stack
+    
+    def insert(self, stack):
+        if not stack:
+            return None
+
+        # 1. STACK EXISTANT
+        for i in range(self.size):
+            slot = self.get_slot(i)
+            item = slot.get()
+
+            if item is None:
+                continue
+
+            if item.item_property == stack.item_property:
+                stack.count = item.add_item(stack.count)
+
+                if stack.count <= 0:
+                    return None
+
+        # 2. SLOT VIDE
+        for i in range(self.size):
+            slot = self.get_slot(i)
+
+            if slot.is_empty():
+                slot.set(stack)
+                return None
+
+        self.drop_item(stack)
+        return stack
+
+    def update(self):
+        to_remove = []
+
+        for slot, item in self.items.items():
+            if not item:
+                continue
+
+            if isinstance(item.item_property, game_type.Tool):
+                if item.is_break():
+                    to_remove.append(slot)
+                    print(f"Is break {item.is_break()}, #{item.item_property}")
+
+        # suppression
+        for slot in to_remove:
+            print(f"Slot : {slot}")
+            self.items[slot] = None
+
+    def get_slot(self, index):
+        if 0 <= index < self.size:
+            return SlotWrapper(
+                ui_getter=lambda i=index: self.items.get(i),
+                setter=lambda item, i=index: self.items.__setitem__(i, item)
+            )
+        return None
+
+    # def add_item(self, itemStack):
+    #     reste = itemStack.count
+
+    #     for item in self.items.values():
+    #         if not item:
+    #             continue
+
+    #         if item.item_property == itemStack.item_property:
+    #             reste = item.add_item(reste)
+    #             if reste == 0:
+    #                 return None  # tout ajouté
+
+    #     for slot in range(self.size):
+    #         if not self.items.get(slot):
+    #             max_stack = itemStack.item_property.max_stack
+
+    #             to_add = min(reste, max_stack)
+    #             self.items[slot] = ItemStack(itemStack.item_property, to_add)
+
+    #             reste -= to_add
+
+    #             if reste == 0:
+    #                 return None
+
+    #     if reste > 0:
+    #         self.drop_item(ItemStack(itemStack.item_property, reste))
+
+    def delete_item_property(self, item_property, count):
+        reste = count
+
+        for slot in range(self.size):
+            item = self.items.get(slot)
+
+            if not item:
+                continue
+
+            if item.item_property != item_property:
+                continue
+
+            to_remove = min(item.count, reste)
+
+            item.count -= to_remove
+            reste -= to_remove
+
+            if item.count <= 0:
+                self.items[slot] = None
+
+            if reste <= 0:
+                return
+            
+    def has_item(self, item_property: game_type.ItemProperty, count=1) -> bool:
+        total = 0
+
+        for item in self.items.values():
+            if item and item.item_property == item_property:
+                total += item.count
+
+        return total >= count
+            
+    def is_full(self):
+        for item in self.items.values():
+            if item is None:
+                return False
+
+            if item.count < item.item_property.max_stack:
+                return False
+
+        return True
+            
+    def drop_item(self, itemStack):
+        # drop itemStack in the world
+        pass
+
+    def debug_inv(self):
+        i = 0
+        for item in self.items.values():
+            print(f"[{i}] {str(item)}")
+            i += 1
+
+    def get_item(self, index):
+        self.update()
+
+        if len(self.items) != 0:
+            if index <= len(self.items) - 1:
+                return self.items[index]
+        return None 
+    
+    def delete_item(self, index):
+        itemStack = self.items[index]
+
+        if itemStack:
+            if itemStack.count <= 1:
+                self.items[index] = None
+            else:
+                itemStack.count -= 1
+        
+        self.update()
+    
+    def clear(self):
+        self.items = {i: None for i in range(self.size)}
+
+    def to_json(self) -> dict:
+        items = []
+        for slot in self.items.keys():
+            if self.items[slot] != None:
+                items.append({
+                    "slot": slot,
+                    "itemStack": self.items[slot].to_json()
+                })
+
+        data = {
+            "uuid": str(self.uuid),
+            "size": self.size,
+            "title": self.title,
+            "items": items,
+        }
+
+        return data
+
+    def load(self, data):
+        # champs simples
+        simple_fields = [
+            "uuid", "size",
+            "items", "title"
+        ]
+
+        # Vérification
+        required = simple_fields
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation simple
+        for attr in simple_fields:
+            if attr == "items":
+                items = data.get("items", [])
+                for dict_item in items:
+                    slot = dict_item.get("slot", None)
+                    if slot is None:
+                        continue
+
+                    item = ItemStack(None)
+                    item = item.load(dict_item.get("itemStack", None))
+
+                    if item is None:
+                        continue
+
+                    self.items[slot] = item
+            else:
+                setattr(self, attr, data[attr])
+        return self
+
+class Crafting_types:
+    CRAFTING_TABLE = (3, 3)
+    INV = (2, 2)
+    FURNACE = (2, 1)
+
+class Entity_Inventory(Inventory):
+    def __init__(self, owner_entity, size=24):
+        super().__init__(size)
+        self.owner_uuid = owner_entity.get_uuid()
+        self.owner_entity = owner_entity
+
+        self.title = f"Inventory of {owner_entity.name}"
+        self.ui = UI_Inventory(self, case_number=6)
+
+    def drop_item(self, itemStack):
+        self.owner_entity.drop_item(itemStack)
+
+    def to_json(self) -> dict:
+        data = super().to_json()
+        data["owner_uuid"] = str(self.owner_uuid)
+        return data
+    
+    def load(self, data):
+        if "owner_uuid" not in data:
+            print("Champs manquant: owner_uuid")
+            return None
+        self.owner_uuid = uuid.UUID(data["owner_uuid"])
+        return super().load(data)
+
+class UI_Inventory():
+    def __init__(self, inv, case_number=6):
+        self.inv = inv
+        self.size = inv.size
+        self.case_number = case_number
+        self.selected_index = 0
+
+    def move_selected_index(self, move):
+        index = (self.selected_index + move) % self.case_number
+        self.set_selected_index(index)
+
+    def set_selected_index(self, index):
+        if len(self.inv.items) == 0:
+            self.selected_index = 0
+            return
+
+        self.selected_index = max(0, min(index, self.case_number - 1))
+
+    def get_selected_item(self):
+        return self.inv.get_item(self.selected_index)
+
+class ItemStack():
+    texture_manager = None
+
+    def __init__(self, item_property=None, count=1, durability=None):
+        self.item_property = item_property
+
+        if type(count) != int:
+            try:
+                count = int(count)
+            except:
+                count = 1
+        self.count = count
+        self.durability = durability
+
+        if not durability and item_property:
+
+            if hasattr(item_property, "max_durability"):
+                self.durability = item_property.max_durability
+
+        self.break_ = False
+        self.used = False
+
+        self.rect = pygame.Rect(0, 0, game_property.INVENTORY_SIZE_CASE, game_property.INVENTORY_SIZE_CASE)
+
+        self.texture = None
+        self.update_texture()
+    
+    def load(self, data):
+        # champs simples
+        simple_fields = [
+            "item_type_name", "count", "durability"
+        ]
+
+        # Vérification
+        required = simple_fields
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation simple
+        for attr in simple_fields:
+            if attr == "item_type_name":
+                item_type_name = data["item_type_name"]
+                self.item_property = game_type.get_item_type_by_name(item_type_name)
+
+            else:
+                setattr(self, attr, data[attr])
+
+        self.update_texture()
+        return self
+    
+    def use(self):
+        self.durability -= 1
+        if self.durability <= 0:
+            self.break_ = True
+
+    def repare(self, durability):
+        self.durability = min(self.item_property.max_durability, self.durability + durability)
+        if self.durability > 0:
+            self.break_ = False
+
+    def is_break(self):
+        return self.break_
+
+    def __str__(self):
+        return f"ItemStack(type:{self.item_property}, count:{self.count})"
+    
+    def add_item(self, n):
+        if self.item_property:
+            if self.count + n > self.item_property.max_stack:
+                self.count = self.item_property.max_stack
+                return self.count - self.item_property.max_stack + n
+            else:
+                self.count += n
+                return 0
+        
+    def render(self, screen, pos, texture_size=None, draw_number=True, draw_durability=True):
+        self.update_texture()
+        texture = self.texture
+        if texture_size and self.texture:
+            texture = pygame.transform.scale(self.texture, texture_size)
+
+        self.rect.topleft = pos
+
+        if texture:
+            screen.blit(texture, pos)
+
+        if draw_number:
+            if self.count != 1 and self.item_property is not None:
+                font = pygame.font.SysFont(None, game_property.INVENTORY_SIZE_CASE // 2)
+                text = font.render(str(self.count), True, (255, 255, 255))
+
+                text_rect = text.get_rect()
+                text_rect.bottomright = self.rect.bottomright
+                text_rect.x -= 10
+                text_rect.y -= 10
+
+                screen.blit(text, text_rect)
+        
+        if draw_durability:
+            if (self.item_property is not None and hasattr(self.item_property, "max_durability") and self.durability):
+
+                max_dura = self.item_property.max_durability
+                ratio = max(0, self.durability / max_dura)
+
+                if ratio != 1:
+
+                    # Taille de la barre
+                    bar_width = self.rect.width - 8
+                    bar_height = 6
+
+                    # Position
+                    bar_x = self.rect.x + 4
+                    bar_y = self.rect.bottom - 8
+
+                    # Fond noir/gris
+                    pygame.draw.rect(
+                        screen,
+                        (30, 30, 30),
+                        (bar_x, bar_y, bar_width, bar_height)
+                    )
+
+                    # Couleur dynamique
+                    if ratio > 0.6:
+                        color = (50, 220, 50)      # vert
+                    elif ratio > 0.3:
+                        color = (240, 180, 20)     # jaune
+                    else:
+                        color = (220, 50, 50)      # rouge
+
+                    # Largeur restante
+                    current_width = int(bar_width * ratio)
+
+                    pygame.draw.rect(
+                        screen,
+                        color,
+                        (bar_x, bar_y, current_width, bar_height)
+                    )
+
+    def update_texture(self):
+        if self.item_property is not None:
+            self.texture = self.get_texture()
+
+            if (self.texture):
+                self.texture = pygame.transform.scale(self.texture, (game_property.INVENTORY_SIZE_CASE, game_property.INVENTORY_SIZE_CASE))
+
+    def get_texture(self):
+        if self.used:
+            try:
+                return self.item_property.get_texture_used()
+            except:
+                pass
+
+        return self.item_property.get_texture()
+    
+    def is_posable(self):
+        return self.item_property.placeable
+    
+    def to_json(self):
+        return {
+            "item_type_name": self.item_property.item_name,
+            "count": self.count,
+            "durability": self.durability,
+        }
