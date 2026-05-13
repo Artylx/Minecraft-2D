@@ -25,6 +25,7 @@ ITEMS_FR = {
     "arrow": "Flèche",
     "coal": "Charbon",
     "tnt": "Explosif",
+    "iron": "Lingot de fer"
 }
 
 ITEMS_EN = {
@@ -32,6 +33,7 @@ ITEMS_EN = {
     "mushroom": "Mushroom",
     "coal_ingot": "Coal ingot",
     "tnt": "Tnt",
+    
 }
 
 class LANGUAGE_TYPE:

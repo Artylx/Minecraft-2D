@@ -2,7 +2,7 @@ from operator import inv
 from classes import language
 import pygame
 from classes import game_property
-from classes.inventory import Crafting_types, ItemStack, SlotWrapper
+from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager
     
 class DragState:
     def __init__(self):
@@ -22,12 +22,17 @@ class InventoryController:
             return
 
         self.drag.stack = slot.get()
-        self.drag.source_slot = slot
+
+        if not (slot.get_type() == "craft_result" or slot.get_type() == "furnace_output"):
+            self.drag.source_slot = slot
 
         slot.set(None)
 
     def start_split_drag(self, slot, inv):
         if slot.is_empty():
+            return
+        
+        if slot.get_type() == "craft_result" or slot.get_type() == "furnace_output":
             return
 
         item = slot.get()
@@ -45,28 +50,9 @@ class InventoryController:
         if not self.drag.stack or not target:
             return
 
-        if target.get_type() == "craft_result":
-            if self.drag.source_slot:
-                print("Craft result")
-
-                if self.drag.source_slot.is_empty():
-
-                    self.drag.source_slot.set(self.drag.stack)
-                    self._clear()
-                    return
-                
-                elif self.inventory.try_stack_item(self.drag.stack, self.drag.source_slot):
-                    if self.drag.stack.count <= 0:
-                        self._clear()
-                    else:
-                        self.drop_outside()
-                    return
-                
-            self.drop_outside()
-
-            self._clear()
-            return
-            
+        if not self.can_drop(target, self.drag.stack):
+            self.drop_to_drag()
+            return     
 
         # EMPTY
         if target.is_empty():
@@ -83,11 +69,49 @@ class InventoryController:
             return
 
         # SWAP
+        if not self.can_drop(self.drag.source_slot, target.get()):
+            self.drop_to_drag()
+            return
+
         temp = target.get()
         target.set(self.drag.stack)
 
         self.drag.source_slot.set(temp)
         self._clear()
+
+    def can_drop(self, target, stack):
+        if target.get_type() == "craft_result" or target.get_type() == "furnace_output":
+            return False
+        
+        if target.get_type() == "furnace_input":
+            if not stack.item_property.heatable:
+                return False
+            
+        if target.get_type() == "furnace_fuel":
+            if not stack.item_property.is_fuel():
+                return False
+        
+        return True
+
+    def drop_to_drag(self):
+        if self.drag.source_slot:
+            if self.drag.source_slot.is_empty():
+
+                self.drag.source_slot.set(self.drag.stack)
+                self._clear()
+                return
+            
+            elif self.inventory.try_stack_item(self.drag.stack, self.drag.source_slot):
+                if self.drag.stack.count <= 0:
+                    self._clear()
+                else:
+                    self.drop_outside()
+                return
+            
+        self.drop_outside()
+
+        self._clear()
+        return
 
     def drop_outside(self):
         self.inventory.insert(self.drag.stack)
@@ -95,6 +119,9 @@ class InventoryController:
 
     def _clear(self):
         self.drag = DragState()
+
+    def is_draging(self):
+        return True if self.drag.stack else None
 
 class UI_menu:
     def __init__(self, screen_size):
@@ -144,7 +171,7 @@ class UI:
         self.cam_rect.y = pos[1]
 
     def render(self, screen, player):
-        self.update(player.inventory)
+        self.update_hovered_item(player.inventory)
 
         if not self.is_open_inv():
             self.tchat.render(screen)
@@ -170,7 +197,12 @@ class UI:
         if event.key == pygame.K_ESCAPE:
             self.close_inv()
 
-    def update(self, inv):
+    def update(self, dt):
+        
+        if self.is_furnace():
+            self.opened_furnace.update(dt)
+
+    def update_hovered_item(self, inv):
         mouse_pos = pygame.mouse.get_pos()
         self.hovered_item = None
 
@@ -178,7 +210,7 @@ class UI:
         if self.is_open_inv():
             for rect, slot in self.get_all_slots(self.open_inventory):
                 if rect.collidepoint(mouse_pos):
-                    item = slot.get()
+                    item = slot.get_ui()
                     if item:
                         self.hovered_item = item
                     return
@@ -257,35 +289,49 @@ class UI:
         elif current == 3:
             return 1
         return 0
+    
+    def reset_btns(self):
+        self.buttons = {
+            1: False,
+            3: False,
+        }
         
     def mouse_down(self, button):
         if not self.is_open_inv():
 
-            # if button == 1:
-            #     case_size = game_property.INVENTORY_SIZE_CASE
-            #     margin = 15
+            if button == 1:
+                case_size = game_property.INVENTORY_SIZE_CASE
+                margin = 15
 
-            #     height = case_size + margin * 2
-            #     width = margin + (case_size + margin) * self.inventory.ui.case_number
+                height = case_size + margin * 2
+                width = margin + (case_size + margin) * self.inventory.ui.case_number
 
-            #     start_x = self.screen_size[0] // 2 - width // 2
-            #     start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
+                start_x = self.screen_size[0] // 2 - width // 2
+                start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
 
-            #     for i in range(self.inventory.ui.case_number):
+                for i in range(self.inventory.ui.case_number):
 
-            #         x = start_x + i * (case_size + margin) + margin
-            #         y = start_y + margin
+                    x = start_x + i * (case_size + margin) + margin
+                    y = start_y + margin
 
-            #         rect = pygame.Rect(x, y, case_size, case_size)
+                    rect = pygame.Rect(x, y, case_size, case_size)
 
-            #         if rect.collidepoint(pygame.mouse.get_pos()):
-            #             self.inventory.ui.selected_index = i
-            #             return
+                    if rect.collidepoint(pygame.mouse.get_pos()):
+                        self.inventory.ui.selected_index = i
+                        return
 
             return
 
         mouse_pos = pygame.mouse.get_pos()
         slot = self.get_slot_from_mouse(mouse_pos)
+
+        if self.buttons[button]:
+            return
+        
+        if self.buttons[self.other_button(button)]:
+            return
+        
+        self.buttons[button] = True
 
         if slot is None:
             return
@@ -296,11 +342,22 @@ class UI:
         elif button == 3:
             self.controller.start_split_drag(slot, self.open_inventory)
 
-    def get_slot_index(self, target_slot):
-        for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
-            if slot._get() is target_slot._get():  # on compare le getter pour trouver le slot réel
-                return i
-        return None
+    def mouse_up(self, button):
+        if not self.is_open_inv():
+            return
+        
+        if not self.buttons[button]:
+            return
+        
+        self.buttons[button] = False
+
+        mouse_pos = pygame.mouse.get_pos()
+        slot = self.get_slot_from_mouse(mouse_pos)
+
+        if slot is None:
+            self.controller.drop_outside()
+        else:
+            self.controller.drop(slot)
     
     def get_slot(self, index):
         for i, (rect, slot) in enumerate(self.get_all_slots(self.open_inventory)):
@@ -314,25 +371,13 @@ class UI:
                 return slot
         return None
 
-    def mouse_up(self, button):
-        if not self.is_open_inv():
-            return
-
-        mouse_pos = pygame.mouse.get_pos()
-        slot = self.get_slot_from_mouse(mouse_pos)
-
-        if slot is None:
-            self.controller.drop_outside()
-        else:
-            self.controller.drop(slot)
-
     def render_slots(self, screen, slots):
         i = 0
         for rect, slot in slots:
             pygame.draw.rect(screen, (60, 60, 60), rect)
             pygame.draw.rect(screen, (120, 120, 120), rect, 2)
 
-            item = slot.get()
+            item = slot.get_ui()
             if item:
                 item.render(
                     screen,
@@ -361,6 +406,98 @@ class UI:
         # slot résultat 
         result_slot = self.get_slots(inv, type="craft_result")
         self.render_slots(screen, result_slot)
+
+    def get_furnace_size(self, furnaceManager):
+        return 4 * (self.case_size + self.margin) + self.margin, self.case_size + self.margin * 2
+
+    def render_furnace(self, screen, furnaceManager, start_x, start_y, inv, height):
+        width_f, height_f = self.get_furnace_size(furnaceManager)
+
+        start_x = start_x - width_f
+        start_y = start_y + height // 2 - height_f // 2
+
+        surface = pygame.Surface((width_f, height_f), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 180))
+        screen.blit(surface, (start_x, start_y))
+
+        # slot input
+        self.render_slots(screen, self.get_slots(inv, type="furnace_input"))
+
+        # slot fuel
+        self.render_slots(screen, self.get_slots(inv, type="furnace_fuel"))
+
+        # slot output
+        self.render_slots(screen, self.get_slots(inv, type="furnace_output"))
+
+        # =========================
+        # BARRE DE PROGRESSION
+        # =========================
+
+        if furnaceManager.max_progress > 0:
+            progress_ratio = furnaceManager.progress / furnaceManager.max_progress
+        else:
+            progress_ratio = 0
+
+        bar_width = self.case_size - 10
+        bar_height = 8
+
+        progress_x = start_x + 3 * (self.case_size + self.margin) + self.margin + 5
+        progress_y = start_y + 20
+
+        # fond
+        pygame.draw.rect(
+            screen,
+            (50, 50, 50),
+            (progress_x, progress_y, bar_width, bar_height)
+        )
+
+        # remplissage
+        pygame.draw.rect(
+            screen,
+            (0, 220, 0),
+            (
+                progress_x,
+                progress_y,
+                int(bar_width * progress_ratio),
+                bar_height
+            )
+        )
+
+        # =========================
+        # BARRE FUEL
+        # =========================
+
+        if furnaceManager.max_burn_time > 0:
+            fuel_ratio = furnaceManager.burn_time / furnaceManager.max_burn_time
+        else:
+            fuel_ratio = 0
+
+        fuel_width = 8
+        fuel_height = self.case_size
+
+        fuel_x = start_x + 2 * (self.case_size + self.margin) + 10
+        fuel_y = start_y + self.margin
+
+        # fond
+        pygame.draw.rect(
+            screen,
+            (50, 50, 50),
+            (fuel_x, fuel_y, fuel_width, fuel_height)
+        )
+
+        # remplissage du bas vers le haut
+        filled = int(fuel_height * fuel_ratio)
+
+        pygame.draw.rect(
+            screen,
+            (255, 140, 0),
+            (
+                fuel_x,
+                fuel_y + (fuel_height - filled),
+                fuel_width,
+                filled
+            )
+        )
 
     def get_inv_size_ui(self, inv):
         cols = inv.ui.case_number
@@ -400,8 +537,12 @@ class UI:
 
         self.render_slots(screen, slots)
 
-        if hasattr(inv, "craft_manager"):
-            self.render_crafting(screen, inv.craft_manager, start_x, (start_y + self.current_title_space), height=height, inv=inv)
+        if self.is_crafting():
+            self.render_crafting(screen, self.craft_manager, start_x, (start_y + self.current_title_space), height=height, inv=inv)
+        
+        if self.is_furnace():
+            self.render_furnace(screen, self.opened_furnace, start_x, (start_y + self.current_title_space), height=height, inv=inv)
+        
 
     def get_slots(self, inv, type="inventory"):
         return [(rect, slot) for rect, slot in self.get_all_slots(inv) if slot.get_type() == type]
@@ -429,7 +570,7 @@ class UI:
             rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
             slot = SlotWrapper(
-                getter=lambda i=i: inv.items.get(i),
+                ui_getter=lambda i=i: inv.items.get(i),
                 setter=lambda item, i=i: inv.items.__setitem__(i, item)
             )
 
@@ -438,8 +579,8 @@ class UI:
         # =========================
         # CRAFT
         # =========================
-        if hasattr(inv, "craft_manager"):
-            craft = inv.craft_manager
+        if self.is_crafting():
+            craft = self.craft_manager
 
             craft_width, craft_heigth = self.get_craft_size(craft)
 
@@ -460,7 +601,7 @@ class UI:
                 rect = pygame.Rect(x, y, self.case_size, self.case_size)
 
                 slot = SlotWrapper(
-                    getter=lambda i=i: craft.get_item(i),
+                    ui_getter=lambda i=i: craft.get_item(i),
                     setter=lambda item, i=i: craft.set_item(i, item),
                     slot_type="craft_input"
                 )
@@ -474,12 +615,57 @@ class UI:
             rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
 
             result_slot = result_slot = SlotWrapper(
-                getter=lambda: craft.result,
+                ui_getter=lambda: craft.result,
+                getter=lambda: craft.take_result(),
                 setter=lambda item: None,
                 slot_type="craft_result"
             )
  
             slots.append((rect, result_slot))
+
+        if self.is_furnace():
+            furnaceManager = self.opened_furnace
+
+            width_f, height_f = self.get_furnace_size(furnaceManager)
+
+            result_x = start_x - width_f
+            result_y = start_y + height // 2 - height_f // 2 + self.margin
+
+            rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
+
+            input_slot = SlotWrapper(
+                ui_getter=lambda: furnaceManager.input,
+                setter=lambda it: furnaceManager.set_input(it),
+                slot_type="furnace_input"
+            )
+
+            slots.append((rect, input_slot))
+
+            result_x = start_x - width_f + (self.margin + self.case_size)
+            result_y = start_y + height // 2 - height_f // 2 + self.margin
+
+            rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
+
+            fuel_slot = SlotWrapper(
+                ui_getter=lambda: furnaceManager.fuel,
+                setter=lambda it: furnaceManager.set_fuel(it),
+                slot_type="furnace_fuel"
+            )
+
+            slots.append((rect, fuel_slot))
+
+            result_x = start_x - width_f + (self.margin + self.case_size) * 3
+            result_y = start_y + height // 2 - height_f // 2 + self.margin
+
+            rect = pygame.Rect(result_x, result_y, self.case_size, self.case_size)
+
+            output_slot = SlotWrapper(
+                ui_getter=lambda: furnaceManager.output,
+                setter=lambda it: furnaceManager.set_output(it),
+                slot_type="furnace_output"
+            )
+
+            slots.append((rect, output_slot))
 
         return slots
 
@@ -561,17 +747,45 @@ class UI:
             return True
         return False
     
-    def open_inv(self, inv, Crafting_type=Crafting_types.INV):
+    def is_crafting(self):
+        return True if self.craft_manager else False
+    
+    def is_furnace(self):
+        return True if self.opened_furnace else False
+    
+    def open_crafting(self, inv, Crafting_type=Crafting_types.INV):
         self.open_inventory = inv
-        inv.open_crafting(Crafting_type)
+        
+        if Crafting_type in Crafting_types.__dict__.values():
+            self.craft_manager = CraftManager(size=Crafting_type, current_inv=inv)
 
     def open_furnace(self, inv, block):
+        self.open_inventory = inv
+
+        if not block.get_component("furnace"):
+            block.add_component(FurnaceManager(), "furnace")
+
+        self.opened_furnace = block.get_component("furnace")
+            
+
+    def open_inv(self, inv, block):
         pass
 
-    def open_chest(self, inv, block):
-        pass
+    
     
     def close_inv(self):
         if self.open_inventory:
-            self.open_inventory.close_crafting()
+            if self.is_crafting():
+                self.craft_manager.close()
+                self.craft_manager = None
+
+            if self.controller.is_draging():
+                self.controller.drop_outside()
+                self.reset_btns()
+
+            if self.is_furnace():
+                self.opened_furnace = None
+
         self.open_inventory = None
+        self.craft_manager = None
+        self.opened_furnace = None

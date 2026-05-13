@@ -862,7 +862,16 @@ class Player(Living_entity):
         if super().set_orientation(orientation):
             self.update_texture()
 
-    def drop_item(self, itemIndex=None):
+    def drop_item(self, itemStack):
+        mid_x = self.rect.x + self.rect.width // 2
+        quart_y = self.rect.y + self.rect.height // 4
+        
+        entity = Item(self.world, itemStack.item_property, (mid_x + self.get_int_direction() * self.rect.width, quart_y))
+
+        entity.add_velocity(self.get_int_direction() * 5, 5)
+        self.world.create_entity(entity)
+
+    def drop_item_index(self, itemIndex=None):
         if not itemIndex:
             item = self.inventory.ui.get_selected_item()
             itemIndex = self.inventory.ui.selected_index
@@ -870,14 +879,7 @@ class Player(Living_entity):
             item = self.inventory.get_item(itemIndex)
 
         if item:
-            mid_x = self.rect.x + self.rect.width // 2
-            quart_y = self.rect.y + self.rect.height // 4
-            
-            entity = Item(self.world, item.item_property, (mid_x + self.get_int_direction() * self.rect.width, quart_y))
-
-            entity.add_velocity(self.get_int_direction() * 5, 5)
-            self.world.create_entity(entity)
-
+            self.drop_item(item)
             self.inventory.delete_item(itemIndex)
     
     def use_selected_item(self, cam_rect):
@@ -897,7 +899,6 @@ class Player(Living_entity):
         self.use_selected_item(cam_rect)
     
     def use_item(self, direction):
-        print("Use item")
         selected_item = self.inventory.ui.get_selected_item()
 
         if isinstance(selected_item.item_property, game_type.Bow_tool):

@@ -137,6 +137,46 @@ RECIPES = {
     },
 
     (
+        ("iron_ingot", "iron_ingot", "iron_ingot",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "iron_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        (None, "iron_ingot", "iron_ingot",),
+        (None, "stick", "iron_ingot",),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "iron_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("iron_ingot",),
+        ("iron_ingot",),
+        ("stick",)
+    ): {
+        "result": [(1, "iron_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("gold_ingot", "gold_ingot", "gold_ingot",),
+        (None, "stick", None,),
+        (None, "stick",None,)
+    ): {
+        "result": [(1, "golden_pickaxe")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
         ("stone",),
         ("stone",),
         ("stick",)
@@ -147,7 +187,7 @@ RECIPES = {
     },
 
     (
-        ("coal",),
+        ("coal_ingot",),
         ("stick",)
     ): {
         "result": [(4, "torch")],
@@ -285,7 +325,7 @@ class CraftManager():
             for item in self.items:
 
                 if item:
-                    self.current_inv.add_item(item)
+                    self.current_inv.insert(item)
 
     def craft(self):
         if not self.result:
@@ -299,6 +339,8 @@ class CraftManager():
         # consommer uniquement 1 par slot utilisé
         for i in range(self.size):
             item = self.items[i]
+
+            print("Item ", item)
 
             if item:
                 if item.count > 1:
@@ -316,31 +358,126 @@ class CraftManager():
 
         crafted = self.craft()
 
-        self.result = None
-
         self.update_result()
         return crafted
+
+class FurnaceManager:
+    def __init__(self):
+        self.input = None
+        self.fuel = None
+        self.output = None
+
+        self.progress = 0
+        self.max_progress = 200
+
+        self.burn_time = 0
+        self.max_burn_time = 0
+
+    def set_input(self, item):
+        self.input = item
+
+    def set_fuel(self, item):
+        self.fuel = item
+
+    def set_output(self, item):
+        self.output = item
+
+    def update(self, dt):
+        if not self.can_smelt():
+            self.progress = 0
+            return
+
+        if self.burn_time <= 0:
+            self.consume_fuel()
+
+        if self.burn_time > 0:
+            self.burn_time -= 10 * dt
+            self.progress += 200 * dt
+
+            if self.progress >= self.max_progress:
+                self.smelt()
+                self.progress = 0
+            
+    def can_smelt(self):
+        if not self.input:
+            return False
+        
+        if self.input.count <= 0:
+            return False
+
+        return self.input.item_property.heatable
+    
+    def smelt(self):
+        result_item = game_type.get_item_type_by_name(self.input.item_property.warmer_item)
+
+        if not result_item:
+            return
+        
+        if self.output is None:
+            self.output = ItemStack(result_item, 1)
+
+        elif self.output.item_property == result_item:
+            self.output.count += 1
+
+        if self.input.count > 1:
+            self.input.count -= 1
+        else:
+            self.input = None
+        
+    def consume_fuel(self):
+        if not self.fuel:
+            return False
+
+        fuel_value = self.fuel.item_property.fuel_level
+
+        if fuel_value <= 0:
+            return False
+
+        self.fuel.count -= 1
+
+        if self.fuel.count <= 0:
+            self.fuel = None
+
+        self.burn_time = fuel_value
+        self.max_burn_time = fuel_value
+
+        return True
     
 class SlotWrapper:
-    def __init__(self, getter, setter, slot_type="inventory"):
-        self.getter = getter
+    def __init__(self, ui_getter, setter, getter=None, slot_type="inventory"):
+        self.ui_getter = ui_getter
+
+        if not getter:
+            self.getter = ui_getter
+        else:
+            self.getter = getter
+        
         self.setter = setter
         self.slot_type = slot_type
 
+    def get_ui(self):
+        """
+        GET utilisé pour l'affichage sans actions potentiel
+        """
+        return self.ui_getter()
+
     def get(self):
+        """
+        GET utilisé pour les controls comme le craft, le furnace, ne pas utiliser pour l'affichage
+        """
         return self.getter()
 
     def set(self, item):
         self.setter(item)
 
     def is_empty(self):
-        return self.get() is None
+        return self.get_ui() is None
 
     def get_type(self):
         return self.slot_type
     
     def __str__(self):
-        return f"SlotWrapper(type:{self.slot_type}, get:{self.get()})"
+        return f"SlotWrapper(type:{self.slot_type}, get:{self.get_ui()})"
 
 class Inventory():
     def __init__(self, size):
@@ -404,6 +541,7 @@ class Inventory():
                 slot.set(stack)
                 return None
 
+        self.drop_item(stack)
         return stack
 
     def update(self):
@@ -426,37 +564,37 @@ class Inventory():
     def get_slot(self, index):
         if 0 <= index < self.size:
             return SlotWrapper(
-                getter=lambda i=index: self.items.get(i),
+                ui_getter=lambda i=index: self.items.get(i),
                 setter=lambda item, i=index: self.items.__setitem__(i, item)
             )
         return None
 
-    def add_item(self, itemStack):
-        reste = itemStack.count
+    # def add_item(self, itemStack):
+    #     reste = itemStack.count
 
-        for item in self.items.values():
-            if not item:
-                continue
+    #     for item in self.items.values():
+    #         if not item:
+    #             continue
 
-            if item.item_property == itemStack.item_property:
-                reste = item.add_item(reste)
-                if reste == 0:
-                    return None  # tout ajouté
+    #         if item.item_property == itemStack.item_property:
+    #             reste = item.add_item(reste)
+    #             if reste == 0:
+    #                 return None  # tout ajouté
 
-        for slot in range(self.size):
-            if not self.items.get(slot):
-                max_stack = itemStack.item_property.max_stack
+    #     for slot in range(self.size):
+    #         if not self.items.get(slot):
+    #             max_stack = itemStack.item_property.max_stack
 
-                to_add = min(reste, max_stack)
-                self.items[slot] = ItemStack(itemStack.item_property, to_add)
+    #             to_add = min(reste, max_stack)
+    #             self.items[slot] = ItemStack(itemStack.item_property, to_add)
 
-                reste -= to_add
+    #             reste -= to_add
 
-                if reste == 0:
-                    return None
+    #             if reste == 0:
+    #                 return None
 
-        if reste > 0:
-            self.drop_item(ItemStack(itemStack.item_property, reste))
+    #     if reste > 0:
+    #         self.drop_item(ItemStack(itemStack.item_property, reste))
 
     def delete_item_property(self, item_property, count):
         reste = count
@@ -598,20 +736,8 @@ class Entity_Inventory(Inventory):
         self.title = f"Inventory of {owner_entity.name}"
         self.ui = UI_Inventory(self, case_number=6)
 
-        self.craft_manager = None
-
     def drop_item(self, itemStack):
         self.owner_entity.drop_item(itemStack)
-    
-    def open_crafting(self, type_: Crafting_types):
-        if type_ in Crafting_types.__dict__.values():
-            self.craft_manager = CraftManager(size=type_, current_inv=self)
-        else:
-            self.close_crafting()
-
-    def close_crafting(self):
-        self.craft_manager.close()
-        self.craft_manager = None
 
     def to_json(self) -> dict:
         data = super().to_json()

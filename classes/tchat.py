@@ -276,7 +276,7 @@ class CommandManager:
             
             print("Item " + str(item))
             for i in range(count):
-                player.inventory.add_item(itemStack=ItemStack(item, 1))
+                player.inventory.insert(ItemStack(item, 1))
             self.tchat.send_message("", f"{count} Item {item.item_name} give to player {player.name}")
 
         elif command == "clear":
@@ -303,6 +303,9 @@ class CommandManager:
         else:
             self.send_error_message_command(content)
             return
+        
+    def send_error_message_command(self, content):
+        self.tchat.send_message("", f"&4Erreur: {content} <---[HERE]")
     
     def send_error_message(self, content):
         self.tchat.send_message("", f"&4Erreur, {content}")

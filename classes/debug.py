@@ -1,5 +1,5 @@
 AUTO_START = {
-    "enable": True, 
+    "enable": False, 
     "world_name": "Monde Arthur",
     "player_name": "Arthur"
 }

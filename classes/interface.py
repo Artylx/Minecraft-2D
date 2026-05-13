@@ -258,7 +258,7 @@ class MainMenu:
 
             Texte("Créer par Arthur REY en Python", (self.center_x, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, 160, 50), center_pos=True),
 
-            Texte("Versions et crédit", (self.center_x, BUTTON_HEIGHT, 160, 50), center_pos=True),
+            Texte(f"Versions et crédit (actuel: V{game_property.VERSION})", (self.center_x, BUTTON_HEIGHT, 160, 50), center_pos=True),
 
             Button(
                 "Retour",

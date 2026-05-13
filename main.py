@@ -497,10 +497,10 @@ class Game_manager:
                 self.tchat.send_message(p.name, "Salut les gens !")
             
             if game.is_press(pygame.K_e):
-                self.UI.open_inv(self.player.inventory)
+                self.UI.open_crafting(self.player.inventory)
             
             if game.is_press(pygame.K_a):
-                self.player.drop_item()
+                self.player.drop_item_index()
 
             if game.is_press(pygame.K_ESCAPE):
                 game.menu.set_menu(interface.MenusCollection.GAME_PAUSED)
@@ -542,6 +542,7 @@ class Game_manager:
         self.World.update(dt)
         self.update_cam_rect()
         self.UI.update_pos_cam_rect(self.player.get_pos())
+        self.UI.update(dt)
 
     def click_on_block(self, pos_block, player):
         # centre du bloc
@@ -566,7 +567,7 @@ class Game_manager:
             else:
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
-                    self.UI.open_inv(player.inventory, Crafting_types.CRAFTING_TABLE)
+                    self.UI.open_crafting(player.inventory, Crafting_types.CRAFTING_TABLE)
                     return True
                 elif old_block.block_property == game_type.BlockProperty.FURNACE:
 
@@ -574,7 +575,7 @@ class Game_manager:
                     return True
                 elif old_block.block_property == game_type.BlockProperty.CHEST:
 
-                    self.UI.open_chest(player.inventory, old_block)
+                    self.UI.open_inv(player.inventory, old_block)
                     return True
         return False
 

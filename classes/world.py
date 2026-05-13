@@ -323,7 +323,7 @@ class World:
 
                         to_remove.append(entity)
 
-                        player.inventory.add_item(
+                        player.inventory.insert(
                             inventory.ItemStack(entity.item_type, 1)
                         )
                 
@@ -1005,7 +1005,7 @@ class Block:
         self.sky_light = 0
         self.block_light = 0
 
-        self.item_contain = []
+        self.components = {}
 
         self.debug = debug
         if self.block_property.life:
@@ -1014,6 +1014,12 @@ class Block:
         else:
             self.life = 0
             self.max_life = 0
+
+    def add_component(self, component, key):
+        self.components[key] = component
+
+    def get_component(self, key, default_value=None):
+        return self.components.get(key, default_value)
 
     def __str__(self):
         return f"Block(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"

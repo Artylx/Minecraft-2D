@@ -38,7 +38,9 @@ class ItemProperty:
     REGISTRY = {}
     texture_manager = None
 
-    def __init__(self, name=None, texture=None, max_stack=None, placeable=None, block_type=None, description="Materiaux", heatable=False, warmer_item=None, fuel_level=0, electricity=0):
+    def __init__(self, name=None, texture=None, max_stack=None, 
+                 placeable=None, block_type=None, description="Materiaux", 
+                 heatable=False, warmer_item=None, fuel_level=0, electricity=0):
         self.description = description + '\n'
         self.item_name = name
         self.texture = texture
@@ -56,6 +58,12 @@ class ItemProperty:
         self.fuel_level = fuel_level
         
         self.register()
+
+    def is_fuel(self):
+        if self.fuel_level > 0:
+            return True
+        else:
+            return
 
     def add_description(self, text, end='\n'):
         self.description = self.description + text + end
@@ -288,14 +296,14 @@ ItemProperty.GRASS = ItemProperty("grass", TextureType.GRASS, 100, True, "GRASS"
 ItemProperty.STONE = ItemProperty("stone", TextureType.STONE, 100, True, "STONE")
 
 
-ItemProperty.COAL_ORE = ItemProperty("coal_ore", TextureType.COAL_ORE, 100, True, "COAL_ORE", heatable=True, warmer_item="COAL")
-ItemProperty.IRON_ORE = ItemProperty("iron_ore", TextureType.IRON_ORE, 100, True, "IRON_ORE", heatable=True, warmer_item="IRON")
-ItemProperty.GOLD_ORE = ItemProperty("gold_ore", TextureType.GOLD_ORE, 100, True, "GOLD_ORE", heatable=True, warmer_item="GOLD")
+ItemProperty.COAL_ORE = ItemProperty("coal_ore", TextureType.COAL_ORE, 100, True, "COAL_ORE", heatable=True, warmer_item="COAL_INGOT")
+ItemProperty.IRON_ORE = ItemProperty("iron_ore", TextureType.IRON_ORE, 100, True, "IRON_ORE", heatable=True, warmer_item="IRON_INGOT")
+ItemProperty.GOLD_ORE = ItemProperty("gold_ore", TextureType.GOLD_ORE, 100, True, "GOLD_ORE", heatable=True, warmer_item="GOLD_INGOT")
 
 
-ItemProperty.COAL = ItemProperty("coal", TextureType.COAL, 100, False, None, fuel_level=10)
-ItemProperty.IRON = ItemProperty("iron", TextureType.IRON, 100, False, None)
-ItemProperty.GOLD = ItemProperty("gold", TextureType.GOLD, 100, False, None)
+ItemProperty.COAL = ItemProperty("coal_ingot", TextureType.COAL, 100, False, None, fuel_level=10)
+ItemProperty.IRON = ItemProperty("iron_ingot", TextureType.IRON, 100, False, None)
+ItemProperty.GOLD = ItemProperty("gold_ingot", TextureType.GOLD, 100, False, None)
 
 
 ItemProperty.OAK_TRUNK = ItemProperty("oak_trunk", TextureType.OAK_TRUNK, 100, True, "OAK_TRUNK")
@@ -354,7 +362,7 @@ BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None
 BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
 BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
 
-BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL", 360, Pickaxe_tool)
+BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool)
 BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool)
 BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool)
 
