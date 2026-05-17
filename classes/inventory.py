@@ -1,8 +1,9 @@
 from matplotlib.pylab import matrix
-
+import random
 from classes.texture_manager import  TextureManager
 import pygame
 from classes import game_property, game_type
+import classes.entity as entity
 import uuid
 
 class RotationMode:
@@ -88,6 +89,28 @@ RECIPES = {
     },
 
     (
+        ("oak_plank","oak_plank","oak_plank",),
+        ("oak_plank", None,"oak_plank",),
+        ("oak_plank","oak_plank","oak_plank",),
+     
+    ): {
+        "result": [(1, "chest")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("iron_ingot","iron_ingot","iron_ingot",),
+        ("iron_ingot", "chest","iron_ingot",),
+        ("iron_ingot","iron_ingot","iron_ingot",),
+     
+    ): {
+        "result": [(1, "iron_chest")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
         ("oak_plank",),
         ("oak_plank",)
     ): {
@@ -137,6 +160,26 @@ RECIPES = {
     },
 
     (
+        ("stone",),
+        ("stone",),
+        ("stick",)
+    ): {
+        "result": [(1, "stone_sword")],
+        "rotation": RotationMode.NONE,
+        "mirror": False
+    },
+
+    (
+        ("stone", "stone",),
+        ("stick", "stone",),
+        ("stick",None,)
+    ): {
+        "result": [(1, "stone_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": True
+    },
+
+    (
         ("iron_ingot", "iron_ingot", "iron_ingot",),
         (None, "stick", None,),
         (None, "stick",None,)
@@ -147,13 +190,13 @@ RECIPES = {
     },
 
     (
-        (None, "iron_ingot", "iron_ingot",),
-        (None, "stick", "iron_ingot",),
-        (None, "stick",None,)
+        ("iron_ingot", "iron_ingot",),
+        ("stick", "iron_ingot",),
+        ("stick",None,)
     ): {
         "result": [(1, "iron_axe")],
         "rotation": RotationMode.NONE,
-        "mirror": False
+        "mirror": True
     },
 
     (
@@ -177,11 +220,21 @@ RECIPES = {
     },
 
     (
-        ("stone",),
-        ("stone",),
+        ("gold_ingot", "gold_ingot",),
+        ("stick", "gold_ingot",),
+        ("stick",None,)
+    ): {
+        "result": [(1, "golden_axe")],
+        "rotation": RotationMode.NONE,
+        "mirror": True
+    },
+
+    (
+        ("gold_ingot",),
+        ("gold_ingot",),
         ("stick",)
     ): {
-        "result": [(1, "stone_sword")],
+        "result": [(1, "golden_sword")],
         "rotation": RotationMode.NONE,
         "mirror": False
     },
@@ -361,8 +414,57 @@ class CraftManager():
         self.update_result()
         return crafted
 
-class FurnaceManager:
-    def __init__(self):
+class BlockComponent:
+    def __init__(self, type_="blockComponent"):
+        self.type_ = type_
+
+    def load(self, data, add_map=None):
+        if add_map is None:
+            add_map = {}
+
+        mapping = {
+        }
+
+        mapping.update(add_map)
+
+        # Vérification
+        required = list(mapping.keys())
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation complexe
+        for key, target in mapping.items():
+            if isinstance(target, tuple):
+                obj, attr = target
+                setattr(getattr(self, obj), attr, data[key])
+            else:
+                setattr(self, target, data[key])
+
+        return self
+
+    def to_json(self, add_data=None):
+        if not add_data:
+            add_data = {}
+
+        data = {
+            "type": self.type_,
+        }
+
+        data.update(add_data)
+        return data
+    
+    def destroy(self):
+        pass
+    
+    def __str__(self):
+        return f"blockComponent(type={self.type_})"
+
+class FurnaceManager(BlockComponent):
+    def __init__(self, type_="furnaceComponent"):
+        super().__init__(type_)
+
         self.input = None
         self.fuel = None
         self.output = None
@@ -372,6 +474,86 @@ class FurnaceManager:
 
         self.burn_time = 0
         self.max_burn_time = 0
+
+    def destroy(self, current_world):
+        if self.input:
+            x = x * game_property.TILE_SIZE
+            y = y * game_property.TILE_SIZE
+
+            r = random.Random()
+            pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
+
+            block_entity = entity.Item(self, self.input.item_property, pos)
+            self.create_entity(block_entity)
+
+        return super().destroy()
+
+    def load(self, data, add_map):
+
+        print("FurnaceManager load ", data)
+
+        if add_map is None:
+            add_map = {}
+
+        mapping = {
+            "input": "input",
+            "fuel": "fuel",
+            "output": "output",
+        }
+
+        mapping.update(add_map)
+
+        # Vérification
+        required = list(mapping.keys())
+        missing = [k for k in required if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+
+        # Assignation complexe
+        for key, target in mapping.items():
+            if isinstance(target, tuple):
+                obj, attr = target
+                setattr(getattr(self, obj), attr, data[key])
+            else:
+                if key == "input" or key == "fuel" or key == "output":
+                    item = ItemStack(None)
+                    item = item.load(data.get(key, None))
+
+                    setattr(self, target, item)
+                else:
+                    setattr(self, target, data[key])
+
+        if not super().load(data, add_map):
+            return None
+        return self
+
+    def to_json(self, add_data=None):
+        if not add_data:
+            add_data = {}
+
+        data = {
+        }
+
+        if self.input:
+            data["input"] = self.input.to_json()
+        else:
+            data["input"] = None
+
+        if self.fuel:
+            data["fuel"] = self.fuel.to_json()
+        else:
+            data["fuel"] = None
+
+        if self.output:
+            data["output"] = self.output.to_json()
+        else:
+            data["output"] = None
+
+        print("FurnaceManager to_json ", data)
+
+        data.update(add_data)
+        return super().to_json(data)
 
     def set_input(self, item):
         self.input = item
@@ -443,6 +625,74 @@ class FurnaceManager:
 
         return True
     
+    def __str__(self):
+        return f"FurnaceManager()"
+    
+class ChestManager(BlockComponent):
+    def __init__(self, type_="chestManager", level=game_type.MaterialTool.WOODEN):
+        super().__init__(type_)
+
+        if level == game_type.MaterialTool.IRON:
+            size = 36
+        elif level == game_type.MaterialTool.DIAMOND:
+            size = 48
+        else:
+            size = 24
+
+        self.inventory = Inventory(size)
+
+    def load(self, data, add_map):
+
+        if add_map is None:
+            add_map = {}
+
+        map_ = {
+        }
+
+        map_.update(add_map)
+
+        self.inventory = self.inventory.load(data.get("inventory", None))
+        if self.inventory is None:
+            return None
+        
+        if super().load(data, add_map) is None:
+            return None
+        return self
+
+    def to_json(self, add_data=None):
+        if not add_data:
+            add_data = {}
+
+        data = {
+            "inventory": self.inventory.to_json(),
+        }
+
+        data.update(add_data)
+        return super().to_json(data)
+
+    def __str__(self):
+        return f"ChestManager()"
+    
+COMPONENTS_CLASSES = {
+    "blockComponent": BlockComponent,
+    "furnaceComponent": FurnaceManager,
+    "chestManager": ChestManager,
+}
+    
+def json_to_block_component(data):
+    type_ = data.get("type")
+
+    if not type_:
+        return None
+    
+    cls = COMPONENTS_CLASSES.get(type_)
+    if not cls:
+        print(f"Component inconnu: {type_}")
+        return None
+    
+    component = cls()
+    return component.load(data, None)
+    
 class SlotWrapper:
     def __init__(self, ui_getter, setter, getter=None, slot_type="inventory"):
         self.ui_getter = ui_getter
@@ -457,7 +707,7 @@ class SlotWrapper:
 
     def get_ui(self):
         """
-        GET utilisé pour l'affichage sans actions potentiel
+        GET utilisé pour l'affichage sans actions potentiel avec le get de l'item
         """
         return self.ui_getter()
 
@@ -486,6 +736,7 @@ class Inventory():
         self.clear()
 
         self.title = f"Inventory uuid:{self.uuid}"
+        self.ui = UI_Inventory(self, case_number=6)
 
     def try_stack_item(self, src_stack, dst_slot):
         if not dst_slot:
@@ -734,7 +985,6 @@ class Entity_Inventory(Inventory):
         self.owner_entity = owner_entity
 
         self.title = f"Inventory of {owner_entity.name}"
-        self.ui = UI_Inventory(self, case_number=6)
 
     def drop_item(self, itemStack):
         self.owner_entity.drop_item(itemStack)
@@ -800,6 +1050,9 @@ class ItemStack():
         self.update_texture()
     
     def load(self, data):
+        if data is None:
+            return None
+            
         # champs simples
         simple_fields = [
             "item_type_name", "count", "durability"

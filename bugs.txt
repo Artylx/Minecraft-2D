@@ -1,9 +1,10 @@
 - [FAIT] Attribut qui sont partagé entre les classes qui dépendent de tool
 - [FAIT] Swap entre item de l'inventaire et result_crafting
 - [FAIT] Chargement des chunks trop long
-- [FAIT] Choix du pseudo au lancement du monde
 - [FAIT] Interface du four pour cuir des items
 - Utiliser des consomables qui redonnnent de la vie (ou système de nourriture)
 - Système de tuto
 - Système de boite à choix défilante
+- Bug quand on split et qu'on swap => suppresion de l'ancien item
 - [FAIT] Scroll plus détecté
+- Proposer un pseudo au lancement d'un monde déjà lancé auparavant

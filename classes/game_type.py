@@ -306,20 +306,21 @@ ItemProperty.IRON = ItemProperty("iron_ingot", TextureType.IRON, 100, False, Non
 ItemProperty.GOLD = ItemProperty("gold_ingot", TextureType.GOLD, 100, False, None)
 
 
-ItemProperty.OAK_TRUNK = ItemProperty("oak_trunk", TextureType.OAK_TRUNK, 100, True, "OAK_TRUNK")
+ItemProperty.OAK_TRUNK = ItemProperty("oak_trunk", TextureType.OAK_TRUNK, 100, True, "OAK_TRUNK", heatable=True, warmer_item="COAL_INGOT", fuel_level=5)
 ItemProperty.OAK_LEAVES = ItemProperty("oak_leaves", TextureType.OAK_LEAVES, 100, True, "OAK_LEAVES")
 ItemProperty.OAK_TRUNK_BOTTOM = ItemProperty("oak_trunk_bottom", TextureType.OAK_TRUNK_BOTTOM, 100, True, "OAK_TRUNK_BOTTOM")
 ItemProperty.OAK_TRUNK_MID = ItemProperty("oak_trunk_mid", TextureType.OAK_TRUNK_MID, 100, True, "OAK_TRUNK_MID")
 ItemProperty.CRAFTING_TABLE = ItemProperty("crafting_table", TextureType.CRAFTING_TABLE, 100, True, "CRAFTING_TABLE")
 ItemProperty.FURNACE = ItemProperty("furnace", TextureType.FURNACE, 100, True, "FURNACE", "Permet de cuir les objets")
 ItemProperty.CHEST = ItemProperty("chest", TextureType.CHEST, 100, True, "CHEST", "Permet de stocker des objets")
+ItemProperty.IRON_CHEST = ItemProperty("iron_chest", TextureType.IRON_CHEST, 100, True, "IRON_CHEST", "Permet de stocker des objets")
 ItemProperty.STONE_SNOW = ItemProperty("stone_snow", TextureType.STONE_SNOW, 100, True, "STONE_SNOW")
 ItemProperty.SNOW = ItemProperty("snow", TextureType.SNOW, 100, True, "SNOW")
 ItemProperty.BEDROCK = ItemProperty("bedrock", TextureType.BEDROCK, 100, True, "BEDROCK")
 ItemProperty.REDSTONE = ItemProperty("redstone", TextureType.REDSTONE, 100, True, "REDSTONE")
 ItemProperty.REDSTONE_EMERALD = ItemProperty("redstone_emerald", TextureType.REDSTONE_EMERALD, 100, True, "REDSTONE_EMERALD")
 ItemProperty.REDSTONE_SAND = ItemProperty("redstone_sand", TextureType.REDSTONE_SAND, 100, True, "REDSTONE_SAND")
-ItemProperty.OAK_PLANK = ItemProperty("oak_plank", TextureType.OAK_PLANK, 100, True, "OAK_PLANK")
+ItemProperty.OAK_PLANK = ItemProperty("oak_plank", TextureType.OAK_PLANK, 100, True, "OAK_PLANK", fuel_level=4)
 ItemProperty.TNT = ItemProperty("tnt", TextureType.TNT, 100, True, "TNT")
 
 ItemProperty.GRASS_1 = ItemProperty("grass_1", TextureType.GRASS_1, 100, True, "GRASS_1")
@@ -335,15 +336,22 @@ ItemProperty.TORCH = ItemProperty("torch", TextureType.TORCH, 100, True, "TORCH"
 ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)
 ItemProperty.WOODEN_SWORD = Attack_tool("wooden_sword", TextureType.WOODEN_SWORD, MaterialTool.WOODEN)
 ItemProperty.STONE_SWORD = Attack_tool("stone_sword", TextureType.STONE_SWORD, MaterialTool.STONE)
+ItemProperty.IRON_SWORD = Attack_tool("iron_sword", TextureType.IRON_SWORD, MaterialTool.IRON)
+ItemProperty.GOLDEN_SWORD = Attack_tool("golden_sword", TextureType.GOLDEN_SWORD, MaterialTool.GOLDEN)
 
 # PIOCHE
 ItemProperty.DIAMOND_PICKAXE = Pickaxe_tool("diamond_pickaxe", TextureType.DIAMOND_PICKAXE, MaterialTool.DIAMOND)
 ItemProperty.WOODEN_PICKAXE = Pickaxe_tool("wooden_pickaxe", TextureType.WOODEN_PICKAXE, MaterialTool.WOODEN)
 ItemProperty.STONE_PICKAXE = Pickaxe_tool("stone_pickaxe", TextureType.STONE_PICKAXE, MaterialTool.STONE)
+ItemProperty.IRON_PICKAXE = Pickaxe_tool("iron_pickaxe", TextureType.IRON_PICKAXE, MaterialTool.IRON)
+ItemProperty.GOLDEN_PICKAXE = Pickaxe_tool("golden_pickaxe", TextureType.GOLDEN_PICKAXE, MaterialTool.GOLDEN)
 
 # HACHE
 ItemProperty.DIAMOND_AXE = Axe_tool("diamond_axe", TextureType.DIAMOND_AXE, MaterialTool.DIAMOND)
 ItemProperty.WOODEN_AXE = Axe_tool("wooden_axe", TextureType.WOODEN_AXE, MaterialTool.WOODEN)
+ItemProperty.STONE_AXE = Axe_tool("stone_axe", TextureType.STONE_AXE, MaterialTool.STONE)
+ItemProperty.IRON_AXE = Axe_tool("iron_axe", TextureType.IRON_AXE, MaterialTool.IRON)
+ItemProperty.GOLDEN_AXE = Axe_tool("golden_axe", TextureType.GOLDEN_AXE, MaterialTool.GOLDEN)
 
 # ARC
 ItemProperty.BOW = Bow_tool("bow", TextureType.BOW, TextureType.BOW_ARROW)
@@ -362,15 +370,16 @@ BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None
 BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
 BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
 
-BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool)
-BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool)
-BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool)
+BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool, Pickaxe_tool)
+BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool, Pickaxe_tool)
+BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool, Pickaxe_tool)
 
 BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
 BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
 BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200, Axe_tool)
 BlockProperty.FURNACE = BlockProperty("furnace", 30, True, TextureType.FURNACE, True, "FURNACE", 200, Pickaxe_tool, Pickaxe_tool)
 BlockProperty.CHEST = BlockProperty("chest", 31, True, TextureType.CHEST, True, "CHEST", 200, Axe_tool)
+BlockProperty.IRON_CHEST = BlockProperty("iron_chest", 32, True, TextureType.IRON_CHEST, True, "IRON_CHEST", 300, Pickaxe_tool)
 BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300, Pickaxe_tool)
 BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
 BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50, Pickaxe_tool)

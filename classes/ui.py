@@ -1,8 +1,8 @@
 from operator import inv
 from classes import language
 import pygame
-from classes import game_property
-from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager
+from classes import game_property, game_type
+from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
     
 class DragState:
     def __init__(self):
@@ -80,6 +80,9 @@ class InventoryController:
         self._clear()
 
     def can_drop(self, target, stack):
+        if not target:
+            return False
+
         if target.get_type() == "craft_result" or target.get_type() == "furnace_output":
             return False
         
@@ -178,7 +181,10 @@ class UI:
 
             self.render_hotbar(screen, player.inventory)
         else:
-            self.render_chest(screen, self.open_inventory)
+            if self.opened_chest:
+                self.render_chest_ui(screen)
+            else:
+                self.render_chest(screen, self.open_inventory)
             self.render_drag(screen)
         
         self.render_tooltip(screen)
@@ -206,17 +212,27 @@ class UI:
         mouse_pos = pygame.mouse.get_pos()
         self.hovered_item = None
 
-        # inventaire ouvert
+        # =========================
+        # INVENTAIRE OUVERT
+        # =========================
         if self.is_open_inv():
-            for rect, slot in self.get_all_slots(self.open_inventory):
+
+            for rect, slot in self.get_all_open_slots():
+
                 if rect.collidepoint(mouse_pos):
+
                     item = slot.get_ui()
+
                     if item:
                         self.hovered_item = item
+
                     return
 
-        # hotbar (inventaire fermé)
+        # =========================
+        # HOTBAR
+        # =========================
         else:
+
             case_size = game_property.INVENTORY_SIZE_CASE
             margin = 15
 
@@ -226,18 +242,20 @@ class UI:
             start_x = self.screen_size[0] // 2 - width // 2
             start_y = self.screen_size[1] - game_property.MARGIN_UI_SCREEN - height
 
-            for i in range(min(len(inv.items), inv.ui.case_number)):
-                col = i % inv.ui.case_number
-                
-                x = start_x + col * (case_size + margin) + margin
+            for i in range(inv.ui.case_number):
+
+                x = start_x + i * (case_size + margin) + margin
                 y = start_y + margin
 
                 rect = pygame.Rect(x, y, case_size, case_size)
 
                 if rect.collidepoint(mouse_pos):
-                    item = inv.items.get(i, None)
+
+                    item = inv.items.get(i)
+
                     if item:
                         self.hovered_item = item
+
                     return
     
     def render_tooltip(self, screen):
@@ -366,7 +384,7 @@ class UI:
         return None
     
     def get_slot_from_mouse(self, mouse_pos):
-        for rect, slot in self.get_all_slots(self.open_inventory):
+        for rect, slot in self.get_all_open_slots():
             if rect.collidepoint(mouse_pos):
                 return slot
         return None
@@ -499,6 +517,136 @@ class UI:
             )
         )
 
+    def render_chest_ui(self, screen):
+        chest_inv = self.opened_chest.inventory
+        player_inv = self.open_inventory
+
+        chest_width, chest_height = self.get_inv_size_ui(chest_inv)
+        player_width, player_height = self.get_inv_size_ui(player_inv)
+
+        total_width = max(chest_width, player_width)
+
+        spacing = 40
+
+        total_height = chest_height + player_height + spacing + 60
+
+        start_x = self.screen_size[0] // 2 - total_width // 2
+        start_y = self.screen_size[1] // 2 - total_height // 2
+
+        # =========================
+        # TITRE COFFRE
+        # =========================
+
+        font = pygame.font.SysFont("Arial", 26)
+
+        chest_text = font.render("Chest", True, (255,255,255))
+        screen.blit(chest_text, (start_x, start_y))
+
+        chest_y = start_y + 40
+
+        # fond coffre
+        surface = pygame.Surface((chest_width, chest_height), pygame.SRCALPHA)
+        surface.fill((0,0,0,180))
+
+        screen.blit(surface, (start_x, chest_y))
+
+        self.render_slots(
+            screen,
+            self.get_inventory_slots(
+                chest_inv,
+                start_x,
+                chest_y
+            )
+        )
+
+        # =========================
+        # INVENTAIRE JOUEUR
+        # =========================
+
+        player_text = font.render(player_inv.title, True, (255,255,255))
+
+        player_y = chest_y + chest_height + spacing
+
+        screen.blit(player_text, (start_x, player_y))
+
+        player_inv_y = player_y + 40
+
+        surface = pygame.Surface((player_width, player_height), pygame.SRCALPHA)
+        surface.fill((0,0,0,180))
+
+        screen.blit(surface, (start_x, player_inv_y))
+
+        self.render_slots(
+            screen,
+            self.get_inventory_slots(
+                player_inv,
+                start_x,
+                player_inv_y
+            )
+        )
+
+    def get_all_open_slots(self):
+        slots = []
+        
+        if self.opened_chest:
+            chest_inv = self.opened_chest.inventory
+
+            chest_width, chest_height = self.get_inv_size_ui(chest_inv)
+            player_width, player_height = self.get_inv_size_ui(self.open_inventory)
+
+            total_width = max(chest_width, player_width)
+
+            spacing = 40
+
+            total_height = chest_height + player_height + spacing + 60
+
+            start_x = self.screen_size[0] // 2 - total_width // 2 - self.margin
+            start_y = self.screen_size[1] // 2 - total_height // 2
+
+            chest_y = start_y + 40
+
+            slots += self.get_inventory_slots(
+                chest_inv,
+                start_x,
+                chest_y
+            )
+
+            player_y = chest_y + chest_height + spacing + 40
+
+            slots += self.get_inventory_slots(
+                self.open_inventory,
+                start_x,
+                player_y
+            )
+
+        else:
+            slots += self.get_all_slots(self.open_inventory)
+
+        return slots
+
+    def get_inventory_slots(self, inv, start_x, start_y):
+        slots = []
+
+        cols = inv.ui.case_number
+
+        for i in range(inv.size):
+            row = i // cols
+            col = i % cols
+
+            x = start_x + self.margin + col * (self.case_size + self.margin)
+            y = start_y + self.margin + row * (self.case_size + self.margin)
+
+            rect = pygame.Rect(x, y, self.case_size, self.case_size)
+
+            slot = SlotWrapper(
+                ui_getter=lambda i=i: inv.items.get(i),
+                setter=lambda item, i=i: inv.items.__setitem__(i, item)
+            )
+
+            slots.append((rect, slot))
+
+        return slots
+
     def get_inv_size_ui(self, inv):
         cols = inv.ui.case_number
         rows = (inv.size + cols - 1) // cols
@@ -550,31 +698,16 @@ class UI:
     def get_all_slots(self, inv):
         slots = []
 
-        cols = inv.ui.case_number
-
         width, height = self.get_inv_size_ui(inv)
 
         start_x = self.screen_size[0] // 2 - width // 2 + self.margin
         start_y = self.screen_size[1] // 2 - (height + self.current_title_space) // 2 + self.current_title_space
 
-        # =========================
-        # INVENTAIRE
-        # =========================
-        for i in range(inv.size):
-            row = i // cols
-            col = i % cols
-
-            x = start_x + col * (self.case_size + self.margin)
-            y = start_y + row * (self.case_size + self.margin) + self.margin
-
-            rect = pygame.Rect(x, y, self.case_size, self.case_size)
-
-            slot = SlotWrapper(
-                ui_getter=lambda i=i: inv.items.get(i),
-                setter=lambda item, i=i: inv.items.__setitem__(i, item)
-            )
-
-            slots.append((rect, slot))
+        slots += self.get_inventory_slots(
+            inv,
+            start_x - self.margin,
+            start_y
+        )
 
         # =========================
         # CRAFT
@@ -767,17 +900,28 @@ class UI:
 
         self.opened_furnace = block.get_component("furnace")
             
+    def is_open_chest(self):
+        return True if self.opened_chest else False
 
     def open_inv(self, inv, block):
-        pass
+        self.open_inventory = inv
 
-    
-    
+        if not block.get_component("chest"):
+            if block.block_property == game_type.BlockProperty.CHEST:
+                block.add_component(ChestManager(level=game_type.MaterialTool.WOODEN), "chest")
+            elif block.block_property == game_type.BlockProperty.IRON_CHEST:
+                block.add_component(ChestManager(level=game_type.MaterialTool.IRON), "chest")
+
+        self.opened_chest = block.get_component("chest")
+
     def close_inv(self):
         if self.open_inventory:
             if self.is_crafting():
                 self.craft_manager.close()
                 self.craft_manager = None
+
+            if self.is_open_chest():
+                self.opened_chest = None
 
             if self.controller.is_draging():
                 self.controller.drop_outside()
@@ -789,3 +933,4 @@ class UI:
         self.open_inventory = None
         self.craft_manager = None
         self.opened_furnace = None
+        self.opened_chest = None

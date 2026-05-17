@@ -8,6 +8,10 @@ from classes.inventory import Crafting_types
 import random
 import os
 import shutil
+import os
+import traceback
+import datetime
+import platform
 
 from classes import debug
 
@@ -108,10 +112,10 @@ class Game:
             print("Path: ", self.game_manager.world_path, "Name: ", self.game_manager.world_name)
 
             world.save_world_json(self.game_manager.World, self.game_manager.world_path, "world")
-            self.game_manager = None
 
             self.press_reset()
             self.menu.set_menu(interface.MenusCollection.MAIN)
+        self.game_manager = None
 
     def game_is_start(self):
         return self.game_manager is not None
@@ -180,9 +184,14 @@ class Game:
             updates = 0
 
             while accumulator >= dt and updates < max_updates:
-                self.handle_events()
+                try:
+                    self.handle_events()
 
-                self.update(dt)
+                    self.update(dt)
+                except Exception as e:
+                    self.crash_report(e)
+                    break
+
                 accumulator -= dt
                 updates += 1
 
@@ -197,7 +206,11 @@ class Game:
 
             self.fps = sum(self.fps_history) / len(self.fps_history)
 
-            self.render()
+            try:
+                self.render()
+            except Exception as e:
+                self.crash_report(e)
+                break
 
         pygame.quit()
 
@@ -303,6 +316,86 @@ class Game:
             self.screen.fill((135, 206, 235))
             self.menu.render(self.screen)
         pygame.display.flip()
+
+    def save_crash_report(self, crash):
+        try:
+            # dossier crash_reports
+            crash_dir = "crash_reports"
+            os.makedirs(crash_dir, exist_ok=True)
+
+            # timestamp unique
+            now = datetime.datetime.now()
+            filename = now.strftime("crash_%Y-%m-%d_%H-%M-%S.txt")
+
+            path = os.path.join(crash_dir, filename)
+
+            # récupération traceback
+            tb = "".join(
+                traceback.format_exception(
+                    type(crash),
+                    crash,
+                    crash.__traceback__
+                )
+            )
+
+            # contenu report
+            report = f"""
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: {now.strftime("%Y-%m-%d %H:%M:%S")}
+
+    --- SYSTEM ---
+    Platform: {platform.system()}
+    Platform Version: {platform.version()}
+    Python Version: {platform.python_version()}
+    Pygame Version: {pygame.version.ver}
+
+    --- GAME ---
+    World Loaded: {getattr(self.game_manager, "world_name", "Unknown")}
+    Player Position: {
+        self.game_manager.player.get_pos_tile()
+        if hasattr(self.game_manager, "player") and self.game_manager.player
+        else "Unknown"
+    }
+
+    --- EXCEPTION ---
+    Type: {type(crash).__name__}
+    Message: {str(crash)}
+
+    --- TRACEBACK ---
+    {tb}
+    """
+
+            # écriture fichier
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(report)
+
+            print(f"[CRASH REPORT SAVED] {path}")
+
+            return path
+
+        except Exception as e:
+            print("Impossible de sauvegarder le crash report :", e)
+            return None
+
+
+    def crash_report(self, exception):
+        report_path = self.save_crash_report(exception)
+
+        self.stop_game()
+
+        def open_report():
+            print("Open report")
+            if report_path and os.path.exists(report_path):
+                os.startfile(os.path.abspath(report_path))
+
+            print("Report : report_path")
+
+        self.menu.open_error(
+            callback=open_report
+        )
 
 
 class Game_manager:
@@ -486,7 +579,7 @@ class Game_manager:
 
             # Spawning for debug
             if game.is_press(pygame.K_m):
-                z = entity.Zobmie(self.World)
+                z = entity.Zombie(self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
             if game.is_press(pygame.K_p):
@@ -565,6 +658,8 @@ class Game_manager:
             if old_block.block_property == game_type.BlockProperty.AIR:
                 self.pos_block(pos_block, player)
             else:
+                self.World.add_modified_block(old_block.get_pos()[0], old_block.get_pos()[1])
+
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
                     self.UI.open_crafting(player.inventory, Crafting_types.CRAFTING_TABLE)
@@ -573,7 +668,7 @@ class Game_manager:
 
                     self.UI.open_furnace(player.inventory, old_block)
                     return True
-                elif old_block.block_property == game_type.BlockProperty.CHEST:
+                elif old_block.block_property == game_type.BlockProperty.CHEST or old_block.block_property == game_type.BlockProperty.IRON_CHEST:
 
                     self.UI.open_inv(player.inventory, old_block)
                     return True
@@ -673,6 +768,5 @@ if __name__ == "__main__":
         game.run()
         
     except Exception as e: 
-        import traceback 
         traceback.print_exc() 
         input("Crash - press enter")

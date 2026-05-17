@@ -58,21 +58,29 @@ class TextureType:
     CRAFTING_TABLE = "crafting_table"
     FURNACE = "furnace"
     CHEST = "chest"
+    IRON_CHEST = "iron_chest"
 
-    DIAMOND_SWORD = "diamond_sword"
-    DIAMOND_PICKAXE = "diamond_pickaxe"
-    DIAMOND_AXE = "diamond_axe"
-
+    # TOOLS
     WOODEN_SWORD = "wooden_sword"
     WOODEN_PICKAXE = "wooden_pickaxe"
     WOODEN_AXE = "wooden_axe"
 
     STONE_SWORD = "stone_sword"
     STONE_PICKAXE = "stone_pickaxe"
+    STONE_AXE = "stone_axe"
 
     IRON_SWORD = "iron_sword"
+    IRON_PICKAXE = "iron_pickaxe"
+    IRON_AXE = "iron_axe"
 
-    GOLDEN_SWORD = "golden_sword"
+    GOLDEN_SWORD = "gold_sword"
+    GOLDEN_PICKAXE = "gold_pickaxe"
+    GOLDEN_AXE = "gold_axe"
+
+    DIAMOND_SWORD = "diamond_sword"
+    DIAMOND_PICKAXE = "diamond_pickaxe"
+    DIAMOND_AXE = "diamond_axe"
+    
     PLAYER_HEAD = "player_head"
     PLAYER_BODY = "player_body"
     PLAYER_LEG = "player_leg"
@@ -130,6 +138,7 @@ class TextureManager:
             self.load_texture(TextureType.CRAFTING_TABLE, BLOCKS_PATH + "crafting_table.png")
             self.load_texture(TextureType.FURNACE, BLOCKS_PATH + "furnace.png")
             self.load_texture(TextureType.CHEST, BLOCKS_PATH + "chest.png")
+            self.load_texture(TextureType.IRON_CHEST, BLOCKS_PATH + "iron_chest.png")
 
             # VARIATIONS 
             self.load_texture(TextureType.GRASS_1, BLOCKS_PATH + "grass1.png")
@@ -150,9 +159,14 @@ class TextureManager:
             self.load_texture(TextureType.DIAMOND_PICKAXE, ITEMS_PATH + TOOLS_PATH + "diamond_pickaxe.png")
             self.load_texture(TextureType.WOODEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "wooden_pickaxe.png")
             self.load_texture(TextureType.STONE_PICKAXE, ITEMS_PATH + TOOLS_PATH + "stone_pickaxe.png")
+            self.load_texture(TextureType.IRON_PICKAXE, ITEMS_PATH + TOOLS_PATH + "iron_pickaxe.png")
+            self.load_texture(TextureType.GOLDEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "golden_pickaxe.png")
 
             self.load_texture(TextureType.DIAMOND_AXE, ITEMS_PATH + TOOLS_PATH + "diamond_axe.png")
             self.load_texture(TextureType.WOODEN_AXE, ITEMS_PATH + TOOLS_PATH + "wooden_axe.png")
+            self.load_texture(TextureType.STONE_AXE, ITEMS_PATH + TOOLS_PATH + "stone_axe.png")
+            self.load_texture(TextureType.IRON_AXE, ITEMS_PATH + TOOLS_PATH + "iron_axe.png")
+            self.load_texture(TextureType.GOLDEN_AXE, ITEMS_PATH + TOOLS_PATH + "golden_axe.png")
 
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")

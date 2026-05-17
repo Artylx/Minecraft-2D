@@ -25,7 +25,10 @@ ITEMS_FR = {
     "arrow": "Flèche",
     "coal": "Charbon",
     "tnt": "Explosif",
-    "iron_ingot": "Lingot de fer"
+    "iron_ingot": "Lingot de fer",
+    "gold_ingot": "Lingot d'or",
+    "iron_chest": "Coffre en fer",
+    "chest": "Coffre en bois",
 }
 
 ITEMS_EN = {

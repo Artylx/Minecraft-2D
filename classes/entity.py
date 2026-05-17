@@ -16,6 +16,13 @@ def tint_surface(surface, color):
     tinted.fill(color, special_flags=pygame.BLEND_RGB_MULT)
     return tinted
 
+def apply_brightness(surface, brightness):
+    result = surface.copy()
+    dark = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+    dark.fill((0, 0, 0, int((1 - brightness) * 255)))
+    result.blit(dark, (0, 0))
+    return result
+
 ATTACK_RANGE = 30
 
 class Entity:
@@ -84,17 +91,44 @@ class Entity:
         for entity in self.attached_entities:
             entity.kill()
 
-    def render(self, screen, cam_rect, color=(0, 0, 255)):
+    def render(self, screen, cam_rect, color=(255, 255, 255)):
         draw_x, draw_y = game_property.world_to_screen(
             self.rect.x, self.rect.y, self.rect.height, cam_rect
         )
+
         draw_x += self.dif_pos_render[0]
         draw_y -= self.dif_pos_render[1]
 
+        light = self.world.get_entity_light(self)
+
+        # normaliser (0–15 → 0.2–1.0)
+        brightness = max(0.2, light / 15)
+
         if self.texture:
-            screen.blit(self.texture, (draw_x, draw_y))
-        elif color:
-            pygame.draw.rect(screen, color, (draw_x, draw_y, self.rect.width, self.rect.height))
+            tex = self.texture.copy()
+
+            brightness = max(0.2, light / 15)
+
+            # surface de modulation
+            shade = pygame.Surface(tex.get_size(), pygame.SRCALPHA)
+            shade.fill((
+                int(255 * brightness),
+                int(255 * brightness),
+                int(255 * brightness),
+                255
+            ))
+
+            tex.blit(shade, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+
+            screen.blit(tex, (draw_x, draw_y))
+        else:
+            if color:
+                c = (
+                    int(color[0] * brightness),
+                    int(color[1] * brightness),
+                    int(color[2] * brightness)
+                )
+                pygame.draw.rect(screen, c, (draw_x, draw_y, self.rect.width, self.rect.height))
 
     def render_display_name(self, screen, cam_rect):
         draw_x, draw_y = game_property.world_to_screen(
@@ -130,6 +164,10 @@ class Entity:
     def tp(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
+    def tp_tile(self, x, y):
+        self.rect.x = x * game_property.TILE_SIZE
+        self.rect.y = y * game_property.TILE_SIZE
 
     def update(self, dt):
         
@@ -213,6 +251,12 @@ class Entity:
     
     def get_pos(self) -> tuple:
         return (self.rect.x, self.rect.y)
+    
+    def get_pos_tile(self) -> tuple:
+        return (
+            round(self.rect.x / game_property.TILE_SIZE, 2),
+            round(self.rect.y / game_property.TILE_SIZE, 2)
+        )
     
     def load(self, data, add_map=None):
 
@@ -1032,13 +1076,13 @@ class Item(Entity):
             (game_property.SIZE_ITEM, game_property.SIZE_ITEM)
         )
 
-    def render(self, screen, cam_rect, color=(0, 0, 255)):
+    def render(self, screen, cam_rect):
         
         offset_y = math.sin(self.t + self.phase) * 5
 
         self.dif_pos_render = (0, offset_y)
         
-        super().render(screen, cam_rect, color)
+        super().render(screen, cam_rect, None)
         #super().render_hit_box(screen, cam_rect)
 
     def update(self, dt):
@@ -1144,7 +1188,7 @@ class Mob(Living_entity):
         
         return super().to_json(type_, data)
 
-class Zobmie(Mob):
+class Zombie(Mob):
     def __init__(self, world, rect=None, name="Unamed entity", health=20, max_health=20, moving=True):
         rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
         super().__init__(world, rect, name, health, max_health, moving)
@@ -1152,6 +1196,9 @@ class Zobmie(Mob):
 
     def render(self, screen, cam_rect):
         # 🎯 Gestion du clignotement (effet Terraria)
+        light = self.world.get_entity_light(self)
+        brightness = light / 15
+
         use_red = False
         if self.is_taking_damage:
             # clignote rapidement
@@ -1169,6 +1216,11 @@ class Zobmie(Mob):
             body = self.body_texture
             leg = self.leg_texture
             arm = self.arm_texture
+
+        head = apply_brightness(head, brightness)
+        body = apply_brightness(body, brightness)
+        leg = apply_brightness(leg, brightness)
+        arm = apply_brightness(arm, brightness)
 
         # =========================
         # HEAD
@@ -1242,9 +1294,12 @@ class Zobmie(Mob):
         data.update(dict_)
         
         return super().to_json(type_, data)
+        
+    def __str__(self):
+        return f"Zombie(pos:{self.get_pos_tile()})"
 
 ENTITY_CLASSES = {
-    "Zombie": Zobmie,
+    "Zombie": Zombie,
     "Player": Player,
     "Item": Item,
 }

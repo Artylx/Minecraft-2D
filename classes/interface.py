@@ -4,6 +4,83 @@ import pygame
 from classes.texture_manager import TextureType
 from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface
 
+class CreditsItem(ObjectInterface):
+    def __init__(self, rect, version, description):
+        super().__init__(rect)
+
+        self.bg = Surface(rect, color=(40, 40, 40), alpha=255)
+
+        # Texte version (titre)
+        self.title = Texte(
+            version,
+            (rect.x + 10, rect.y + 10),
+            color=(255, 255, 255),
+            center_pos=False
+        )
+
+        # Texte description
+        self.desc = Texte(
+            description,
+            (rect.x + 10, rect.y + 35),
+            color=(180, 180, 180),
+            center_pos=False,
+            font_size=30
+        )
+
+    def render(self, screen):
+        self.bg.rect = self.rect
+        self.bg.render(screen)
+
+        # IMPORTANT: reposition dynamique (scroll safe)
+        self.title.pos = (self.rect.x + 10, self.rect.y + 10)
+        self.desc.pos = (self.rect.x + 10, self.rect.y + 35)
+
+        self.title.render(screen)
+        self.desc.render(screen)
+
+
+class CreditsScrollContainer(Surface):
+    def __init__(self, rect, color=(0, 0, 0), scroll_speed=25):
+        super().__init__(rect, color=color)
+
+        self.items = []
+        self.scroll_y = 0
+        self.scroll_speed = scroll_speed
+
+        self.item_height = 80
+        self.spacing = 120
+        self.content_height = 0
+
+    def set_items(self, items):
+        self.items = items
+        self.content_height = len(items) * (self.item_height + self.spacing)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEWHEEL:
+            if self.is_hover():
+                self.scroll_y -= event.y * self.scroll_speed
+
+                max_scroll = max(0, self.content_height - self.rect.height)
+                self.scroll_y = max(0, min(self.scroll_y, max_scroll))
+
+    def update(self, dt):
+        pass
+
+    def render(self, screen):
+        super().render(screen)
+
+        old_clip = screen.get_clip()
+        screen.set_clip(self.rect)
+
+        y = self.rect.y - self.scroll_y
+
+        for item in self.items:
+            item.rect.topleft = (self.rect.x + 10, y)
+            item.render(screen)
+            y += self.item_height + self.spacing
+
+        screen.set_clip(old_clip)
+
 class Worlds_manager:
     def __init__(self, base_path="worlds"):
         self.base_path = base_path
@@ -62,6 +139,7 @@ class MenusCollection:
     CONFIRM = "confirm"
     VERSIONS_CREDITS = "versions_credits"
     PSEUDO = "pseudo"
+    ERROR = "error"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
@@ -123,6 +201,32 @@ class MainMenu:
         ]
 
         self.set_menu(MenusCollection.CONFIRM)
+
+    def open_error(self, callback):
+        self.menus[MenusCollection.ERROR] = [
+            Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
+
+            Texte("Pas de panique votre monde a été sauvegardé.", (self.center_x, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, 160, 50), center_pos=True),
+
+            Texte("Oups... Une erreur s'est produite.", (self.center_x, BUTTON_HEIGHT, 160, 50), center_pos=True),
+            
+            Button(
+                "Ouvrir le rapport du crash",
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: callback()
+            ),
+
+            Button(
+                "Continuer",
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.MAIN)
+            )
+        ]
+
+        self.set_menu(MenusCollection.ERROR)
 
     def open_settings_world(self, world_name):
         self.current_value = world_name
@@ -250,15 +354,33 @@ class MainMenu:
 
         self.menus[MenusCollection.GAME] = []
 
+        credits_container = CreditsScrollContainer(
+            (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 3 + BUTTON_HEIGHT * 2, min(1200, self.screen_size[0] // 2), self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT - MARGIN_UI * 3 - BUTTON_HEIGHT * 2),
+            color=(10, 10, 10)
+        )
+
+        credits_container.set_items([
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.10 - 27/04/2026", ""),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.08 - 05/03/2026", ""),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.07 - 11/02/2026", ""),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.06 - 26/07/2026", ""),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.04 - 02/07/2025", ""),
+        ])
+
+
         self.menus[MenusCollection.VERSIONS_CREDITS] = [
             Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
             Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
 
             Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
 
-            Texte("Créer par Arthur REY en Python", (self.center_x, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, 160, 50), center_pos=True),
+            Texte("Créer par Arthur REY en Python", (self.center_x, MARGIN_UI * 2 + BUTTON_HEIGHT * 2 - 10, 160, 50), center_pos=True),
 
             Texte(f"Versions et crédit (actuel: V{game_property.VERSION})", (self.center_x, BUTTON_HEIGHT, 160, 50), center_pos=True),
+
+            credits_container,
 
             Button(
                 "Retour",
@@ -304,6 +426,10 @@ class MainMenu:
                 (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
                 lambda: enter_game()
             )
+        ]
+
+        self.menus[MenusCollection.ERROR] = [
+            
         ]
 
         if self.is_menu(MenusCollection.CONFIRM):

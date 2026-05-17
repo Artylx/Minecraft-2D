@@ -60,6 +60,8 @@ class World:
         self.callback_loading = callback_loading
         self.is_loaded = False
 
+        self.modified_blocks_runtime = {}
+
         if json_data is not None:
             # charger depuis le JSON
             self.set_json(json_data)
@@ -70,7 +72,7 @@ class World:
 
             self.entitys = []  
             self.offline_entitys = []
-            self.modified_blocks = {}  
+            self.saved_modified_blocks = {}
         
         self.structure_manager = StructureManager()
         self.biome_manager = BiomeManager()
@@ -100,6 +102,8 @@ class World:
         self.total_light_steps = 0
         self.done_light_steps = 0
 
+        self.mob_spawn_timer = 0
+
     def set_json(self, json):
         seed = json.get("seed", None)
         entitys = json.get("entitys", None)
@@ -116,7 +120,7 @@ class World:
                 else:
                     self.create_entity(e)
             
-            self.modified_blocks = modified_blocks
+            self.saved_modified_blocks = modified_blocks
 
             print("World chargé avec succés")
         else:
@@ -128,10 +132,12 @@ class World:
         for e in self.offline_entitys:
             entitys_json.append(e.to_json())
 
+        self.flush_loaded_chunks()
+
         return {
             "seed": self.seed,
             "entitys": entitys_json,
-            "modified_blocks": self.modified_blocks
+            "modified_blocks": self.saved_modified_blocks
         }
     
     def stop(self):
@@ -197,21 +203,18 @@ class World:
             # appliquer les modifications sauvegardées
             blc = 0
             list_blocks = []
-            if str(chunk_x) in self.modified_blocks:
 
-                for data in self.modified_blocks[str(chunk_x)]:
+            chunk_key = str(chunk_x)
+
+            if chunk_key in self.saved_modified_blocks:
+                for data in self.saved_modified_blocks[chunk_key].values():
+
+                    block = Block.load(data)
 
                     x = data["x"]
                     y = data["y"]
 
-                    block_name = data["block"].upper()
-
-                    if block_name not in BlockProperty.REGISTRY:
-                        raise ValueError(f"Block inconnu: {block_name}")
-
-                    block_type = BlockProperty.REGISTRY[block_name]
-
-                    list_blocks.append((x, y, Block(x, y, block_type)))
+                    list_blocks.append((x, y, block))
                     blc += 1
             
             self.set_blocks(list_blocks, update_range=0)
@@ -270,6 +273,11 @@ class World:
                 self.callback_loading("Chargement des chunks...", 20)
 
         return end_loading
+    
+    def flush_loaded_chunks(self):
+
+        for chunk_x in list(self.chunks.keys()):
+            self.save_chunk_modified_blocks(chunk_x)
 
     def unload_chunk(self, chunk_cord):
 
@@ -287,10 +295,131 @@ class World:
             self.entitys.remove(entity)
 
         # supprimer le chunk
+        self.save_chunk_modified_blocks(chunk_cord)
         del self.chunks[chunk_cord]
+
+    def try_spawn_mobs(self):
+
+        players = self.get_players()
+
+        if not players:
+            return
+
+        # limite globale
+        monsters = self.get_entities(EntityClass.Zombie)
+        line = None
+        for monster in monsters:
+            if not line:
+                line = str(monster)
+            else:
+                line = line + ", " + str(monster)
+
+        print("Monsters ", line)
+
+        if len(monsters) >= 30:
+            return
+
+        for player in players:
+
+            for _ in range(5):  # essais de spawn
+
+                spawn_x = random.randint(
+                    player.rect.x // game_property.TILE_SIZE - 40,
+                    player.rect.x // game_property.TILE_SIZE + 40
+                )
+
+                spawn_y = random.randint(
+                    game_property.CHUNK_MIN_HEIGHT,
+                    game_property.WATER_Y
+                )
+
+                if self.can_spawn_monster(spawn_x, spawn_y, player):
+
+                    monster = EntityClass.Zombie(
+                        self
+                    )
+                    monster.tp_tile(spawn_x, spawn_y)
+
+                    self.create_entity(monster)
+
+                    break
+
+    def get_light_level(self, x, y):
+        block = self.get_block(x, y)
+        if not block:
+            return 15  # lumière du ciel par défaut
+
+        return max(block.sky_light, block.block_light)
+    
+    def get_entity_light(self, entity, radius=1):
+        tile = game_property.TILE_SIZE
+
+        cx = entity.rect.centerx // tile
+        cy = entity.rect.centery // tile
+
+        total = 0
+        count = 0
+
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                block = self.get_block(cx + dx, cy + dy)
+                if block:
+                    total += max(block.sky_light, block.block_light)
+                    count += 1
+
+        if count == 0:
+            return 15
+
+        return total / count
+
+    def can_spawn_monster(self, x, y, player):
+
+        tile = game_property.TILE_SIZE
+
+        # zone réelle du zombie
+        rect = pygame.Rect(
+            x * tile,
+            y * tile,
+            tile,
+            int(2.5 * tile)
+        )
+
+        # 1) vérifier collisions blocs sur toute la hitbox
+        for dx in range(rect.left // tile, rect.right // tile + 1):
+            for dy in range(rect.top // tile, rect.bottom // tile + 1):
+                block = self.get_block(dx, dy)
+                if block and block.can_collide():
+                    return False
+
+        # 2) lumière
+        center_block = self.get_block(x, y)
+        if not center_block:
+            return False
+
+        light = max(center_block.sky_light, center_block.block_light)
+        if light > 4:
+            return False
+
+        # 3) distance joueur
+        px = player.rect.centerx // tile
+        py = player.rect.centery // tile
+
+        dx = px - x
+        dy = py - y
+
+        if dx*dx + dy*dy < 10*10:
+            return False
+
+        return True
 
     def update(self, dt):
         end_loading = self.update_chunks()
+
+        self.mob_spawn_timer += dt
+
+        if self.mob_spawn_timer >= 3:
+            self.mob_spawn_timer = 0
+            self.try_spawn_mobs()
 
         if end_loading:
             self.compute_sky_column()
@@ -463,20 +592,48 @@ class World:
         return True
 
     def modif_block(self, X, Y, block):
-        self.add_modified_block(X, Y, block)
+        self.add_modified_block(X, Y)
         return self.set_block(X, Y, block, update_range=15)
 
-    def add_modified_block(self, x, y, block):
+    def add_modified_block(self, x, y):
         chunk_x = x // game_property.CHUNK_WIDTH
-        if str(chunk_x) not in self.modified_blocks:
-            self.modified_blocks[str(chunk_x)] = []
+        chunk_key = str(chunk_x)
 
-        self.modified_blocks[str(chunk_x)].append({
-            "x": x,
-            "y": y,
-            "block": block.block_property.block_name
-        })
-        return
+        if chunk_key not in self.modified_blocks_runtime:
+            self.modified_blocks_runtime[chunk_key] = set()
+
+        self.modified_blocks_runtime[chunk_key].add((x, y))
+
+    def save_chunk_modified_blocks(self, chunk_x):
+        chunk_key = str(chunk_x)
+
+        if chunk_key not in self.modified_blocks_runtime:
+            return
+
+        if chunk_key not in self.saved_modified_blocks:
+            self.saved_modified_blocks[chunk_key] = {}
+
+        for x, y in self.modified_blocks_runtime[chunk_key]:
+
+            block = self.get_block(x, y)
+
+            pos_key = f"{x}:{y}"
+
+            if block:
+                self.saved_modified_blocks[chunk_key][pos_key] = block.to_json()
+
+        del self.modified_blocks_runtime[chunk_key]
+    
+    def block_is_modif(self, x, y):
+        chunk_x = x // game_property.CHUNK_WIDTH
+        chunk_key = str(chunk_x)
+
+        if chunk_key not in self.saved_modified_blocks:
+            return False
+
+        pos_key = f"{x}:{y}"
+
+        return pos_key in self.saved_modified_blocks[chunk_key]
     
     def set_blocks(self, list_block, update_range=1):
         """
@@ -904,7 +1061,7 @@ class Chunk:
                 horizontal_factor = abs(pnoise1(world_x * 0.02, base=self.noise_seed))
                 threshold += horizontal_factor * 0.05
 
-                if combined > threshold and world_y <= surface_height - 3:
+                if combined > threshold and world_y <= surface_height:
                     block_property = BlockProperty.AIR
                 
                 # SURFACE
@@ -1002,6 +1159,8 @@ class Block:
         self.rect = rect
         self.block_property = block_property
 
+        self.pos = (x, y)
+
         self.sky_light = 0
         self.block_light = 0
 
@@ -1014,6 +1173,9 @@ class Block:
         else:
             self.life = 0
             self.max_life = 0
+
+    def get_pos(self):
+        return self.pos
 
     def add_component(self, component, key):
         self.components[key] = component
@@ -1087,9 +1249,45 @@ class Block:
     def can_collide(self) -> bool:
         return self.block_property.collidable
     
+    def get_json_component(self):
+        component_list = []
+        for k, v in self.components.items():
+            component = {"key": k, "component": v.to_json()}
+            component_list.append(component)
+        return component_list
+    
     def to_json(self):
         return {
             "x": self.rect.x // game_property.TILE_SIZE,
             "y": self.rect.y // game_property.TILE_SIZE,
             "block": self.block_property.block_name,
+            "components": self.get_json_component(),
         }
+    
+    @classmethod
+    def load(cls, data):
+
+        x = data["x"]
+        y = data["y"]
+
+        block_name = data["block"].upper()
+
+        if block_name not in BlockProperty.REGISTRY:
+            raise ValueError(f"Block inconnu: {block_name}")
+
+        block_type = BlockProperty.REGISTRY[block_name]
+
+        block = cls(x, y, block_type)
+
+        # charger les components
+        for comp_data in data.get("components", []):
+
+            key = comp_data["key"]
+            component_json = comp_data["component"]
+
+            component = inventory.json_to_block_component(component_json)
+
+            if component:
+                block.add_component(component, key)
+
+        return block

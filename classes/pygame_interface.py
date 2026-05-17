@@ -25,28 +25,37 @@ class ObjectInterface:
         pass
 
 class Texte(ObjectInterface):
-    def __init__(self, text, pos, color=(255, 255, 255), center_pos=False):
-        self.font = pygame.font.SysFont(None, 40)
+    def __init__(self, text, pos, color=(255, 255, 255), center_pos=False, line_spacing=5, font_size=40):
+        self.font = pygame.font.SysFont(None, font_size)
         self.text = text
+        self.color = color
+        self.line_spacing = line_spacing
+
+        self.lines = text.split("\n")
+
+        self.surfaces = [self.font.render(line, True, color) for line in self.lines]
+
+        # calcul taille totale
+        width = max(s.get_width() for s in self.surfaces) if self.surfaces else 0
+        height = sum(s.get_height() for s in self.surfaces) + line_spacing * (len(self.surfaces) - 1)
 
         if center_pos:
-            text_surface = self.font.render(self.text, True, color)
-            text_rect = text_surface.get_rect()
-            pos = (pos[0] - text_rect.width // 2, pos[1] - text_rect.height // 2)
+            temp_rect = pygame.Rect(pos[0], pos[1], width, height)
+            pos = (pos[0] - width // 2, pos[1] - height // 2)
 
         self.pos = pos
+        self.width = width
+        self.height = height
 
-        self.text_surface = self.font.render(self.text, True, color)
-        text_rect = self.text_surface.get_rect()
-        text_rect.width += pos[0]
-        text_rect.height += pos[1]
-
-        rect = pygame.Rect(self.pos[0], self.pos[1], text_rect.width, text_rect.height)
-
+        rect = pygame.Rect(pos[0], pos[1], width, height)
         super().__init__(rect)
-        
+
     def render(self, screen):
-        screen.blit(self.text_surface, self.pos)
+        x, y = self.pos
+
+        for surf in self.surfaces:
+            screen.blit(surf, (x, y))
+            y += surf.get_height() + self.line_spacing
 
 class Button(ObjectInterface):
     def __init__(self, text, rect, callback, enable=True ,
@@ -269,3 +278,167 @@ class Surface(ObjectInterface):
     
     def render(self, screen):
         screen.blit(self.surface, self.rect)
+
+class ScrollContainer(ObjectInterface):
+    def __init__(self, rect, scroll_speed=20, callback=None):
+        super().__init__(rect, callback)
+        self.children = []
+
+        self.scroll_y = 0
+        self.scroll_speed = scroll_speed
+
+        self.content_height = 0
+
+    def add(self, obj):
+        self.children.append(obj)
+        self.recalculate_content_height()
+
+    def remove(self, obj):
+        if obj in self.children:
+            self.children.remove(obj)
+            self.recalculate_content_height()
+
+    def recalculate_content_height(self):
+        self.content_height = 0
+        for c in self.children:
+            self.content_height = max(
+                self.content_height,
+                c.rect.bottom
+            )
+
+    # ---------- SCROLL ----------
+    def handle_event(self, event):
+
+        # scroll mouse wheel
+        if event.type == pygame.MOUSEWHEEL:
+            if self.is_hover():
+                self.scroll_y -= event.y * self.scroll_speed
+
+                # clamp scroll
+                max_scroll = max(0, self.content_height - self.rect.height)
+                self.scroll_y = max(0, min(self.scroll_y, max_scroll))
+
+        # propagate event to children (with offset)
+        if event.type in (pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN):
+
+            for child in self.children:
+                if self._is_child_visible(child):
+                    child.handle_event(self._transform_event(event))
+
+    # ---------- UPDATE ----------
+    def update(self, dt):
+        for child in self.children:
+            if self._is_child_visible(child):
+                child.update(dt)
+
+    # ---------- RENDER ----------
+    def render(self, screen):
+
+        old_clip = screen.get_clip()
+        screen.set_clip(self.rect)
+
+        pygame.draw.rect(screen, (30, 30, 30), self.rect)
+
+        offset_surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+
+        for child in self.children:
+            if self._is_child_visible(child):
+                original_y = child.rect.y
+
+                # apply scroll offset
+                child.rect.y -= self.scroll_y
+
+                child.render(offset_surface)
+
+                # restore position
+                child.rect.y = original_y
+
+        screen.blit(offset_surface, self.rect.topleft)
+
+        screen.set_clip(old_clip)
+
+    # ---------- VISIBILITY (CULLING) ----------
+    def _is_child_visible(self, child):
+        return (
+            child.rect.bottom >= self.scroll_y and
+            child.rect.top <= self.scroll_y + self.rect.height
+        )
+
+    # ---------- EVENT TRANSFORM ----------
+    def _transform_event(self, event):
+        # convert mouse position into scroll-local space
+        if hasattr(event, "pos"):
+            x, y = event.pos
+            x -= self.rect.x
+            y -= self.rect.y
+            y += self.scroll_y
+
+            new_event = pygame.event.Event(event.type, {
+                **event.__dict__,
+                "pos": (x, y)
+            })
+            return new_event
+
+        return event
+    
+class ScrollList(ObjectInterface):
+    def __init__(self, rect, item_height=80, spacing=10, scroll_speed=20):
+        super().__init__(rect)
+
+        self.items = []
+        self.scroll_y = 0
+
+        self.item_height = item_height
+        self.spacing = spacing
+        self.scroll_speed = scroll_speed
+
+        self.content_height = 0
+
+    def add(self, item):
+        self.items.append(item)
+        self.recalc()
+
+    def clear(self):
+        self.items = []
+        self.recalc()
+
+    def recalc(self):
+        self.content_height = len(self.items) * (self.item_height + self.spacing)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEWHEEL and self.is_hover():
+            self.scroll_y -= event.y * self.scroll_speed
+
+            max_scroll = max(0, self.content_height - self.rect.height)
+            self.scroll_y = max(0, min(self.scroll_y, max_scroll))
+
+        # only visible items receive events
+        for item in self.items:
+            if self._visible(item):
+                item.handle_event(event)
+
+    def update(self, dt):
+        for item in self.items:
+            if self._visible(item):
+                item.update(dt)
+
+    def render(self, screen):
+        old_clip = screen.get_clip()
+        screen.set_clip(self.rect)
+
+        pygame.draw.rect(screen, (15, 15, 15), self.rect)
+
+        y = self.rect.y - self.scroll_y
+
+        for item in self.items:
+            item.rect.y = y
+            item.render(screen)
+            y += self.item_height + self.spacing
+
+        screen.set_clip(old_clip)
+
+    def _visible(self, item):
+        return (
+            item.rect.bottom >= self.scroll_y and
+            item.rect.top <= self.scroll_y + self.rect.height
+        )
