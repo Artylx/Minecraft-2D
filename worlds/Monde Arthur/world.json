@@ -3,12 +3,92 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "e49200e0-28df-4214-8521-313a2120fe11",
-            "x": -4022,
-            "y": -2016,
+            "uuid": "97addadf-7282-450d-a5ad-713e7b14586d",
+            "x": -4928,
+            "y": -1967,
             "w": 27,
             "h": 80,
-            "vx": 82.8,
+            "vx": 0.0,
+            "vy": -416.0000000000002,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true
+        },
+        {
+            "type": "Zombie",
+            "uuid": "9274053c-8d92-47a0-b8a8-ff5bfd47ef7b",
+            "x": -3612,
+            "y": -514,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 360.5333333333332,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true
+        },
+        {
+            "type": "Zombie",
+            "uuid": "c4ff517d-7a0f-4e70-8762-6cde687b5725",
+            "x": -3900,
+            "y": -1986,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": -305.06666666666683,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true
+        },
+        {
+            "type": "Zombie",
+            "uuid": "23056d90-096c-4eeb-93e1-1db147472244",
+            "x": -3744,
+            "y": -591,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": -416.0000000000002,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true
+        },
+        {
+            "type": "Zombie",
+            "uuid": "2bdfb38f-1f96-4830-9882-012029ce4a86",
+            "x": -3612,
+            "y": -544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -24,11 +104,11 @@
         {
             "type": "Player",
             "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -2801,
-            "y": -256,
+            "x": -2774,
+            "y": -288,
             "w": 27,
             "h": 80,
-            "vx": 17.849948810235976,
+            "vx": 1.063792629866654e-141,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -79,7 +159,7 @@
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 72,
+                            "count": 71,
                             "durability": null
                         }
                     },
@@ -120,14 +200,6 @@
                         "itemStack": {
                             "item_type_name": "gold_ingot",
                             "count": 13,
-                            "durability": null
-                        }
-                    },
-                    {
-                        "slot": 11,
-                        "itemStack": {
-                            "item_type_name": "egg",
-                            "count": 89,
                             "durability": null
                         }
                     },
@@ -355,7 +427,11 @@
                         "key": "furnace",
                         "component": {
                             "type": "furnaceComponent",
-                            "input": null,
+                            "input": {
+                                "item_type_name": "egg",
+                                "count": 89,
+                                "durability": null
+                            },
                             "fuel": null,
                             "output": null
                         }
@@ -4383,6 +4459,12 @@
                 "x": -128,
                 "y": -27,
                 "block": "air",
+                "components": []
+            },
+            "-113:4": {
+                "x": -113,
+                "y": 4,
+                "block": "stone",
                 "components": []
             }
         },
