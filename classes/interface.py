@@ -2,7 +2,7 @@ import os
 from classes import game_property
 import pygame
 from classes.texture_manager import TextureType
-from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface
+from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer
 
 class CreditsItem(ObjectInterface):
     def __init__(self, rect, version, description):
@@ -38,49 +38,6 @@ class CreditsItem(ObjectInterface):
         self.title.render(screen)
         self.desc.render(screen)
 
-
-class CreditsScrollContainer(Surface):
-    def __init__(self, rect, color=(0, 0, 0), scroll_speed=25):
-        super().__init__(rect, color=color)
-
-        self.items = []
-        self.scroll_y = 0
-        self.scroll_speed = scroll_speed
-
-        self.item_height = 80
-        self.spacing = 120
-        self.content_height = 0
-
-    def set_items(self, items):
-        self.items = items
-        self.content_height = len(items) * (self.item_height + self.spacing)
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEWHEEL:
-            if self.is_hover():
-                self.scroll_y -= event.y * self.scroll_speed
-
-                max_scroll = max(0, self.content_height - self.rect.height)
-                self.scroll_y = max(0, min(self.scroll_y, max_scroll))
-
-    def update(self, dt):
-        pass
-
-    def render(self, screen):
-        super().render(screen)
-
-        old_clip = screen.get_clip()
-        screen.set_clip(self.rect)
-
-        y = self.rect.y - self.scroll_y
-
-        for item in self.items:
-            item.rect.topleft = (self.rect.x + 10, y)
-            item.render(screen)
-            y += self.item_height + self.spacing
-
-        screen.set_clip(old_clip)
-
 class Worlds_manager:
     def __init__(self, base_path="worlds"):
         self.base_path = base_path
@@ -108,18 +65,48 @@ class WorldInterface(ObjectReferencable):
     def __init__(self, rect, world_name, ref="", callback_play=None, callback_settings=None):
         super().__init__(rect, ref)
 
-        MARGIN = 10
+        self.world_name = world_name
 
+        self.callback_play = callback_play
+        self.callback_settings = callback_settings
+
+        self.MARGIN = 10
+
+        self.btn_play = Button(
+            world_name,
+            rect,
+            callback_play
+        )
+
+        self.btn_settings = Button(
+            "|",
+            rect,
+            callback_settings
+        )
+
+    def update_layout(self):
         btn_play_rect = self.rect.copy()
-        btn_play_rect.width -= self.rect.height // 2 + MARGIN
-        self.btn_play = Button(world_name, btn_play_rect, callback_play)
+        btn_play_rect.width -= self.rect.height // 2 + self.MARGIN
 
         btn_settings_rect = self.rect.copy()
         btn_settings_rect.width = self.rect.height // 2
-        btn_settings_rect.left += btn_play_rect.width + MARGIN
-        self.btn_settings = Button("|", btn_settings_rect, callback_settings)
+        btn_settings_rect.left = btn_play_rect.right + self.MARGIN
+
+        self.btn_play.rect = btn_play_rect
+        self.btn_settings.rect = btn_settings_rect
+
+        # IMPORTANT
+        self.btn_play.text_rect = self.btn_play.text_surface.get_rect(
+            center=self.btn_play.rect.center
+        )
+
+        self.btn_settings.text_rect = self.btn_settings.text_surface.get_rect(
+            center=self.btn_settings.rect.center
+        )
 
     def render(self, screen):
+        self.update_layout()
+
         self.btn_play.render(screen)
         self.btn_settings.render(screen)
 
@@ -168,6 +155,15 @@ class MainMenu:
         
     def is_menu(self, menu: MenusCollection):
         return menu == self.menu
+    
+    def get_object_by_ref(self, ref, menu: MenusCollection = None):
+        if menu is None:
+            menu = self.menu
+
+        for obj in self.menus[menu]:
+            if isinstance(obj, ObjectReferencable) and obj.is_ref(ref):
+                return obj
+        return None
 
     def update_screen_size(self, width, height):
         self.screen_size = (width, height)
@@ -340,13 +336,28 @@ class MainMenu:
         ]
 
         self.menus[MenusCollection.MULTIPLAYER] = [
-            Surface((0, 0, self.screen_size[0], self.screen_size[1]), (10, 10, 10), 255),
+            Surface((0, self.screen_size[1] - MARGIN_UI * 3 - BUTTON_HEIGHT * 2, self.screen_size[0], MARGIN_UI * 3 + BUTTON_HEIGHT * 2), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2 - BUTTON_HEIGHT - MARGIN_UI), (10, 10, 10), 255),
 
-            Texte("Multijoueur", (self.center_x, 50, 160, 50), center_pos=True),
+            Texte("Multijoueur", (self.center_x, 80, 160, 50), center_pos=True),
+
+            Button(
+                "Host un monde",
+                (MARGIN_UI, self.screen_size[1] - ( MARGIN_UI + BUTTON_HEIGHT ) * 2, self.screen_size[0] - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: None
+            ),
+            
             Button(
                 "Retour",
-                (self.center_x - 100, self.center_y - BUTTON_HEIGHT // 2, 200, BUTTON_HEIGHT),
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
                 lambda: self.set_menu(MenusCollection.MAIN)
+            ),
+
+            Button(
+                "Se connecter",
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: None
             )
         ]
 
@@ -354,12 +365,13 @@ class MainMenu:
 
         self.menus[MenusCollection.GAME] = []
 
-        credits_container = CreditsScrollContainer(
+        credits_container = ItemsScrollContainer(
             (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 3 + BUTTON_HEIGHT * 2, min(1200, self.screen_size[0] // 2), self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT - MARGIN_UI * 3 - BUTTON_HEIGHT * 2),
             color=(10, 10, 10)
         )
 
         credits_container.set_items([
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - ...", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n-"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.10 - 27/04/2026", ""),
@@ -495,6 +507,15 @@ class MainMenu:
                 enter_callback=lambda: self.reload(),
             ),
 
+            ItemsScrollContainer(
+                (max(0, self.center_x - 300), MARGIN_UI * 2 + BUTTON_HEIGHT * 2, min(600, self.screen_size[0]), self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2 - BUTTON_HEIGHT),
+                ref="worlds_container",
+                color=(10, 10, 10),
+                spacing=MARGIN_UI,
+                item_height=BUTTON_HEIGHT,
+                center_elmt=True
+            ),
+
             Button(
                 "Retour",
                 (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
@@ -511,8 +532,10 @@ class MainMenu:
 
         worlds_searched = self.worlds_manager.search_worlds(search)
 
+        obj = self.get_object_by_ref("worlds_container", MenusCollection.SINGLEPLAYER)
+
         for key, value in worlds_searched.items():
-            self.menus[MenusCollection.SINGLEPLAYER].append(
+            obj.add_item(
                 WorldInterface(
                     (self.center_x - 160, 300 + index * 100, 320, 60),
                     key,

@@ -652,17 +652,127 @@ class Arrow_entity(Living_entity):
             entity.apply_damage(self.damage * 2, 0)
         
         self.stucked = True
-            
 
-class Player(Living_entity):
+class Humanoid(Living_entity):
+    def __init__(self, world, rect, name="Humanoid entity", health=20, max_health=20, drops=None, collidable=True, 
+                 leg_texture: TextureType = None, 
+                 arm_texture: TextureType = None, 
+                 body_texture: TextureType = None, 
+                 head_texture: TextureType = None
+                 ):
+        
+        super().__init__(world, rect, name, health, max_health, drops, collidable)
+
+        self.init_texture(head_texture, body_texture, leg_texture, arm_texture)
+    
+    def init_texture(self, head_texture, body_texture, leg_texture, arm_texture):
+
+        def build(tex, size):
+            base = pygame.transform.scale(tex, size)
+            flipped = pygame.transform.flip(base, True, False)
+
+            return {
+                "right": base,
+                "left": flipped
+            }
+
+        def tint_pack(tex_dict, color):
+            return {
+                "right": tint_surface(tex_dict["right"], color),
+                "left": tint_surface(tex_dict["left"], color)
+            }
+
+        # -------------------------
+        # BASE SIZES
+        # -------------------------
+        head_size = (self.rect.width - 4, self.rect.width - 4)
+        body_size = (self.rect.width, self.rect.width)
+        leg_size = ((self.rect.width - 2) // 2, self.rect.width)
+        arm_size = (self.rect.width // 2, self.rect.width)
+
+        # -------------------------
+        # BASE TEXTURES
+        # -------------------------
+        self.textures = {
+            "head": build(self.texture_manager.get_texture(head_texture), head_size),
+            "body": build(self.texture_manager.get_texture(body_texture), body_size),
+            "leg": build(self.texture_manager.get_texture(leg_texture), leg_size),
+            "arm": build(self.texture_manager.get_texture(arm_texture), arm_size),
+        }
+
+        # -------------------------
+        # RED VARIANT (exemple)
+        # -------------------------
+        red_color = (200, 100, 100)
+
+        self.textures_red = {
+            "head": tint_pack(self.textures["head"], red_color),
+            "body": tint_pack(self.textures["body"], red_color),
+            "leg": tint_pack(self.textures["leg"], red_color),
+            "arm": tint_pack(self.textures["arm"], red_color),
+        }
+
+    def render(self, screen, cam_rect, use_red=False):
+
+        tex = self.textures_red if use_red else self.textures
+
+        orientation = self.get_orientation()
+        head = tex["head"][orientation]
+        body = tex["body"][orientation]
+        leg  = tex["leg"][orientation]
+        arm  = tex["arm"][orientation]
+
+        # =========================
+        # HEAD (avec world_to_screen)
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+        draw_x += 2
+        draw_y += 4
+        if head:
+            screen.blit(head, (draw_x, draw_y))
+
+        # =========================
+        # BASE POSITION (évite recalculs)
+        base_x = self.rect.x - cam_rect.x
+        base_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height
+
+        # =========================
+        # BODY
+        if body:
+            screen.blit(body, (base_x, base_y + self.rect.width))
+
+        # =========================
+        # LEG
+        if leg:
+            screen.blit(leg, (base_x + 2, base_y + self.rect.width * 2))
+            screen.blit(leg, (base_x + 2 + (self.rect.width - 4) // 2, base_y + self.rect.width * 2))
+
+        # =========================
+        # ARM
+        if self.get_orientation() == "left":
+            arm_x = base_x + self.rect.width // 2
+        else:
+            arm_x = base_x
+
+        arm_y = base_y + self.rect.width
+        if arm:
+            screen.blit(arm, (arm_x, arm_y))
+        
+
+class Player(Humanoid):
     def __init__(self, world, name="", rect=None, max_health=40):
         if not rect:
             rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
-        super().__init__(world, rect, name, max_health=max_health, health=max_health)
+
+        super().__init__(world, rect, name, max_health=max_health, health=max_health, 
+                         body_texture=TextureType.PLAYER_BODY,
+                         arm_texture=TextureType.PLAYER_ARM,
+                         leg_texture=TextureType.PLAYER_LEG,
+                         head_texture=TextureType.PLAYER_HEAD)
+        
         self.inventory = inventory.Entity_Inventory(self)
         self.speed = game_property.PLAYER_SPEED
-        
-        self.update_texture()
 
     def render(self, screen, cam_rect):
         orientation = self.get_orientation()
@@ -673,50 +783,13 @@ class Player(Living_entity):
             if int(self.annim_damage_time * 20) % 2 == 0:
                 use_red = True
 
-        # 🎯 Choix textures
-        if use_red:
-            head = self.head_texture_red
-            body = self.body_texture_red
-            leg = self.leg_texture_red
-            arm = self.arm_texture_red
-        else:
-            head = self.head_texture
-            body = self.body_texture
-            leg = self.leg_texture
-            arm = self.arm_texture
-
-        # =========================
-        # HEAD (avec world_to_screen)
-        draw_x, draw_y = game_property.world_to_screen(
-            self.rect.x, self.rect.y, self.rect.height, cam_rect
-        )
-        draw_x += 2
-        draw_y += 4
-        screen.blit(head, (draw_x, draw_y))
+        # RENDER PLAYER
+        super().render(screen, cam_rect, use_red)
 
         # =========================
         # BASE POSITION (évite recalculs)
         base_x = self.rect.x - cam_rect.x
         base_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height
-
-        # =========================
-        # BODY
-        screen.blit(body, (base_x, base_y + self.rect.width))
-
-        # =========================
-        # LEG
-        screen.blit(leg, (base_x + 2, base_y + self.rect.width * 2))
-        screen.blit(leg, (base_x + 2 + (self.rect.width - 4) // 2, base_y + self.rect.width * 2))
-
-        # =========================
-        # ARM
-        if orientation == "left":
-            arm_x = base_x + self.rect.width // 2
-        else:
-            arm_x = base_x
-
-        arm_y = base_y + self.rect.width
-        screen.blit(arm, (arm_x, arm_y))
 
         # =========================
         # ITEM / ARME
@@ -845,31 +918,6 @@ class Player(Living_entity):
         self.temp_rect.x += self.get_anim_direction() * ATTACK_RANGE
         return self.temp_rect
 
-    def update_texture(self):
-        self.head_texture = self.texture_manager.get_texture(TextureType.PLAYER_HEAD)
-        self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
-
-        self.body_texture = self.texture_manager.get_texture(TextureType.PLAYER_BODY)
-        self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
-
-        self.leg_texture = self.texture_manager.get_texture(TextureType.PLAYER_LEG)
-        self.leg_texture = pygame.transform.scale(self.leg_texture, ((self.rect.width - 2) // 2, self.rect.width))
-        
-        self.arm_texture = self.texture_manager.get_texture(TextureType.PLAYER_ARM)
-        self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
-
-        if self.get_orientation() == "right":
-            self.head_texture = pygame.transform.flip(self.head_texture, True, False)
-            self.body_texture = pygame.transform.flip(self.body_texture, True, False)
-            self.leg_texture = pygame.transform.flip(self.leg_texture, True, False)
-            self.arm_texture = pygame.transform.flip(self.arm_texture, True, False)
-
-        self.head_texture_red = tint_surface(self.head_texture, (200, 100, 100))
-        self.body_texture_red = tint_surface(self.body_texture, (200, 100, 100))
-        self.leg_texture_red = tint_surface(self.leg_texture, (200, 100, 100))
-        self.arm_texture_red = tint_surface(self.arm_texture, (200, 100, 100))
-    
-    
 
     def update(self, dt):
 

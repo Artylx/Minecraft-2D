@@ -1,0 +1,41 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-05-19 13:27:07
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-196.12, 22.53)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'Entity_Inventory' object has no attribute 'add_item'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 190, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 298, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 635, in update
+    self.World.update(dt)
+    ~~~~~~~~~~~~~~~~~^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\world.py", line 437, in update
+    entity.update(dt)
+    ~~~~~~~~~~~~~^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\entity.py", line 897, in update
+    self.inventory.add_item(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Entity_Inventory' object has no attribute 'add_item'. Did you mean: 'get_item'?
+
+    

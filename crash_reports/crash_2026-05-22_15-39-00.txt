@@ -1,0 +1,44 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-05-22 15:39:00
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-87.0, -9.0)
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: argument 1 must be pygame.surface.Surface, not dict
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 210, in run
+    self.render()
+    ~~~~~~~~~~~^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 305, in render
+    self.game_manager.render(self, self.screen)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 721, in render
+    self.World.render_entitys(screen, self.cam_rect)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\world.py", line 525, in render_entitys
+    entity.render(screen, cam_rect)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\entity.py", line 786, in render
+    super().render(screen, cam_rect, use_red)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\entity.py", line 732, in render
+    screen.blit(head, (draw_x, draw_y))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument 1 must be pygame.surface.Surface, not dict
+
+    

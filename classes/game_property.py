@@ -29,7 +29,7 @@ DAMAGE_COEF = 1/3
 MAX_LIGHT = 15
 LIGHT_COEF = 1
 
-VERSION = "1.13"
+VERSION = "1.14"
 
 def world_to_screen(x, y, h, cam_rect):
     sx = x - cam_rect.x

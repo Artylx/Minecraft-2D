@@ -91,6 +91,8 @@ class TextureType:
     ZOMBIE_LEG = "zombie_leg"
     
     CHIPS = "chips"
+    EGG = "egg"
+    COOKED_EGG = "cooked_egg"
     DEFAULT = "default"
 
     # IAMGES UI
@@ -169,6 +171,9 @@ class TextureManager:
             self.load_texture(TextureType.GOLDEN_AXE, ITEMS_PATH + TOOLS_PATH + "golden_axe.png")
 
             self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
+            self.load_texture(TextureType.EGG, ITEMS_PATH + CONSUMABLE_PATH + "egg.png")
+            self.load_texture(TextureType.COOKED_EGG, ITEMS_PATH + CONSUMABLE_PATH + "cooked_egg.png")
+
             self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")
 
             self.load_texture(TextureType.COAL, ITEMS_PATH + OTHERS_PATH + "coal_ore.png")

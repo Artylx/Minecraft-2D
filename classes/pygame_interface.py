@@ -82,16 +82,11 @@ class Button(ObjectInterface):
     def render(self, screen):
         bg_color = self.background_color_hover if self.is_hover() else self.background_color
         bd_color = self.border_color_hover if self.is_hover() else self.border_color
-        
-        old_clip = screen.get_clip()
-        screen.set_clip(self.rect)
-        
+
         pygame.draw.rect(screen, bg_color, self.rect)
         pygame.draw.rect(screen, bd_color, self.rect, 2)
 
         screen.blit(self.text_surface, self.text_rect)
-
-        screen.set_clip(old_clip)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -279,166 +274,217 @@ class Surface(ObjectInterface):
     def render(self, screen):
         screen.blit(self.surface, self.rect)
 
-class ScrollContainer(ObjectInterface):
-    def __init__(self, rect, scroll_speed=20, callback=None):
-        super().__init__(rect, callback)
-        self.children = []
+class SurfaceReferencable(ObjectReferencable):
+    def __init__(self, rect, ref="", color=(200, 200, 200), alpha=255, callback=None):
+        super().__init__(rect, ref=ref, callback=callback)
+
+        self.color = color
+        self.alpha = alpha
+
+        self.surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surface.fill((self.color[0], self.color[1], self.color[2], self.alpha))
+    
+    def render(self, screen):
+        screen.blit(self.surface, self.rect)
+
+class ItemsScrollContainer(SurfaceReferencable):
+    def __init__(
+        self,
+        rect,
+        ref="",
+        color=(0, 0, 0),
+        scroll_speed=25,
+        spacing=120,
+        item_height=80,
+        center_elmt=False
+    ):
+        super().__init__(rect, ref=ref, color=color)
+
+        self.items = []
 
         self.scroll_y = 0
         self.scroll_speed = scroll_speed
 
+        self.spacing = spacing
+        self.item_height = item_height
+        self.center_elmt = center_elmt
+
         self.content_height = 0
 
-    def add(self, obj):
-        self.children.append(obj)
-        self.recalculate_content_height()
+        # SCROLLBAR
+        self.scrollbar_width = 10
 
-    def remove(self, obj):
-        if obj in self.children:
-            self.children.remove(obj)
-            self.recalculate_content_height()
+        self.scrollbar_color = (80, 80, 80)
+        self.scrollbar_handle_color = (180, 180, 180)
 
-    def recalculate_content_height(self):
-        self.content_height = 0
-        for c in self.children:
-            self.content_height = max(
-                self.content_height,
-                c.rect.bottom
-            )
+    # -----------------------------
+    # ITEMS
+    # -----------------------------
+    def set_items(self, items):
+        self.items = items
+        self.update_height()
 
-    # ---------- SCROLL ----------
-    def handle_event(self, event):
+    def add_item(self, item):
+        self.items.append(item)
+        self.update_height()
 
-        # scroll mouse wheel
-        if event.type == pygame.MOUSEWHEEL:
-            if self.is_hover():
-                self.scroll_y -= event.y * self.scroll_speed
+    def update_height(self):
 
-                # clamp scroll
-                max_scroll = max(0, self.content_height - self.rect.height)
-                self.scroll_y = max(0, min(self.scroll_y, max_scroll))
+        if len(self.items) == 0:
+            self.content_height = 0
+            return
 
-        # propagate event to children (with offset)
-        if event.type in (pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN):
-
-            for child in self.children:
-                if self._is_child_visible(child):
-                    child.handle_event(self._transform_event(event))
-
-    # ---------- UPDATE ----------
-    def update(self, dt):
-        for child in self.children:
-            if self._is_child_visible(child):
-                child.update(dt)
-
-    # ---------- RENDER ----------
-    def render(self, screen):
-
-        old_clip = screen.get_clip()
-        screen.set_clip(self.rect)
-
-        pygame.draw.rect(screen, (30, 30, 30), self.rect)
-
-        offset_surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)
-
-        for child in self.children:
-            if self._is_child_visible(child):
-                original_y = child.rect.y
-
-                # apply scroll offset
-                child.rect.y -= self.scroll_y
-
-                child.render(offset_surface)
-
-                # restore position
-                child.rect.y = original_y
-
-        screen.blit(offset_surface, self.rect.topleft)
-
-        screen.set_clip(old_clip)
-
-    # ---------- VISIBILITY (CULLING) ----------
-    def _is_child_visible(self, child):
-        return (
-            child.rect.bottom >= self.scroll_y and
-            child.rect.top <= self.scroll_y + self.rect.height
+        self.content_height = (
+            len(self.items) * self.item_height +
+            (len(self.items) - 1) * self.spacing
         )
 
-    # ---------- EVENT TRANSFORM ----------
-    def _transform_event(self, event):
-        # convert mouse position into scroll-local space
-        if hasattr(event, "pos"):
-            x, y = event.pos
-            x -= self.rect.x
-            y -= self.rect.y
-            y += self.scroll_y
-
-            new_event = pygame.event.Event(event.type, {
-                **event.__dict__,
-                "pos": (x, y)
-            })
-            return new_event
-
-        return event
-    
-class ScrollList(ObjectInterface):
-    def __init__(self, rect, item_height=80, spacing=10, scroll_speed=20):
-        super().__init__(rect)
-
-        self.items = []
-        self.scroll_y = 0
-
-        self.item_height = item_height
-        self.spacing = spacing
-        self.scroll_speed = scroll_speed
-
-        self.content_height = 0
-
-    def add(self, item):
-        self.items.append(item)
-        self.recalc()
-
-    def clear(self):
-        self.items = []
-        self.recalc()
-
-    def recalc(self):
-        self.content_height = len(self.items) * (self.item_height + self.spacing)
-
+    # -----------------------------
+    # EVENTS
+    # -----------------------------
     def handle_event(self, event):
-        if event.type == pygame.MOUSEWHEEL and self.is_hover():
-            self.scroll_y -= event.y * self.scroll_speed
 
-            max_scroll = max(0, self.content_height - self.rect.height)
-            self.scroll_y = max(0, min(self.scroll_y, max_scroll))
+        # -----------------------------
+        # SCROLL
+        # -----------------------------
+        if event.type == pygame.MOUSEWHEEL:
+            if self.is_hover():
 
-        # only visible items receive events
-        for item in self.items:
-            if self._visible(item):
-                item.handle_event(event)
+                self.scroll_y -= event.y * self.scroll_speed
 
+                max_scroll = max(
+                    0,
+                    self.content_height - self.rect.height
+                )
+
+                self.scroll_y = max(
+                    0,
+                    min(self.scroll_y, max_scroll)
+                )
+
+        # -----------------------------
+        # CHILD EVENTS
+        # -----------------------------
+        if event.type == pygame.MOUSEBUTTONDOWN:
+
+            # souris dans le container
+            if self.rect.collidepoint(event.pos):
+
+                y = self.rect.y - self.scroll_y
+
+                for item in self.items:
+
+                    if not self.center_elmt:
+                        x = self.rect.x + 10
+                    else:
+                        x = self.rect.x + (
+                            self.rect.width - item.rect.width
+                        ) // 2
+
+                    # IMPORTANT
+                    item.rect.topleft = (x, y)
+
+                    # update boutons AVANT collision
+                    if hasattr(item, "update_layout"):
+                        item.update_layout()
+
+                    item.handle_event(event)
+
+                    y += self.item_height + self.spacing
+
+    # -----------------------------
+    # UPDATE
+    # -----------------------------
     def update(self, dt):
-        for item in self.items:
-            if self._visible(item):
-                item.update(dt)
+        pass
 
+    # -----------------------------
+    # RENDER
+    # -----------------------------
     def render(self, screen):
+
+        super().render(screen)
+
         old_clip = screen.get_clip()
         screen.set_clip(self.rect)
-
-        pygame.draw.rect(screen, (15, 15, 15), self.rect)
 
         y = self.rect.y - self.scroll_y
 
+        # -----------------------------
+        # ITEMS
+        # -----------------------------
         for item in self.items:
-            item.rect.y = y
+
+            if not self.center_elmt:
+                x = self.rect.x + 10
+            else:
+                x = self.rect.x + (
+                    self.rect.width - item.rect.width
+                ) // 2
+
+            item.rect.topleft = (x, y)
+
             item.render(screen)
+
             y += self.item_height + self.spacing
 
         screen.set_clip(old_clip)
 
-    def _visible(self, item):
-        return (
-            item.rect.bottom >= self.scroll_y and
-            item.rect.top <= self.scroll_y + self.rect.height
+        # -----------------------------
+        # SCROLLBAR
+        # -----------------------------
+        self.render_scrollbar(screen)
+
+    # -----------------------------
+    # SCROLLBAR
+    # -----------------------------
+    def render_scrollbar(self, screen):
+
+        # pas besoin de scrollbar
+        if self.content_height <= self.rect.height:
+            return
+
+        bar_rect = pygame.Rect(
+            self.rect.right - self.scrollbar_width - 4,
+            self.rect.y + 4,
+            self.scrollbar_width,
+            self.rect.height - 8
+        )
+
+        pygame.draw.rect(
+            screen,
+            self.scrollbar_color,
+            bar_rect,
+            border_radius=8
+        )
+
+        # ratio visible
+        visible_ratio = self.rect.height / self.content_height
+
+        handle_height = max(
+            30,
+            int(bar_rect.height * visible_ratio)
+        )
+
+        max_scroll = self.content_height - self.rect.height
+
+        scroll_ratio = self.scroll_y / max_scroll
+
+        handle_y = (
+            bar_rect.y +
+            (bar_rect.height - handle_height) * scroll_ratio
+        )
+
+        handle_rect = pygame.Rect(
+            bar_rect.x,
+            handle_y,
+            bar_rect.width,
+            handle_height
+        )
+
+        pygame.draw.rect(
+            screen,
+            self.scrollbar_handle_color,
+            handle_rect,
+            border_radius=8
         )

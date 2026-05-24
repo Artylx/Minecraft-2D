@@ -359,6 +359,9 @@ ItemProperty.ARROW = ItemProperty("arrow", TextureType.ARROW, 100, False, None)
 
 # CONSUMABLE
 ItemProperty.CHIPS = Consumable("chips", TextureType.CHIPS, 10)
+ItemProperty.EGG = ItemProperty("egg", TextureType.EGG, 100, False, None, "Peut être cuit", True, warmer_item="COOKED_EGG")
+ItemProperty.COOKED_EGG = Consumable("cooked_egg", TextureType.COOKED_EGG, 10)
+
 ItemProperty.STICK = ItemProperty("stick", TextureType.STICK, 100, False, None)
 
 ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "Item non utilisable")

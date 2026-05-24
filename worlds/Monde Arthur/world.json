@@ -3,72 +3,12 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "8c1e23cb-1c43-4c0b-a7f7-a49519c329fd",
-            "x": -4096,
-            "y": -2004,
+            "uuid": "e49200e0-28df-4214-8521-313a2120fe11",
+            "x": -4022,
+            "y": -2016,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
-            "vy": -110.93333333333334,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true
-        },
-        {
-            "type": "Zombie",
-            "uuid": "655333cb-edb5-4329-8a57-4f3648164473",
-            "x": -3742,
-            "y": -608,
-            "w": 27,
-            "h": 80,
-            "vx": -8.907631256478975e-34,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true
-        },
-        {
-            "type": "Zombie",
-            "uuid": "9eb22942-f9ed-4c7c-bf90-64291e6f18a7",
-            "x": -3900,
-            "y": -1986,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": -305.06666666666683,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true
-        },
-        {
-            "type": "Zombie",
-            "uuid": "cf571d33-3fdb-43cf-af00-d8d168fe08aa",
-            "x": -4156,
-            "y": -1280,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
+            "vx": 82.8,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -84,19 +24,19 @@
         {
             "type": "Player",
             "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -2964,
-            "y": -356,
+            "x": -2801,
+            "y": -256,
             "w": 27,
             "h": 80,
-            "vx": -38.24907769028699,
-            "vy": -651.7333333333338,
+            "vx": 17.849948810235976,
+            "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
                 "uuid": "96ff6b36-12f0-42a1-9d81-1db388829267",
@@ -123,15 +63,15 @@
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "torch",
-                            "count": 19,
+                            "count": 16,
                             "durability": null
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
-                            "item_type_name": "mushroom",
-                            "count": 1,
+                            "item_type_name": "cooked_egg",
+                            "count": 10,
                             "durability": null
                         }
                     },
@@ -139,7 +79,7 @@
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 50,
+                            "count": 72,
                             "durability": null
                         }
                     },
@@ -171,7 +111,7 @@
                         "slot": 9,
                         "itemStack": {
                             "item_type_name": "gold_ore",
-                            "count": 8,
+                            "count": 12,
                             "durability": null
                         }
                     },
@@ -186,8 +126,8 @@
                     {
                         "slot": 11,
                         "itemStack": {
-                            "item_type_name": "coal_ingot",
-                            "count": 1,
+                            "item_type_name": "egg",
+                            "count": 89,
                             "durability": null
                         }
                     },
@@ -236,6 +176,14 @@
                         "itemStack": {
                             "item_type_name": "dirt",
                             "count": 50,
+                            "durability": null
+                        }
+                    },
+                    {
+                        "slot": 18,
+                        "itemStack": {
+                            "item_type_name": "cooked_egg",
+                            "count": 1,
                             "durability": null
                         }
                     },
@@ -331,14 +279,6 @@
                                             "count": 1,
                                             "durability": 240
                                         }
-                                    },
-                                    {
-                                        "slot": 5,
-                                        "itemStack": {
-                                            "item_type_name": "iron_chest",
-                                            "count": 1,
-                                            "durability": null
-                                        }
                                     }
                                 ]
                             }
@@ -367,13 +307,13 @@
             "-89:-13": {
                 "x": -89,
                 "y": -13,
-                "block": "air",
+                "block": "stone",
                 "components": []
             },
             "-89:-14": {
                 "x": -89,
                 "y": -14,
-                "block": "air",
+                "block": "stone",
                 "components": []
             },
             "-89:-17": {
@@ -579,7 +519,16 @@
                                 "uuid": "b789dd05-dcb5-4d9c-9cac-71e367d2ebcd",
                                 "size": 24,
                                 "title": "Inventory uuid:b789dd05-dcb5-4d9c-9cac-71e367d2ebcd",
-                                "items": []
+                                "items": [
+                                    {
+                                        "slot": 5,
+                                        "itemStack": {
+                                            "item_type_name": "mushroom",
+                                            "count": 1,
+                                            "durability": null
+                                        }
+                                    }
+                                ]
                             }
                         }
                     }
@@ -811,6 +760,43 @@
                 "x": -81,
                 "y": -53,
                 "block": "air",
+                "components": []
+            },
+            "-95:-10": {
+                "x": -95,
+                "y": -10,
+                "block": "iron_chest",
+                "components": [
+                    {
+                        "key": "chest",
+                        "component": {
+                            "type": "chestManager",
+                            "inventory": {
+                                "uuid": "5f799559-646b-43db-b436-36938e69612a",
+                                "size": 36,
+                                "title": "Inventory uuid:5f799559-646b-43db-b436-36938e69612a",
+                                "items": []
+                            }
+                        }
+                    }
+                ]
+            },
+            "-88:-13": {
+                "x": -88,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "-86:13": {
+                "x": -86,
+                "y": 13,
+                "block": "stone",
+                "components": []
+            },
+            "-84:16": {
+                "x": -84,
+                "y": 16,
+                "block": "stone",
                 "components": []
             }
         },
@@ -3338,6 +3324,18 @@
                 "y": -53,
                 "block": "air",
                 "components": []
+            },
+            "-42:-44": {
+                "x": -42,
+                "y": -44,
+                "block": "air",
+                "components": []
+            },
+            "-42:-43": {
+                "x": -42,
+                "y": -43,
+                "block": "stone",
+                "components": []
             }
         },
         "-2": {
@@ -3476,6 +3474,18 @@
             "-25:-11": {
                 "x": -25,
                 "y": -11,
+                "block": "air",
+                "components": []
+            },
+            "-20:-51": {
+                "x": -20,
+                "y": -51,
+                "block": "air",
+                "components": []
+            },
+            "-18:-50": {
+                "x": -18,
+                "y": -50,
                 "block": "air",
                 "components": []
             }
@@ -3652,7 +3662,7 @@
             "-105:-38": {
                 "x": -105,
                 "y": -38,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-108:-31": {
@@ -3809,6 +3819,18 @@
                 "x": -100,
                 "y": -54,
                 "block": "torch",
+                "components": []
+            },
+            "-105:-39": {
+                "x": -105,
+                "y": -39,
+                "block": "stone",
+                "components": []
+            },
+            "-106:-41": {
+                "x": -106,
+                "y": -41,
+                "block": "stone",
                 "components": []
             }
         },
@@ -4268,6 +4290,246 @@
             "1:-52": {
                 "x": 1,
                 "y": -52,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-8": {
+            "-128:-28": {
+                "x": -128,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-127:-28": {
+                "x": -127,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-126:-29": {
+                "x": -126,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-125:-29": {
+                "x": -125,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-126:-30": {
+                "x": -126,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-128:-29": {
+                "x": -128,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-125:-30": {
+                "x": -125,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-124:-30": {
+                "x": -124,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-127:-29": {
+                "x": -127,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-123:-30": {
+                "x": -123,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-128:-30": {
+                "x": -128,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-121:-28": {
+                "x": -121,
+                "y": -28,
+                "block": "torch",
+                "components": []
+            },
+            "-126:-28": {
+                "x": -126,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-127:-30": {
+                "x": -127,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-128:-27": {
+                "x": -128,
+                "y": -27,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-9": {
+            "-130:-28": {
+                "x": -130,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-131:-31": {
+                "x": -131,
+                "y": -31,
+                "block": "air",
+                "components": []
+            },
+            "-129:-28": {
+                "x": -129,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-130:-31": {
+                "x": -130,
+                "y": -31,
+                "block": "air",
+                "components": []
+            },
+            "-130:-33": {
+                "x": -130,
+                "y": -33,
+                "block": "air",
+                "components": []
+            },
+            "-131:-32": {
+                "x": -131,
+                "y": -32,
+                "block": "air",
+                "components": []
+            },
+            "-134:-41": {
+                "x": -134,
+                "y": -41,
+                "block": "torch",
+                "components": []
+            },
+            "-130:-32": {
+                "x": -130,
+                "y": -32,
+                "block": "air",
+                "components": []
+            },
+            "-131:-29": {
+                "x": -131,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-131:-39": {
+                "x": -131,
+                "y": -39,
+                "block": "stone",
+                "components": []
+            },
+            "-130:-29": {
+                "x": -130,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-129:-29": {
+                "x": -129,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-131:-30": {
+                "x": -131,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-130:-30": {
+                "x": -130,
+                "y": -30,
+                "block": "air",
+                "components": []
+            },
+            "-129:-30": {
+                "x": -129,
+                "y": -30,
+                "block": "torch",
+                "components": []
+            },
+            "-133:-41": {
+                "x": -133,
+                "y": -41,
+                "block": "air",
+                "components": []
+            },
+            "-131:-28": {
+                "x": -131,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-130:-34": {
+                "x": -130,
+                "y": -34,
+                "block": "air",
+                "components": []
+            }
+        },
+        "4": {
+            "70:20": {
+                "x": 70,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "69:21": {
+                "x": 69,
+                "y": 21,
+                "block": "air",
+                "components": []
+            }
+        },
+        "3": {
+            "60:33": {
+                "x": 60,
+                "y": 33,
+                "block": "air",
+                "components": []
+            }
+        },
+        "2": {
+            "33:64": {
+                "x": 33,
+                "y": 64,
+                "block": "snow",
+                "components": []
+            }
+        },
+        "1": {
+            "20:51": {
+                "x": 20,
+                "y": 51,
                 "block": "air",
                 "components": []
             }

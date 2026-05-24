@@ -4,15 +4,38 @@ import json
 HOST = '0.0.0.0'
 PORT = 5000
 
-# Données JSON à envoyer
-response_data = {
-    "status": "ok",
-    "message": "Hello from server",
-    "code": 200
-}
+class PacketTypes:
+    CONNECTION = "connection"
+    GAME_LOOP = "game_loop"
+
+class Packet:
+    def __init__(self, type: PacketTypes, values):
+        self.type = type
+        self.values = values
+
+    def packet(self, encodage='utf-8'):
+        data = {
+            "type": self.type,
+            "data": self.values,
+        }
+        return json.dumps(data).encode(encodage)
+    
+    @classmethod
+    def parse(data):
+        type_ = data.get("type", None)
+        values = data.get("data", None)
+
+        if type_ and values:
+            return Packet(type_, values)
+        return None
+        
+
+
+
+
 
 # Conversion en JSON (string)
-response_json = json.dumps(response_data)
+response_json = json.dumps("")
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
     server.bind((HOST, PORT))

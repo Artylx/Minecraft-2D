@@ -1,0 +1,38 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-05-22 10:51:39
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: invalid rect assignment
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 210, in run
+    self.render()
+    ~~~~~~~~~~~^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\main.py", line 317, in render
+    self.menu.render(self.screen)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\interface.py", line 544, in render
+    obj.render(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "c:\Users\PC-Portable-Arthur\Desktop\Jeux Python\Minecraft-2D\classes\pygame_interface.py", line 344, in render
+    item.rect.topleft = (x, y)
+    ^^^^^^^^^^^^^^^^^
+TypeError: invalid rect assignment
+
+    

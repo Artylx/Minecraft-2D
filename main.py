@@ -582,6 +582,7 @@ class Game_manager:
                 z = entity.Zombie(self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
+                
             if game.is_press(pygame.K_p):
                 p = entity.Player(self.World, "Player2")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
