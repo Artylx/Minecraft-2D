@@ -790,6 +790,9 @@ class Player(Humanoid):
                 use_red = True
 
         # RENDER PLAYER
+        # =========================
+        # NOM
+        super().render_display_name(screen, cam_rect)
         super().render(screen, cam_rect, use_red)
 
         # =========================
@@ -902,11 +905,6 @@ class Player(Humanoid):
                     draw_number=False,
                     texture_size=(self.rect.width // 2, self.rect.width // 2)
                 )
-
-        # =========================
-        # NOM
-        super().render_display_name(screen, cam_rect)
-        super().render(screen, cam_rect, None)
 
     def render_hit_box(self, screen, cam_rect, color=(255, 255, 255), width=1):
         if self.is_attacking():

@@ -3,32 +3,12 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "17ea58f9-e02e-45d3-a0ff-36bde66a3937",
-            "x": -4928,
-            "y": -1282,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 360.5333333333332,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true
-        },
-        {
-            "type": "Zombie",
-            "uuid": "4680ed1f-be08-41bb-9f3a-ba369509fe85",
-            "x": -4528,
+            "uuid": "e49200e0-28df-4214-8521-313a2120fe11",
+            "x": -4022,
             "y": -2016,
             "w": 27,
             "h": 80,
-            "vx": 92.7,
+            "vx": 82.8,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -44,11 +24,11 @@
         {
             "type": "Player",
             "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -3678,
-            "y": 288,
+            "x": -2801,
+            "y": -256,
             "w": 27,
             "h": 80,
-            "vx": 1.9704397812604987e-05,
+            "vx": 17.849948810235976,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -99,7 +79,7 @@
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 72,
+                            "count": 71,
                             "durability": null
                         }
                     },
@@ -140,14 +120,6 @@
                         "itemStack": {
                             "item_type_name": "gold_ingot",
                             "count": 13,
-                            "durability": null
-                        }
-                    },
-                    {
-                        "slot": 11,
-                        "itemStack": {
-                            "item_type_name": "egg",
-                            "count": 89,
                             "durability": null
                         }
                     },
@@ -375,7 +347,11 @@
                         "key": "furnace",
                         "component": {
                             "type": "furnaceComponent",
-                            "input": null,
+                            "input": {
+                                "item_type_name": "egg",
+                                "count": 89,
+                                "durability": null
+                            },
                             "fuel": null,
                             "output": null
                         }
@@ -4402,12 +4378,6 @@
             "-128:-27": {
                 "x": -128,
                 "y": -27,
-                "block": "air",
-                "components": []
-            },
-            "-114:8": {
-                "x": -114,
-                "y": 8,
                 "block": "air",
                 "components": []
             }

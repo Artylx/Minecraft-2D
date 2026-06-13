@@ -1,4 +1,3 @@
-from operator import inv
 from classes import language
 import pygame
 from classes import game_property, game_type
