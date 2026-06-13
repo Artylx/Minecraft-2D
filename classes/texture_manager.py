@@ -95,6 +95,16 @@ class TextureType:
     SKELETON_BODY = "skeleton_body"
     SKELETON_ARM = "skeleton_arm"
     SKELETON_LEG = "skeleton_leg"
+
+    ALIEN_HEAD = "alien_head"
+    ALIEN_BODY = "alien_body"
+    ALIEN_ARM = "alien_arm"
+    ALIEN_LEG = "alien_leg"
+
+    ALIEN_HEAD = "gnome_head"
+    ALIEN_BODY = "alien_body"
+    ALIEN_ARM = "alien_arm"
+    ALIEN_LEG = "alien_leg"
     
     CHIPS = "chips"
     EGG = "egg"
@@ -207,6 +217,12 @@ class TextureManager:
             self.load_texture(TextureType.SKELETON_ARM, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_arm.png")
             self.load_texture(TextureType.SKELETON_BODY, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_body.png")
             self.load_texture(TextureType.SKELETON_LEG, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_leg.png")
+
+            # ALIEN
+            self.load_texture(TextureType.ALIEN_HEAD, ENTITIES_PATH + MOBS_PATH + "alien/alien_head.png")
+            self.load_texture(TextureType.ALIEN_ARM, ENTITIES_PATH + MOBS_PATH + "alien/alien_arm.png")
+            self.load_texture(TextureType.ALIEN_BODY, ENTITIES_PATH + MOBS_PATH + "alien/alien_body.png")
+            self.load_texture(TextureType.ALIEN_LEG, ENTITIES_PATH + MOBS_PATH + "alien/alien_leg.png")
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")

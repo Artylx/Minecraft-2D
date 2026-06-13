@@ -579,17 +579,17 @@ class Game_manager:
 
             # Spawning for debug
             if game.is_press(pygame.K_m):
-                z = entity.Zombie(self.World)
+                z = entity.Zombie(world=self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
 
             if game.is_press(pygame.K_l):
-                z = entity.Skeleton(self.World)
+                z = entity.Alien(world=self.World)
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
                 
             if game.is_press(pygame.K_p):
-                p = entity.Player(self.World, "Player2")
+                p = entity.Player(world=self.World, name="Player2")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
 

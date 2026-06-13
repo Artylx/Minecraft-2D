@@ -3,12 +3,32 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "8a9c64a1-0a9c-4cfd-873f-f99ce54191c1",
-            "x": -4807,
+            "uuid": "17ea58f9-e02e-45d3-a0ff-36bde66a3937",
+            "x": -4928,
+            "y": -1282,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 360.5333333333332,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true
+        },
+        {
+            "type": "Zombie",
+            "uuid": "4680ed1f-be08-41bb-9f3a-ba369509fe85",
+            "x": -4528,
             "y": -2016,
             "w": 27,
             "h": 80,
-            "vx": 77.4,
+            "vx": 92.7,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -24,11 +44,11 @@
         {
             "type": "Player",
             "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -3562,
-            "y": 96,
+            "x": -3678,
+            "y": 288,
             "w": 27,
             "h": 80,
-            "vx": -0.0014263072292280189,
+            "vx": 1.9704397812604987e-05,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -36,7 +56,7 @@
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
                 "uuid": "96ff6b36-12f0-42a1-9d81-1db388829267",
@@ -87,7 +107,7 @@
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "grass",
-                            "count": 18,
+                            "count": 19,
                             "durability": null
                         }
                     },
@@ -4382,6 +4402,12 @@
             "-128:-27": {
                 "x": -128,
                 "y": -27,
+                "block": "air",
+                "components": []
+            },
+            "-114:8": {
+                "x": -114,
+                "y": 8,
                 "block": "air",
                 "components": []
             }

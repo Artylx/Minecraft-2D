@@ -887,6 +887,9 @@ class World:
                 if current_entity.get_uuid() == uuid:
                     return current_entity
         return None
+
+    def contains_entity(self, entity):
+        return entity in self.entitys
     
     def get_entities(self, class_=None) -> list:
         if class_ is None:
