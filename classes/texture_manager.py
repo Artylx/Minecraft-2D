@@ -85,10 +85,16 @@ class TextureType:
     PLAYER_BODY = "player_body"
     PLAYER_LEG = "player_leg"
     PLAYER_ARM = "player_arm"
+
     ZOMBIE_HEAD = "zombie_head"
     ZOMBIE_BODY = "zombie_body"
     ZOMBIE_ARM = "zombie_arm"
     ZOMBIE_LEG = "zombie_leg"
+
+    SKELETON_HEAD = "skeleton_head"
+    SKELETON_BODY = "skeleton_body"
+    SKELETON_ARM = "skeleton_arm"
+    SKELETON_LEG = "skeleton_leg"
     
     CHIPS = "chips"
     EGG = "egg"
@@ -195,6 +201,12 @@ class TextureManager:
             self.load_texture(TextureType.ZOMBIE_ARM, ENTITIES_PATH + MOBS_PATH + "zombie/arm.png")
             self.load_texture(TextureType.ZOMBIE_BODY, ENTITIES_PATH + MOBS_PATH + "zombie/body.png")
             self.load_texture(TextureType.ZOMBIE_LEG, ENTITIES_PATH + MOBS_PATH + "zombie/leg.png")
+
+            # SKELETON
+            self.load_texture(TextureType.SKELETON_HEAD, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_head.png")
+            self.load_texture(TextureType.SKELETON_ARM, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_arm.png")
+            self.load_texture(TextureType.SKELETON_BODY, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_body.png")
+            self.load_texture(TextureType.SKELETON_LEG, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_leg.png")
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")

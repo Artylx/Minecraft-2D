@@ -1346,6 +1346,116 @@ class Zombie(Mob):
     def __str__(self):
         return f"Zombie(pos:{self.get_pos_tile()})"
 
+class Skeleton(Mob):
+    def __init__(self, world, rect=None, name="Unamed entity", health=20, max_health=20, moving=True):
+        rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
+        super().__init__(world, rect, name, health, max_health, moving)
+        self.update_texture()
+
+    def render(self, screen, cam_rect):
+        # 🎯 Gestion du clignotement (effet Terraria)
+        light = self.world.get_entity_light(self)
+        brightness = light / 15
+
+        use_red = False
+        if self.is_taking_damage:
+            # clignote rapidement
+            if int(self.annim_damage_time * 20) % 2 == 0:
+                use_red = True
+
+        # 🎯 Choix des textures
+        if use_red:
+            head = self.head_texture_red
+            body = self.body_texture_red
+            leg = self.leg_texture_red
+            arm = self.arm_texture_red
+        else:
+            head = self.head_texture
+            body = self.body_texture
+            leg = self.leg_texture
+            arm = self.arm_texture
+
+        head = apply_brightness(head, brightness)
+        body = apply_brightness(body, brightness)
+        leg = apply_brightness(leg, brightness)
+        arm = apply_brightness(arm, brightness)
+
+        # =========================
+        # HEAD
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+        draw_x += 2
+        draw_y += 4
+        screen.blit(head, (draw_x, draw_y))
+
+        # =========================
+        # BODY
+        draw_x = self.rect.x - cam_rect.x
+        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
+        screen.blit(body, (draw_x, draw_y))
+
+        # =========================
+        # LEG
+        draw_x = self.rect.x - cam_rect.x + 2
+        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width * 2
+        screen.blit(leg, (draw_x, draw_y))
+
+        # =========================
+        # ARM (différent selon orientation)
+        if self.orientation == "left":
+            draw_x = self.rect.x - cam_rect.x + self.rect.width // 2
+        else:
+            draw_x = self.rect.x - cam_rect.x
+
+        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
+        screen.blit(arm, (draw_x, draw_y))
+
+        super().render(screen, cam_rect, None)
+
+    def set_orientation(self, orientation):
+        if super().set_orientation(orientation):
+            self.update_texture()
+
+    def update_texture(self):
+        self.head_texture = self.texture_manager.get_texture(TextureType.SKELETON_HEAD)
+        self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
+
+        self.body_texture = self.texture_manager.get_texture(TextureType.SKELETON_BODY)
+        self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
+
+        self.leg_texture = self.texture_manager.get_texture(TextureType.SKELETON_LEG)
+        self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
+        
+        self.arm_texture = self.texture_manager.get_texture(TextureType.SKELETON_ARM)
+        self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
+
+        if self.orientation == "right":
+            self.head_texture = pygame.transform.flip(self.head_texture, True, False)
+            self.body_texture = pygame.transform.flip(self.body_texture, True, False)
+            self.leg_texture = pygame.transform.flip(self.leg_texture, True, False)
+            self.arm_texture = pygame.transform.flip(self.arm_texture, True, False)
+        
+        self.head_texture_red = tint_surface(self.head_texture, (200, 100, 100))
+        self.body_texture_red = tint_surface(self.body_texture, (200, 100, 100))
+        self.leg_texture_red = tint_surface(self.leg_texture, (200, 100, 100))
+        self.arm_texture_red = tint_surface(self.arm_texture, (200, 100, 100))
+
+    def to_json(self, type_="Zombie", dict_=None):
+        if dict_ is None:
+            dict_ = {}
+
+        data = {
+            
+        }
+
+        data.update(dict_)
+        
+        return super().to_json(type_, data)
+        
+    def __str__(self):
+        return f"Zombie(pos:{self.get_pos_tile()})"
+
 ENTITY_CLASSES = {
     "Zombie": Zombie,
     "Player": Player,
