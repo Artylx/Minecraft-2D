@@ -1,0 +1,46 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-13 17:40:04
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.13
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-119.72, -29.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: module 'classes.game_property' has no attribute 'CHUNK_SIZE'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 191, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 299, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 642, in update
+    self.World.update(dt)
+    ~~~~~~~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 418, in update
+    end_loading = self.update_chunks()
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 352, in update_chunks
+    self.add_chunk(chunk_x)
+    ~~~~~~~~~~~~~~^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 289, in add_chunk
+    self.build_mob_spawn_points_chunk(chunk_x)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 117, in build_mob_spawn_points_chunk
+    start_x = chunk_x * game_property.CHUNK_SIZE
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'classes.game_property' has no attribute 'CHUNK_SIZE'. Did you mean: 'CHUNK_WIDTH'?
+
+    

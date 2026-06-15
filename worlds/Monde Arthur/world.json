@@ -3,12 +3,12 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "e49200e0-28df-4214-8521-313a2120fe11",
-            "x": -4022,
-            "y": -2016,
+            "uuid": "2e2b8ca1-a0a9-4e13-8130-8c98584e9d3e",
+            "x": -3690,
+            "y": -608,
             "w": 27,
             "h": 80,
-            "vx": 82.8,
+            "vx": 107.10000000000001,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -19,16 +19,59 @@
             "orientation": "right",
             "drops": [],
             "IA": true,
-            "auto_jump": true
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "5907f4ea-400d-4bb7-8ec4-d90a6d63bf2d",
+            "x": -3608,
+            "y": -544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "d6bde225-1668-4e05-bfc3-f9cde47725db",
+            "x": -3776,
+            "y": -175,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": -416.0000000000002,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
         },
         {
             "type": "Player",
             "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -2801,
-            "y": -256,
+            "x": -3968,
+            "y": 256,
             "w": 27,
             "h": 80,
-            "vx": 17.849948810235976,
+            "vx": 2.3340539550259316e-29,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -48,7 +91,8 @@
                         "itemStack": {
                             "item_type_name": "golden_pickaxe",
                             "count": 1,
-                            "durability": 432
+                            "durability": 432,
+                            "components": []
                         }
                     },
                     {
@@ -56,31 +100,26 @@
                         "itemStack": {
                             "item_type_name": "golden_sword",
                             "count": 1,
-                            "durability": 432
+                            "durability": 432,
+                            "components": []
                         }
                     },
                     {
                         "slot": 2,
                         "itemStack": {
                             "item_type_name": "torch",
-                            "count": 16,
-                            "durability": null
-                        }
-                    },
-                    {
-                        "slot": 3,
-                        "itemStack": {
-                            "item_type_name": "cooked_egg",
-                            "count": 10,
-                            "durability": null
+                            "count": 15,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 71,
-                            "durability": null
+                            "count": 94,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -88,15 +127,17 @@
                         "itemStack": {
                             "item_type_name": "grass",
                             "count": 19,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "iron_ore",
-                            "count": 7,
-                            "durability": null
+                            "count": 21,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -104,15 +145,17 @@
                         "itemStack": {
                             "item_type_name": "stick",
                             "count": 2,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
                         "slot": 9,
                         "itemStack": {
-                            "item_type_name": "gold_ore",
-                            "count": 12,
-                            "durability": null
+                            "item_type_name": "cooked_egg",
+                            "count": 10,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -120,7 +163,17 @@
                         "itemStack": {
                             "item_type_name": "gold_ingot",
                             "count": 13,
-                            "durability": null
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 11,
+                        "itemStack": {
+                            "item_type_name": "gold_ore",
+                            "count": 12,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -128,7 +181,8 @@
                         "itemStack": {
                             "item_type_name": "iron_ingot",
                             "count": 21,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -136,15 +190,17 @@
                         "itemStack": {
                             "item_type_name": "stone_pickaxe",
                             "count": 1,
-                            "durability": 240
+                            "durability": 240,
+                            "components": []
                         }
                     },
                     {
                         "slot": 14,
                         "itemStack": {
                             "item_type_name": "oak_plank",
-                            "count": 24,
-                            "durability": null
+                            "count": 14,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -152,15 +208,17 @@
                         "itemStack": {
                             "item_type_name": "stone",
                             "count": 100,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
                         "slot": 16,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 25,
-                            "durability": null
+                            "count": 44,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -168,7 +226,8 @@
                         "itemStack": {
                             "item_type_name": "dirt",
                             "count": 50,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -176,7 +235,8 @@
                         "itemStack": {
                             "item_type_name": "cooked_egg",
                             "count": 1,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -184,7 +244,8 @@
                         "itemStack": {
                             "item_type_name": "oak_plank",
                             "count": 11,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -192,7 +253,17 @@
                         "itemStack": {
                             "item_type_name": "stone",
                             "count": 7,
-                            "durability": null
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 22,
+                        "itemStack": {
+                            "item_type_name": "cooked_egg",
+                            "count": 4,
+                            "durability": null,
+                            "components": []
                         }
                     },
                     {
@@ -200,7 +271,8 @@
                         "itemStack": {
                             "item_type_name": "oak_trunk",
                             "count": 73,
-                            "durability": null
+                            "durability": null,
+                            "components": []
                         }
                     }
                 ],
@@ -253,7 +325,8 @@
                                         "itemStack": {
                                             "item_type_name": "iron_sword",
                                             "count": 1,
-                                            "durability": 523
+                                            "durability": 523,
+                                            "components": []
                                         }
                                     },
                                     {
@@ -261,7 +334,8 @@
                                         "itemStack": {
                                             "item_type_name": "iron_pickaxe",
                                             "count": 1,
-                                            "durability": 523
+                                            "durability": 523,
+                                            "components": []
                                         }
                                     },
                                     {
@@ -269,7 +343,8 @@
                                         "itemStack": {
                                             "item_type_name": "stone_pickaxe",
                                             "count": 1,
-                                            "durability": 240
+                                            "durability": 240,
+                                            "components": []
                                         }
                                     }
                                 ]
@@ -349,8 +424,9 @@
                             "type": "furnaceComponent",
                             "input": {
                                 "item_type_name": "egg",
-                                "count": 89,
-                                "durability": null
+                                "count": 85,
+                                "durability": null,
+                                "components": []
                             },
                             "fuel": null,
                             "output": null
@@ -521,7 +597,8 @@
                                         "itemStack": {
                                             "item_type_name": "mushroom",
                                             "count": 1,
-                                            "durability": null
+                                            "durability": null,
+                                            "components": []
                                         }
                                     }
                                 ]
@@ -4360,7 +4437,7 @@
             "-121:-28": {
                 "x": -121,
                 "y": -28,
-                "block": "torch",
+                "block": "stone",
                 "components": []
             },
             "-126:-28": {
@@ -4378,6 +4455,414 @@
             "-128:-27": {
                 "x": -128,
                 "y": -27,
+                "block": "air",
+                "components": []
+            },
+            "-122:-21": {
+                "x": -122,
+                "y": -21,
+                "block": "torch",
+                "components": []
+            },
+            "-122:-24": {
+                "x": -122,
+                "y": -24,
+                "block": "air",
+                "components": []
+            },
+            "-121:-23": {
+                "x": -121,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "-122:-25": {
+                "x": -122,
+                "y": -25,
+                "block": "air",
+                "components": []
+            },
+            "-123:-22": {
+                "x": -123,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "-122:-22": {
+                "x": -122,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "-120:-25": {
+                "x": -120,
+                "y": -25,
+                "block": "air",
+                "components": []
+            },
+            "-123:-19": {
+                "x": -123,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-123:-23": {
+                "x": -123,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "-121:-27": {
+                "x": -121,
+                "y": -27,
+                "block": "air",
+                "components": []
+            },
+            "-122:-23": {
+                "x": -122,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "-123:-20": {
+                "x": -123,
+                "y": -20,
+                "block": "air",
+                "components": []
+            },
+            "-121:-24": {
+                "x": -121,
+                "y": -24,
+                "block": "air",
+                "components": []
+            },
+            "-123:-21": {
+                "x": -123,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "-121:-25": {
+                "x": -121,
+                "y": -25,
+                "block": "air",
+                "components": []
+            },
+            "-117:-61": {
+                "x": -117,
+                "y": -61,
+                "block": "air",
+                "components": []
+            },
+            "-121:-16": {
+                "x": -121,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-118:-60": {
+                "x": -118,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-117:-58": {
+                "x": -117,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-119:-16": {
+                "x": -119,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-120:-15": {
+                "x": -120,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-123:-17": {
+                "x": -123,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-117:-13": {
+                "x": -117,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "-118:-15": {
+                "x": -118,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-122:-19": {
+                "x": -122,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-124:-19": {
+                "x": -124,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-122:-16": {
+                "x": -122,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-118:-58": {
+                "x": -118,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-117:-59": {
+                "x": -117,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-120:-16": {
+                "x": -120,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-119:-17": {
+                "x": -119,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-123:-18": {
+                "x": -123,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-118:-16": {
+                "x": -118,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-118:-13": {
+                "x": -118,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "-124:-20": {
+                "x": -124,
+                "y": -20,
+                "block": "air",
+                "components": []
+            },
+            "-118:-59": {
+                "x": -118,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-117:-60": {
+                "x": -117,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-121:-21": {
+                "x": -121,
+                "y": -21,
+                "block": "stone",
+                "components": []
+            },
+            "-121:-15": {
+                "x": -121,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-116:-59": {
+                "x": -116,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-119:-15": {
+                "x": -119,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-118:-14": {
+                "x": -118,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "-118:-17": {
+                "x": -118,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-124:-21": {
+                "x": -124,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "-124:-18": {
+                "x": -124,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-120:-59": {
+                "x": -120,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-119:-60": {
+                "x": -119,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-119:-58": {
+                "x": -119,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-120:-60": {
+                "x": -120,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-119:-59": {
+                "x": -119,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-121:-59": {
+                "x": -121,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-120:-58": {
+                "x": -120,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-121:-60": {
+                "x": -121,
+                "y": -60,
+                "block": "torch",
+                "components": []
+            },
+            "-125:8": {
+                "x": -125,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-113:-5": {
+                "x": -113,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-113:1": {
+                "x": -113,
+                "y": 1,
+                "block": "stone",
+                "components": []
+            },
+            "-113:4": {
+                "x": -113,
+                "y": 4,
+                "block": "stone",
+                "components": []
+            },
+            "-113:-6": {
+                "x": -113,
+                "y": -6,
+                "block": "stone",
+                "components": []
+            },
+            "-115:-12": {
+                "x": -115,
+                "y": -12,
+                "block": "stone",
+                "components": []
+            },
+            "-113:-3": {
+                "x": -113,
+                "y": -3,
+                "block": "stone",
+                "components": []
+            },
+            "-113:3": {
+                "x": -113,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "-113:-7": {
+                "x": -113,
+                "y": -7,
+                "block": "air",
+                "components": []
+            },
+            "-113:0": {
+                "x": -113,
+                "y": 0,
+                "block": "air",
+                "components": []
+            },
+            "-113:-4": {
+                "x": -113,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-115:-16": {
+                "x": -115,
+                "y": -16,
+                "block": "stone",
+                "components": []
+            },
+            "-113:-2": {
+                "x": -113,
+                "y": -2,
+                "block": "air",
+                "components": []
+            },
+            "-113:2": {
+                "x": -113,
+                "y": 2,
+                "block": "air",
+                "components": []
+            },
+            "-113:-1": {
+                "x": -113,
+                "y": -1,
                 "block": "air",
                 "components": []
             }

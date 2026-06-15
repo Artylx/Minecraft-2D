@@ -10,10 +10,13 @@ class ObjectInterface:
         pygame.draw.rect(screen, color, self.rect)
 
     def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(pygame.mouse.get_pos()):
+        if not self.enable:
+            return
 
-                if self.enable:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                if event.button == 1:
+                    
                     if self.callback:
                         self.callback()
 
@@ -87,11 +90,6 @@ class Button(ObjectInterface):
         pygame.draw.rect(screen, bd_color, self.rect, 2)
 
         screen.blit(self.text_surface, self.text_rect)
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(pygame.mouse.get_pos()):
-                self.callback()
 
 class ObjectReferencable(ObjectInterface):
     def __init__(self, rect, ref="", callback=None):
@@ -237,10 +235,20 @@ class TextBox(ObjectReferencable):
                 pass
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(pygame.mouse.get_pos()):
-                self.selected = True
-            else:
-                self.selected = False
+            if event.button == 1:
+                if self.rect.collidepoint(event.pos):
+
+                    # activation
+                    self.selected = True
+
+                    # 🔥 place le curseur à la fin
+                    self.cursor_index = len(self.text)
+
+                    # optionnel : reset scroll pour focus fin
+                    self.scroll_x = 0
+
+                else:
+                    self.selected = False
     
     def update(self, dt):
         if self.selected:

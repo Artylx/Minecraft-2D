@@ -1,0 +1,54 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-13 17:24:46
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.13
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-92.25, -12.0)
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: text must be a unicode or bytes
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 191, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 299, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 642, in update
+    self.World.update(dt)
+    ~~~~~~~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 422, in update
+    self.try_spawn_mobs()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 338, in try_spawn_mobs
+    monster = EntityClass.Zombie(
+        self
+    )
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 1253, in __init__
+    super().__init__(rect, world, name, health, max_health, moving)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 1175, in __init__
+    super().__init__(rect, world, name, health, max_health)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 336, in __init__
+    super().__init__(rect, world, name, None, None, False, collidable=collidable)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 54, in __init__
+    self.display_name_text_surface = self.font.render(self.name, True, (255, 255, 255))
+                                     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: text must be a unicode or bytes
+
+    

@@ -995,6 +995,9 @@ class Entity_Inventory(Inventory):
         return data
     
     def load(self, data):
+        if not data:
+            return None
+
         if "owner_uuid" not in data:
             print("Champs manquant: owner_uuid")
             return None
@@ -1021,12 +1024,32 @@ class UI_Inventory():
 
     def get_selected_item(self):
         return self.inv.get_item(self.selected_index)
+    
+
+class ItemComponent:
+    UNBREAKABLE = "unbreakable"
+
+    def __init__(self, type_=None):
+        self.type_ = type_
+
+    def to_json(self):
+        return {
+            "type": self.type_
+        }
+    
+    @classmethod
+    def from_json(cls, data):
+        if not data:
+            return None
+
+        return cls(type_=data.get("type"))
 
 class ItemStack():
     texture_manager = None
 
-    def __init__(self, item_property=None, count=1, durability=None):
+    def __init__(self, item_property=None, count=1, durability=None, components=None):
         self.item_property = item_property
+        self.components = components if components is not None else []
 
         if type(count) != int:
             try:
@@ -1048,31 +1071,43 @@ class ItemStack():
 
         self.texture = None
         self.update_texture()
+
+    def add_component(self, component: ItemComponent):
+        if not component:
+            return
+
+        self.components.append(component)
+
+    def has_component(self, component_type):
+        for component in self.components:
+            if component.type_ == component_type:
+                return True
+        return False
     
     def load(self, data):
         if data is None:
             return None
-            
-        # champs simples
-        simple_fields = [
-            "item_type_name", "count", "durability"
-        ]
 
-        # Vérification
-        required = simple_fields
-        missing = [k for k in required if k not in data]
+        simple_fields = ["item_type_name", "count", "durability"]
+
+        missing = [k for k in simple_fields if k not in data]
         if missing:
             print(f"Champs manquants: {missing}")
             return None
 
-        # Assignation simple
         for attr in simple_fields:
             if attr == "item_type_name":
                 item_type_name = data["item_type_name"]
                 self.item_property = game_type.get_item_type_by_name(item_type_name)
-
             else:
                 setattr(self, attr, data[attr])
+
+        self.components = []
+
+        for comp_data in data.get("components", []):
+            component = ItemComponent.from_json(comp_data)
+            if component:
+                self.components.append(component)
 
         self.update_texture()
         return self
@@ -1189,4 +1224,7 @@ class ItemStack():
             "item_type_name": self.item_property.item_name,
             "count": self.count,
             "durability": self.durability,
+            "components": [
+                component.to_json() for component in self.components
+            ]
         }

@@ -1,0 +1,67 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-13 16:43:13
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.13
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: Entity.get_uuid() missing 1 required positional argument: 'self'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 189, in run
+    self.handle_events()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 248, in handle_events
+    self.menu.handle_events(event)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\interface.py", line 564, in handle_events
+    obj.handle_event(event)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\pygame_interface.py", line 228, in handle_event
+    self.enter_callback()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\interface.py", line 433, in <lambda>
+    enter_callback=lambda: enter_game()
+                           ~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\interface.py", line 415, in enter_game
+    self.game.load_game(pseudo)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 68, in load_game
+    self.game_manager = Game_manager(self.game_name, self.game_manager, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self, player_name=pseudo)
+                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 436, in __init__
+    self.World = world.World((self.width_screen, self.height_screen), name=self.world_name, json_data=json, seed=seed, callback_loading=callback)
+                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 67, in __init__
+    self.set_json(json_data)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 117, in set_json
+    for e in entity.dict_to_entitys(entitys, self):
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 1719, in dict_to_entitys
+    entity = dict_to_entity(entity_dict, world)
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 1714, in dict_to_entity
+    return cls.load(data)
+           ~~~~~~~~^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\entity.py", line 1101, in load
+    self.inventory = inventory.Entity_Inventory.load(data.get("inventory", None), self)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\inventory.py", line 1003, in load
+    self.owner_uuid = owner_entity.get_uuid()
+                      ~~~~~~~~~~~~~~~~~~~~~^^
+TypeError: Entity.get_uuid() missing 1 required positional argument: 'self'
+
+    

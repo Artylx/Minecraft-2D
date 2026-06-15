@@ -127,6 +127,7 @@ class MenusCollection:
     VERSIONS_CREDITS = "versions_credits"
     PSEUDO = "pseudo"
     ERROR = "error"
+    CONNECT_MULTIPLAYER = "connect_multiplayer"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
@@ -357,7 +358,43 @@ class MainMenu:
             Button(
                 "Se connecter",
                 (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
-                lambda: None
+                lambda: self.set_menu(MenusCollection.CONNECT_MULTIPLAYER)
+            )
+        ]
+
+        self.menus[MenusCollection.CONNECT_MULTIPLAYER] = [
+            Surface((0, self.screen_size[1] - MARGIN_UI * 3 - BUTTON_HEIGHT * 2, self.screen_size[0], MARGIN_UI * 3 + BUTTON_HEIGHT * 2), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2 - BUTTON_HEIGHT - MARGIN_UI), (10, 10, 10), 255),
+
+            Texte("Multijoueur", (self.center_x, 80, 160, 50), center_pos=True),
+
+            TextBox(
+                (self.center_x - 160, self.center_y - BUTTON_HEIGHT // 2 - 100, 320, BUTTON_HEIGHT),
+                "Adresse IP",
+                "ip"
+            ),
+            TextBox(
+                (self.center_x - 160, self.center_y + BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
+                "Port",
+                "port"
+            ),
+            TextBox(
+                (self.center_x - 160, self.center_y + BUTTON_HEIGHT // 2 + 100, 320, BUTTON_HEIGHT),
+                "Pseudo",
+                "pseudo"
+            ),
+            
+            Button(
+                "Retour",
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.MULTIPLAYER)
+            ),
+
+            Button(
+                "Se connecter",
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.game.connect_multiplayer(self.get_object_by_ref("ip", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("port", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("pseudo", MenusCollection.CONNECT_MULTIPLAYER).text)
             )
         ]
 

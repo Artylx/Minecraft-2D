@@ -1,3 +1,5 @@
+from turtle import pos
+
 import pygame
 from noise import pnoise1, pnoise2
 from classes import inventory
@@ -48,148 +50,26 @@ def save_world_json(world, world_path, world_name):
     except Exception as e:
         print(f"Erreur lors de la sauvegarde du monde '{world_path}': {e}")
 
-class World:
-    def __init__(self, screen_size, name="Unamed world", seed=None, json_data=None, callback_loading=None):
+
+class World():
+    def __init__(self, name="Unamed world", seed=None, callback_loading=None):
         """
         Constructeur unique qui gère soit :
         - la génération d'un monde depuis une seed
         - la reconstruction d'un monde depuis un JSON
         """
-        self.screen_size = screen_size
         self.name = name
         self.callback_loading = callback_loading
         self.is_loaded = False
 
         self.modified_blocks_runtime = {}
 
-        if json_data is not None:
-            # charger depuis le JSON
-            self.set_json(json_data)
-        else:
-            # générer depuis la seed
-            self.seed = seed if seed is not None else random.randint(10000, 99999)
-            self.random = random.Random(self.seed)
-
-            self.entitys = []  
-            self.offline_entitys = []
-            self.saved_modified_blocks = {}
+        self.entitys = []  
+        self.offline_entitys = []
+        self.saved_modified_blocks = {}
         
         self.structure_manager = StructureManager()
         self.biome_manager = BiomeManager()
-
-        # initialisation commune
-        self.init()
-        
-    def init(self):
-        self.hit_box_visible = False
-
-        self.chunks = {}
-        self.light_map = {} 
-        self.block_light_queue = deque()
-        self.sky_light_queue = deque()
-        self.sky_column_queue = deque()
-
-        self.block_light = {}
-        self.light_sources = set()
-        self.dirty_chunks = set()
-
-        self.total_chunks_to_load = 0
-        self.loaded_chunks = 0
-
-        self.total_columns = 0
-        self.done_columns = 0
-
-        self.total_light_steps = 0
-        self.done_light_steps = 0
-
-        self.mob_spawn_timer = 0
-
-    def set_json(self, json):
-        seed = json.get("seed", None)
-        entitys = json.get("entitys", None)
-        modified_blocks = json.get("modified_blocks", None)
-
-        if seed is not None and entitys is not None and modified_blocks is not None:
-            self.seed = seed
-            self.entitys = []
-            self.offline_entitys = []
-
-            for e in entity.dict_to_entitys(entitys, self):
-                if isinstance(e, EntityClass.Player):
-                    self.add_offline_entity(e)
-                else:
-                    self.create_entity(e)
-            
-            self.saved_modified_blocks = modified_blocks
-
-            print("World chargé avec succés")
-        else:
-            print("World non recevable")
-            exit(1)
-    
-    def get_json(self):
-        entitys_json = [e.to_json() for e in self.entitys]
-        for e in self.offline_entitys:
-            entitys_json.append(e.to_json())
-
-        self.flush_loaded_chunks()
-
-        return {
-            "seed": self.seed,
-            "entitys": entitys_json,
-            "modified_blocks": self.saved_modified_blocks
-        }
-    
-    def stop(self):
-        for player in self.get_entities(EntityClass.Player):
-            self.player_quit(player.name)
-
-
-    def player_join(self, player_name):
-        player = self.get_player_by_name(player_name)
-
-        if player:
-            return player
-        else:
-            player = self.get_player_offline(player_name)
-            if player:
-                self.create_entity(player)
-                self.remove_offline_entity(player)
-                return player
-            else:
-                player = entity.Player(self, name=player_name)
-
-                self.create_entity(player)
-                return player
-
-    def player_quit(self, player_name):
-        player = self.get_player_by_name(player_name)
-
-        if player:
-            self.remove_entity(player)
-            self.add_offline_entity(player)
-    
-    def get_player_offline(self, player_name):
-        for e in self.offline_entitys:
-            if isinstance(e, EntityClass.Player):
-
-                if e.name == player_name:
-                    return e
-        return None
-
-    def create_entity(self, entity):
-        self.entitys.append(entity)
-
-    def remove_entity(self, entity):
-        if entity in self.entitys:
-            self.entitys.remove(entity)
-
-    def add_offline_entity(self, entity):
-        self.offline_entitys.append(entity)
-
-    def remove_offline_entity(self, entity):
-        if entity in self.offline_entitys:
-            self.offline_entitys.remove(entity)
 
     def add_chunk(self, chunk_x):
         if chunk_x not in self.chunks:
@@ -199,6 +79,8 @@ class World:
 
             chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
             self.chunks[chunk_x] = chunk
+
+            self.build_mob_spawn_points_chunk(chunk_x)
 
             # appliquer les modifications sauvegardées
             blc = 0
@@ -298,52 +180,6 @@ class World:
         self.save_chunk_modified_blocks(chunk_cord)
         del self.chunks[chunk_cord]
 
-    def try_spawn_mobs(self):
-
-        players = self.get_players()
-
-        if not players:
-            return
-
-        # limite globale
-        monsters = self.get_entities(EntityClass.Zombie)
-        line = None
-        for monster in monsters:
-            if not line:
-                line = str(monster)
-            else:
-                line = line + ", " + str(monster)
-
-        print("Monsters ", line)
-
-        if len(monsters) >= 30:
-            return
-
-        for player in players:
-
-            for _ in range(5):  # essais de spawn
-
-                spawn_x = random.randint(
-                    player.rect.x // game_property.TILE_SIZE - 40,
-                    player.rect.x // game_property.TILE_SIZE + 40
-                )
-
-                spawn_y = random.randint(
-                    game_property.CHUNK_MIN_HEIGHT,
-                    game_property.WATER_Y
-                )
-
-                if self.can_spawn_monster(spawn_x, spawn_y, player):
-
-                    monster = EntityClass.Zombie(
-                        self
-                    )
-                    monster.tp_tile(spawn_x, spawn_y)
-
-                    self.create_entity(monster)
-
-                    break
-
     def get_light_level(self, x, y):
         block = self.get_block(x, y)
         if not block:
@@ -372,47 +208,8 @@ class World:
 
         return total / count
 
-    def can_spawn_monster(self, x, y, player):
-
-        tile = game_property.TILE_SIZE
-
-        # zone réelle du zombie
-        rect = pygame.Rect(
-            x * tile,
-            y * tile,
-            tile,
-            int(2.5 * tile)
-        )
-
-        # 1) vérifier collisions blocs sur toute la hitbox
-        for dx in range(rect.left // tile, rect.right // tile + 1):
-            for dy in range(rect.top // tile, rect.bottom // tile + 1):
-                block = self.get_block(dx, dy)
-                if block and block.can_collide():
-                    return False
-
-        # 2) lumière
-        center_block = self.get_block(x, y)
-        if not center_block:
-            return False
-
-        light = max(center_block.sky_light, center_block.block_light)
-        if light > 4:
-            return False
-
-        # 3) distance joueur
-        px = player.rect.centerx // tile
-        py = player.rect.centery // tile
-
-        dx = px - x
-        dy = py - y
-
-        if dx*dx + dy*dy < 10*10:
-            return False
-
-        return True
-
     def update(self, dt):
+        print("update world")
         end_loading = self.update_chunks()
 
         self.mob_spawn_timer += dt
@@ -424,7 +221,7 @@ class World:
         if end_loading:
             self.compute_sky_column()
             if not self.is_loaded:
-                self.callback_loading("Calcul de la lumière...", 30)
+                self.callback_loading("On s'occupe de poser les blocks...", 30)
 
             if not self.sky_column_queue:
                 self.propagate_sky_light()
@@ -460,41 +257,575 @@ class World:
         # suppression des entités ramassées
         for entity in to_remove:
             self.remove_entity(entity)
+            self.on_entity_death(entity)
 
         if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
             self.callback_loading("C'est fini", 100)
             self.is_loaded = True
 
-    def update_screen_size(self, screen_size):
-        self.screen_size = screen_size
+    def on_entity_death(self, entity):
+        pass
 
-    def render_debug(self, screen, cam_rect):
-        font = pygame.font.SysFont(None, 24)
+    def stop(self):
+        for player in self.get_entities(EntityClass.Player):
+            self.player_quit(player.name)
 
-        debug_text = f"Chunks loaded: {len(self.chunks.values())}, {list(self.chunks.keys())}"
-        text_surface = font.render(debug_text, True, (255, 255, 255))
-        screen.blit(text_surface, (10, 70))
+    def player_join(self, player_name):
+        player = self.get_player_by_name(player_name)
 
-        debug_text = f"Entitys: {len(self.entitys)}"
-        text_surface = font.render(debug_text, True, (255, 255, 255))
-        screen.blit(text_surface, (10, 90))
+        if player:
+            return player
+        else:
+            player = self.get_player_offline(player_name)
+            if player:
+                self.create_entity(player)
+                self.remove_offline_entity(player)
+                return player
+            else:
+                player = entity.Player(self, name=player_name)
 
-        # pygame.draw.rect(screen, (0, 255, 0), (self.screen_size[0] // 2 - 1, 0, 2, self.screen_size[1]))
-        # pygame.draw.rect(screen, (0, 255, 0), (0, self.screen_size[1] // 2 - 1, self.screen_size[0], 2))
-        for chunk_x in self.chunks.keys():
-            # position monde du début du chunk
-            world_x = chunk_x * game_property.CHUNK_WIDTH * game_property.TILE_SIZE
+                self.create_entity(player)
+                return player
 
-            # conversion écran
-            screen_x = world_x - cam_rect.x
+    def player_quit(self, player_name):
+        player = self.get_player_by_name(player_name)
 
-            pygame.draw.line(
-                screen,
-                (255, 0, 0),
-                (screen_x, 0),
-                (screen_x, self.screen_size[1]),
-                1
-            )
+        if player:
+            self.remove_entity(player)
+            self.add_offline_entity(player)
+    
+    def get_player_offline(self, player_name):
+        for e in self.offline_entitys:
+            if isinstance(e, EntityClass.Player):
+
+                if e.name == player_name:
+                    return e
+        return None
+
+    def create_entity(self, entity):
+        self.entitys.append(entity)
+
+    def remove_entity(self, entity):
+        if entity in self.entitys:
+            self.entitys.remove(entity)
+
+    def add_offline_entity(self, entity):
+        self.offline_entitys.append(entity)
+
+    def remove_offline_entity(self, entity):
+        if entity in self.offline_entitys:
+            self.offline_entitys.remove(entity)
+
+
+    def set_block_json(self, block_json):
+        block = Block.load(block_json)
+        return self.set_block(block.get_pos()[0], block.get_pos()[1], block)
+
+    
+    def set_block(self, X, Y, block):
+        # calcul du chunk
+        chunk_x = X // game_property.CHUNK_WIDTH
+        if chunk_x not in self.chunks:
+            return False
+
+        # créer le rectangle du bloc à placer
+        block_rect = block.get_rect()
+
+        # vérification collision avec toutes les entités
+        if block.block_property != BlockProperty.AIR and block.can_collide():
+            for entity in self.entitys:
+                if block_rect.colliderect(entity.rect):
+                    # on refuse de placer le bloc
+                    print(f"Impossible de placer {block.block_property.block_name} à {(X,Y)}: collision avec {entity.name}")
+                    return False
+
+        # placement du bloc si pas de collision
+        chunk = self.chunks[chunk_x]
+        chunk.set_block(X, Y, block)
+
+        return True
+
+    
+
+
+class WorldSolo():
+    def __init__(self, name="Unamed world", seed=None, json_data=None, callback_loading=None):
+        """
+        Constructeur unique qui gère soit :
+        - la génération d'un monde depuis une seed
+        - la reconstruction d'un monde depuis un JSON
+        """
+        self.name = name
+        self.callback_loading = callback_loading
+        self.is_loaded = False
+
+        self.modified_blocks_runtime = {}
+
+        if json_data is not None:
+            # charger depuis le JSON
+            self.set_json(json_data)
+        else:
+            # générer depuis la seed
+            self.seed = seed if seed is not None else random.randint(10000, 99999)
+            self.random = random.Random(self.seed)
+
+            self.entitys = []  
+            self.offline_entitys = []
+            self.saved_modified_blocks = {}
+        
+        self.structure_manager = StructureManager()
+        self.biome_manager = BiomeManager()
+
+        # initialisation commune
+        self.init()
+        
+    def init(self):
+        self.hit_box_visible = False
+
+        self.chunks = {}
+        self.light_map = {} 
+        self.block_light_queue = deque()
+        self.sky_light_queue = deque()
+        self.sky_column_queue = deque()
+
+        self.block_light = {}
+        self.light_sources = set()
+        self.dirty_chunks = set()
+
+        self.total_chunks_to_load = 0
+        self.loaded_chunks = 0
+
+        self.total_columns = 0
+        self.done_columns = 0
+
+        self.total_light_steps = 0
+        self.done_light_steps = 0
+
+        self.mob_spawn_timer = 0
+        self.mob_spawn_points = {}
+        self.MAX_MOB_PER_SPAWN_POINT = 1
+
+    def build_mob_spawn_points_chunk(self, chunk_x, chunk_y=0):
+
+        chunk_key = (chunk_x, chunk_y)
+
+        if chunk_key in self.mob_spawn_points:
+            return
+
+        self.mob_spawn_points[chunk_key] = {}
+
+        start_x = chunk_x * game_property.CHUNK_WIDTH
+        end_x = start_x + game_property.CHUNK_WIDTH
+
+        for x in range(start_x, end_x):
+            for y in range(
+                game_property.CHUNK_MIN_HEIGHT,
+                game_property.WATER_Y
+            ):
+                if self.can_spawn_basic(x, y):
+                    self.mob_spawn_points[chunk_key][(x, y)] = 0
+
+    def can_spawn_here(self, chunk_key, pos):
+        return self.mob_spawn_points[chunk_key].get(pos, 0) < self.MAX_MOB_PER_SPAWN_POINT
+
+    def can_spawn_basic(self, x, y):
+        tile = game_property.TILE_SIZE
+
+        block = self.get_block(x, y)
+        if not block:
+            return False
+
+        # lumière
+        light = max(block.sky_light, block.block_light)
+        if light > 4:
+            return False
+
+        # collision simple
+        if block.can_collide():
+            return False
+
+        return True
+    
+    def can_spawn_monster(self, x, y, player): 
+        tile = game_property.TILE_SIZE 
+        # zone réelle du zombie 
+
+        rect = pygame.Rect( x * tile, y * tile, tile, int(2.5 * tile) ) 
+        
+        for dx in range(rect.left // tile, rect.right // tile + 1): 
+            for dy in range(rect.top // tile, rect.bottom // tile + 1): 
+                block = self.get_block(dx, dy) 
+                if block and block.can_collide(): 
+                    return False 
+        
+        center_block = self.get_block(x, y) 
+        if not center_block: 
+            return False 
+        
+        light = max(center_block.sky_light, center_block.block_light) 
+        if light > 4: 
+            return False 
+        
+        # 3) distance joueur 
+        px = player.rect.centerx // tile 
+        py = player.rect.centery // tile 
+        dx = px - x 
+        dy = py - y 
+        
+        if dx*dx + dy*dy < 10*10: 
+            return False 
+        return True
+    
+    def try_spawn_mobs(self):
+
+        players = self.get_players()
+        if not players:
+            return
+
+        monsters = self.get_entities(EntityClass.Zombie)
+        if len(monsters) >= 30:
+            return
+
+        if not self.mob_spawn_points:
+            return
+
+        for _ in range(5):
+
+            if random.random() > 0.3:
+                continue
+
+            player = random.choice(players)
+
+            tile = game_property.TILE_SIZE
+            chunk_x = player.rect.x // (game_property.CHUNK_WIDTH * tile)
+            chunk_key = (chunk_x, 0)
+
+            chunk = self.mob_spawn_points.get(chunk_key)
+            if not chunk:
+                continue
+
+            # filtrer les points encore disponibles
+            valid_points = [
+                pos for pos, count in chunk.items()
+                if count < self.MAX_MOB_PER_SPAWN_POINT
+            ]
+
+            if not valid_points:
+                continue
+
+            spawn_x, spawn_y = random.choice(valid_points)
+
+            if not self.can_spawn_monster(spawn_x, spawn_y, player):
+                continue
+
+            monster = EntityClass.Zombie(world=self, spawn_point=(spawn_x, spawn_y, chunk_key))
+            monster.tp_tile(spawn_x, spawn_y)
+
+            self.create_entity(monster)
+
+            # 🔥 incrémentation du compteur du point
+            chunk[(spawn_x, spawn_y)] += 1
+
+            break
+
+    def on_entity_death(self, entity):
+        if isinstance(entity, EntityClass.Zombie):
+            self.release_spawn_point(entity)
+
+    def release_spawn_point(self, monster):
+
+        if not hasattr(monster, "spawn_point"):
+            return
+        
+        if not monster.spawn_point:
+            return
+
+        x, y, chunk_key = monster.spawn_point
+
+        chunk = self.mob_spawn_points.get(chunk_key)
+        if not chunk:
+            return
+
+        if (x, y) in chunk:
+            chunk[(x, y)] = max(0, chunk[(x, y)] - 1)
+
+    def set_json(self, json):
+        seed = json.get("seed", None)
+        entitys = json.get("entitys", None)
+        modified_blocks = json.get("modified_blocks", None)
+
+        if seed is not None and entitys is not None and modified_blocks is not None:
+            self.seed = seed
+            self.entitys = []
+            self.offline_entitys = []
+
+            for e in entity.dict_to_entitys(entitys, self):
+                if isinstance(e, EntityClass.Player):
+                    self.add_offline_entity(e)
+                else:
+                    self.create_entity(e)
+            
+            self.saved_modified_blocks = modified_blocks
+
+            print("World chargé avec succés")
+        else:
+            print("World non recevable")
+            exit(1)
+    
+    def get_json(self):
+        entitys_json = [e.to_json() for e in self.entitys]
+        for e in self.offline_entitys:
+            entitys_json.append(e.to_json())
+
+        self.flush_loaded_chunks()
+
+        return {
+            "seed": self.seed,
+            "entitys": entitys_json,
+            "modified_blocks": self.saved_modified_blocks
+        }
+    
+    def stop(self):
+        for player in self.get_entities(EntityClass.Player):
+            self.player_quit(player.name)
+
+
+    def player_join(self, player_name):
+        player = self.get_player_by_name(player_name)
+
+        if player:
+            return player
+        else:
+            player = self.get_player_offline(player_name)
+            if player:
+                self.create_entity(player)
+                self.remove_offline_entity(player)
+                return player
+            else:
+                player = entity.Player(self, name=player_name)
+
+                self.create_entity(player)
+                return player
+
+    def player_quit(self, player_name):
+        player = self.get_player_by_name(player_name)
+
+        if player:
+            self.remove_entity(player)
+            self.add_offline_entity(player)
+    
+    def get_player_offline(self, player_name):
+        for e in self.offline_entitys:
+            if isinstance(e, EntityClass.Player):
+
+                if e.name == player_name:
+                    return e
+        return None
+
+    def create_entity(self, entity):
+        self.entitys.append(entity)
+
+    def remove_entity(self, entity):
+        if entity in self.entitys:
+            self.entitys.remove(entity)
+
+    def add_offline_entity(self, entity):
+        self.offline_entitys.append(entity)
+
+    def remove_offline_entity(self, entity):
+        if entity in self.offline_entitys:
+            self.offline_entitys.remove(entity)
+
+    def add_chunk(self, chunk_x):
+        if chunk_x not in self.chunks:
+
+            import time
+            start = time.time()
+
+            chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
+            self.chunks[chunk_x] = chunk
+
+            self.build_mob_spawn_points_chunk(chunk_x)
+
+            # appliquer les modifications sauvegardées
+            blc = 0
+            list_blocks = []
+
+            chunk_key = str(chunk_x)
+
+            if chunk_key in self.saved_modified_blocks:
+                for data in self.saved_modified_blocks[chunk_key].values():
+
+                    block = Block.load(data)
+
+                    x = data["x"]
+                    y = data["y"]
+
+                    list_blocks.append((x, y, block))
+                    blc += 1
+            
+            self.set_blocks(list_blocks, update_range=0)
+            
+            for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
+                self.sky_column_queue.append(x)
+
+                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((x, y))
+
+            end = time.time()
+            print(f"Chunk {chunk_x} loaded in {end - start:.2f}s => Modified blocks: {blc}")
+            self.loaded_chunks += 1
+
+    def update_chunks(self):
+        chunks_to_keep = set()
+        player_chunks = []
+
+        chunk_size = game_property.TILE_SIZE * game_property.CHUNK_WIDTH
+
+        for player_ in self.get_entities(EntityClass.Player):
+            chunk_x = player_.get_pos()[0] // chunk_size
+            player_chunks.append(chunk_x)
+
+            for dx in range(-game_property.PRELOAD_DISTANCE, game_property.PRELOAD_DISTANCE + 1):
+                chunks_to_keep.add(chunk_x + dx)
+
+        def distance(cx):
+            if not player_chunks:
+                return 0
+            return min(abs(cx - px) for px in player_chunks)
+
+        sorted_chunks = sorted(chunks_to_keep, key=distance)
+
+        self.total_chunks_to_load = len(chunks_to_keep)
+        self.total_columns = self.total_chunks_to_load * game_property.CHUNK_WIDTH
+        self.total_light_steps = self.total_columns * (game_property.CHUNK_MAX_HEIGHT - game_property.CHUNK_MIN_HEIGHT)
+
+        chunks_to_unload = set(self.chunks.keys())
+
+        end_loading = True
+
+        for chunk_x in sorted_chunks:
+            chunks_to_unload.discard(chunk_x)
+
+            if chunk_x not in self.chunks:
+                self.add_chunk(chunk_x)
+                end_loading = False
+                break
+
+        for chunk_coords in chunks_to_unload:
+            self.unload_chunk(chunk_coords)
+
+        if not end_loading:
+            if not self.is_loaded:
+                self.callback_loading("Chargement des chunks...", 20)
+
+        return end_loading
+    
+    def flush_loaded_chunks(self):
+
+        for chunk_x in list(self.chunks.keys()):
+            self.save_chunk_modified_blocks(chunk_x)
+
+    def unload_chunk(self, chunk_cord):
+
+        # supprimer les entités dans ce chunk
+        to_remove = []
+
+        for entity in self.entitys:
+
+            entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+
+            if entity_chunk_x == chunk_cord:
+                to_remove.append(entity)
+
+        for entity in to_remove:
+            self.entitys.remove(entity)
+
+        # supprimer le chunk
+        self.save_chunk_modified_blocks(chunk_cord)
+        del self.chunks[chunk_cord]
+
+    def get_light_level(self, x, y):
+        block = self.get_block(x, y)
+        if not block:
+            return 15  # lumière du ciel par défaut
+
+        return max(block.sky_light, block.block_light)
+    
+    def get_entity_light(self, entity, radius=1):
+        tile = game_property.TILE_SIZE
+
+        cx = entity.rect.centerx // tile
+        cy = entity.rect.centery // tile
+
+        total = 0
+        count = 0
+
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                block = self.get_block(cx + dx, cy + dy)
+                if block:
+                    total += max(block.sky_light, block.block_light)
+                    count += 1
+
+        if count == 0:
+            return 15
+
+        return total / count
+
+    def update(self, dt):
+        end_loading = self.update_chunks()
+
+        self.mob_spawn_timer += dt
+
+        if self.mob_spawn_timer >= 3:
+            self.mob_spawn_timer = 0
+            self.try_spawn_mobs()
+
+        if end_loading:
+            self.compute_sky_column()
+            if not self.is_loaded:
+                self.callback_loading("On s'occupe de poser les blocks...", 30)
+
+            if not self.sky_column_queue:
+                self.propagate_sky_light()
+                if not self.is_loaded:
+                    self.callback_loading("Calcul de la lumière...", 80)
+
+        to_remove = []
+
+        for entity in self.get_entities():
+            entity.update(dt)
+
+            if not entity.is_alive:
+                to_remove.append(entity)
+                continue
+
+            entity_chunk_x = entity.rect.x // (game_property.TILE_SIZE * game_property.CHUNK_WIDTH)
+            if entity_chunk_x not in self.chunks or entity.rect.y < -20000:
+                to_remove.append(entity)
+                continue
+
+            # si c'est un block item et qu'il touche le joueur
+            if isinstance(entity, EntityClass.Item):
+                for player in self.get_players():
+                    if entity.rect.colliderect(player.rect):
+
+                        to_remove.append(entity)
+
+                        player.inventory.insert(
+                            inventory.ItemStack(entity.item_type, 1)
+                        )
+                
+
+        # suppression des entités ramassées
+        for entity in to_remove:
+            self.remove_entity(entity)
+            self.on_entity_death(entity)
+
+        if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
+            self.callback_loading("C'est fini", 100)
+            self.is_loaded = True
 
     def render(self, screen, cam_rect):
         tile = game_property.TILE_SIZE
@@ -929,6 +1260,7 @@ class World:
     def get_players(self):
         return self.get_entities(entity.Player)
 
+
 class Chunk:
     def __init__(self, x, seed, structure_manager, biome_manager):
         self.x = x
@@ -1179,6 +1511,9 @@ class Block:
 
     def get_pos(self):
         return self.pos
+    
+    def get_rect(self):
+        return self.rect
 
     def add_component(self, component, key):
         self.components[key] = component

@@ -1,0 +1,42 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-13 17:26:50
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.13
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-86.0, -10.66)
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: Zombie.__init__() got an unexpected keyword argument 'worlf'. Did you mean 'world'?
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 191, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 299, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 642, in update
+    self.World.update(dt)
+    ~~~~~~~~~~~~~~~~~^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 422, in update
+    self.try_spawn_mobs()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\world.py", line 338, in try_spawn_mobs
+    monster = EntityClass.Zombie(
+        worlf=self
+    )
+TypeError: Zombie.__init__() got an unexpected keyword argument 'worlf'. Did you mean 'world'?
+
+    

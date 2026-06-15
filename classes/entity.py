@@ -343,6 +343,9 @@ class Living_entity(Entity):
 
         self.reset_annimation()
         self.reset_take_damage()
+
+        self.knockback_timer = 0
+        self.knockback_resistance = 0.0
     
     def update(self, dt):
         if self.annim_time > 0:
@@ -358,6 +361,9 @@ class Living_entity(Entity):
             self.annim_damage_time -= dt
         else:
             self.reset_take_damage()
+
+        if self.knockback_timer > 0:
+            self.knockback_timer -= dt
         
         return super().update(dt)
 
@@ -467,19 +473,17 @@ class Living_entity(Entity):
         return super().render_display_name(screen, cam_rect)
 
     def apply_damage(self, damage, dx):
-        # Appliquer les dégâts
         if not self.is_taking_damage:
             self.health -= damage * game_property.DAMAGE_COEF
 
-            # Knockback horizontal
             knockback_force = 10
             vx = dx * knockback_force
-            vy = 10 # petit saut vers le haut
+            vy = 10
 
             self.add_velocity(vx, vy)
             self.take_damage()
 
-            print("Taking damage: ", damage * game_property.DAMAGE_COEF)
+            self.knockback_timer = 0.2
 
     def take_damage(self):
         self.is_taking_damage = True
@@ -1171,10 +1175,11 @@ class Item(Entity):
         return super().to_json(type_, data)
 
 class Mob(Living_entity):
-    def __init__(self, rect, inventory=None, world=None, name="Unamed entity", health=20, max_health=20, IA=True):
+    def __init__(self, rect, inventory=None, world=None, name="Unamed entity", health=20, max_health=20, IA=True, spawn_point=None):
         super().__init__(rect, world, name, health, max_health)
         self.auto_jump = True
         self.IA = IA
+        self.spawn_point = spawn_point
 
         self.move_timer = 0
         self.move_direction = 0
@@ -1183,20 +1188,24 @@ class Mob(Living_entity):
         self.inventory = inventory
 
     def update(self, dt):
-        # Si le timer est écoulé, choisir une nouvelle direction
-        if self.move_timer <= 0:
-            self.move_direction = random.choice([-1, 1, 0])  # gauche ou droite
-            self.move_timer = random.randint(0, 6)  # se déplacer pendant 3 secondes
-            self.move_speed = random.randint(80, 120)
+        ia_control = self.knockback_timer <= 0
+        if ia_control:
+            if self.move_timer <= 0:
+                self.move_direction = random.choice([-1, 1, 0])
+                self.move_timer = random.randint(0, 6)
+                self.move_speed = random.randint(80, 120)
 
-        target = self.move_direction * self.move_speed
+            target = self.move_direction * self.move_speed
 
-        if target != 0:
-            if target > 0:
-                vx = max(self.velocity.x, target)
+            if target != 0:
+                if target > 0:
+                    vx = max(self.velocity.x, target)
+                else:
+                    vx = min(self.velocity.x, target)
             else:
-                vx = min(self.velocity.x, target)
+                vx = self.velocity.x
         else:
+            # pendant knockback → ne pas écraser velocity.x
             vx = self.velocity.x
 
         self.set_velocity(vx, None)
@@ -1227,6 +1236,7 @@ class Mob(Living_entity):
         }
         map_.update(add_map)
         
+        self.inventory = inventory.Entity_Inventory(self)
         self.inventory = self.inventory.load(data.get("inventory", None))
         
         if super().load(data, add_map) is None:
@@ -1248,9 +1258,9 @@ class Mob(Living_entity):
         return super().to_json(type_, data)
 
 class Zombie(Mob):
-    def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True):
+    def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True, spawn_point=None):
         rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
-        super().__init__(rect, world, name, health, max_health, moving)
+        super().__init__(rect, None, world, name, health, max_health, moving, spawn_point)
         self.update_texture()
 
     def render(self, screen, cam_rect):
@@ -1470,7 +1480,7 @@ class Skeleton(Mob):
 class Alien(Mob):
     def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True):
         rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
-        super().__init__(rect, world, name, health, max_health, moving)
+        super().__init__(rect, None, world, name, health, max_health, moving)
         self.update_texture()
 
     def render(self, screen, cam_rect):

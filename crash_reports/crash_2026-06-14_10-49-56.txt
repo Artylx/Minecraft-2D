@@ -1,0 +1,47 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-14 10:49:56
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.13
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: module 'classes.server' has no attribute 'ServerConnection'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 206, in run
+    self.handle_events()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 265, in handle_events
+    self.menu.handle_events(event)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\interface.py", line 601, in handle_events
+    obj.handle_event(event)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\pygame_interface.py", line 21, in handle_event
+    self.callback()
+    ~~~~~~~~~~~~~^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\interface.py", line 397, in <lambda>
+    lambda: self.game.connect_multiplayer(self.get_object_by_ref("ip", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("port", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("pseudo", MenusCollection.CONNECT_MULTIPLAYER).text)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\main.py", line 173, in connect_multiplayer
+    self.game_manager = client.MultiplayerClient(self.game_name, self.game_name, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self, player_name=pseudo, server_ip=ip, server_port=port)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Arthur\Desktop\GitHub\Minecraft-2D\classes\client.py", line 382, in __init__
+    self.server_connection = server.ServerConnection(self.server_ip, self.server_port)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'classes.server' has no attribute 'ServerConnection'
+
+    
