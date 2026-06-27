@@ -1,11 +1,12 @@
 import time
 import threading
 import pygame
-from classes import world
+from classes import world, game_property
 from classes.texture_manager import TextureManager
 import socket
 import json
 import queue
+import traceback
 
 class Server:
     TPS = 20
@@ -32,6 +33,9 @@ class Server:
         self.command = ""
         self.send_queue = queue.Queue()
         self.debug_values = {}
+
+        self.player_to_client = {}
+        self.clients = {}
 
         self.start_server()
 
@@ -72,7 +76,6 @@ class Server:
 
             self.clients[client] = {
                 "addr": addr,
-                "player": None,
             }
 
             threading.Thread(
@@ -89,6 +92,7 @@ class Server:
                 data = client.recv(4096)
 
                 if not data:
+                    print("Client déconnecté:", self.clients[client]["addr"])
                     break  # 👈 client fermé proprement
 
                 buffer += data.decode()
@@ -99,10 +103,18 @@ class Server:
                     packet = json.loads(msg)
                     self.handle_packet(client, packet)
 
-            except:
-                break  # 👈 crash / disconnect
+                self.send_current_snapshot(client)
+
+            except Exception as e:
+                print("Client crash / disconnect:", self.clients[client]["addr"])
+                print("Error:", e)
+                traceback.print_exc()
+                break
 
         self.disconnect_client(client)
+
+    def send_current_snapshot(self, client):
+        pass
 
     def handle_packet(self, client, packet):
         action = packet.get("action")
@@ -113,63 +125,64 @@ class Server:
             name = packet.get("player_name")
 
             player = self.normal_world.player_join(name)
-            self.clients[client] = {
-                "player_name": name,
-                "entity_id": player.get_uuid(),
-                "last_input": {}
-            }
+            self.clients[client]["player_name"] = name
+            self.clients[client]["entity_id"] = player.get_uuid()
+            self.clients[client]["last_input"] = {}
+
+            self.player_to_client[name] = client
 
             self.log(f"{name} a rejoint le serveur")
 
-            # 👇 ENVOI DU WORLD INITIAL
-            world_data = self.build_world_snapshot()
+            print("JOIN RECU")
+
+            world_data = self.build_world_init()
+
+            print("ENVOI WORLD_INIT")
 
             try:
-                client.sendall((json.dumps({
-                    "type": "world_init",
-                    "world": world_data
-                }) + "\n").encode())
+                client.sendall((json.dumps(world_data) + "\n").encode())
             except:
                 pass
 
         elif action == "input":
-            # exemple futur
-            pass
+            print(packet)
+
+            right = packet.get("right")
+            left = packet.get("left")
+            up = packet.get("up")
+
+            if right or left or up:
+                self.log("Move for player " + self.clients[client]["player_name"] + ": " + str(left) + ", " + str(right) + ", " + str(up))
+
+                player = self.normal_world.player_join(self.clients[client]["player_name"])
+
+                if player:
+                    if right:
+                        player.add_velocity(1, 0)
+                    elif left:
+                        player.add_velocity(-1, 0)
+
+                    if up and player.on_ground:
+                        player.jump(game_property.JUMP_VELOCITY + game_property.JUMP_VELOCITY * 0.1)
 
         elif action == "disconnect":
-            player = self.clients.get(client, {}).get("player")
-            if player:
-                self.log(f"{player} a quitté le serveur")
-            self.clients.pop(client, None)
+            self.disconnect_client(client)
 
-    def build_world_snapshot(self):
-        data = {
-            "seed": self.normal_world.seed,
-            "entitys": []
+    def build_snapshot(self):
+        return {
+            "type": "snapshot",
+            "timestamp": time.time(),
+            "entitys": [
+                e.to_json()
+                for e in self.normal_world.get_entities()
+            ]
         }
-
-        # blocs (version simple brute)
-        blocks = []
-
-        for block in self.normal_world.modified_blocks_runtime:
-            blocks.append(block.to_json())
-
-        for block in self.normal_world.saved_modified_blocks:
-            blocks.append(block.to_json())
-
-        data["modified_blocks"] = blocks
-
-        # entities existants
-        for e in self.normal_world.get_entities():
-            data["entitys"].append(e.to_json())
-
-        return data
     
     def build_world_init(self):
         return {
             "type": "world_init",
-            "seed": self.normal_world.seed,
-            "world_size": self.normal_world.size,
+            "world_name": "Normal World",
+            "world": self.normal_world.get_json(),
         }
     
     def send_chunk(self, client, chunk):
@@ -210,27 +223,8 @@ class Server:
             daemon=True
         ).start()
 
-    def tick(self):
+    def tick(self, dt):
         """Logique serveur exécutée 20 fois par seconde."""
-        pass
-
-        self.normal_world.update(0.02)
-
-        for client, data in self.clients.items():
-            player = data.get("entity")
-            if not player:
-                continue
-
-            state = {
-                "x": player.rect.x,
-                "y": player.rect.y,
-            }
-
-            try:
-                client.sendall((json.dumps(state) + "\n").encode())
-            except:
-                pass
-
         for client, data in self.clients.items():
             entity = data.get("entity")
             inputs = data.get("last_input")
@@ -245,17 +239,35 @@ class Server:
                 if inputs.get("jump"):
                     entity.jump()
 
+        self.normal_world.update(dt)
+
+        snapshot = self.build_snapshot()
+
+        packet = (
+            json.dumps(snapshot) + "\n"
+        ).encode()
+
+        dead_clients = []
+
+        for client in self.clients:
+            try:
+                client.sendall(packet)
+            except:
+                dead_clients.append(client)
+
+        for client in dead_clients:
+            self.disconnect_client(client)
+            
+
     def disconnect_client(self, client):
         info = self.clients.get(client)
 
         if info:
-            player = info.get("entity")
+            player_name = info.get("player_name")
 
-            if player:
-                self.normal_world.remove_entity(player)
-
-            name = info.get("player")
-            self.log(f"{name} disconnected")
+            if player_name:
+                self.normal_world.player_quit(player_name)
+            self.log(f"{player_name} disconnected")
 
         self.clients.pop(client, None)
 
@@ -278,7 +290,7 @@ class Server:
             now = time.perf_counter()
 
             while now >= next_tick:
-                self.tick()
+                self.tick(tick_time)
                 self.tick_counter += 1
                 next_tick += tick_time
 
@@ -440,11 +452,25 @@ class Server:
                 return
 
             player_name = args[1]
-            player = self.normal_world.get_player_by_name(player_name)
 
-            if not player:
+            client = self.player_to_client.get(player_name)
+
+            if not client:
                 self.log(f"[SERVER] Joueur '{player_name}' introuvable.")
                 return
+
+            try:
+                client.sendall((json.dumps({
+                    "type": "kick",
+                    "reason": "Vous avez été expulsé du serveur."
+                }) + "\n").encode())
+            except:
+                pass
+
+            self.disconnect_client(client)
+
+            self.normal_world.player_quit(player_name)
+            self.player_to_client.pop(player_name, None)
 
             self.log(f"[SERVER] Joueur '{player_name}' expulsé du serveur.")
 
@@ -465,6 +491,7 @@ class ServerConnection:
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((ip, port))
+        self.socket.setblocking(False)
 
         self.buffer = ""
 
@@ -476,15 +503,16 @@ class ServerConnection:
             pass
 
     def send_join(self, player_name):
-        try:
-            data = {
-                "action": "join",
-                "player_name": player_name
-            }
-            msg = json.dumps(data).encode()
-            self.socket.sendall(msg + b"\n")
-        except:
-            pass
+        data = {
+            "action": "join",
+            "player_name": player_name
+        }
+
+        print("ENVOI JOIN", data)
+
+        self.socket.sendall(
+            (json.dumps(data) + "\n").encode()
+        )
 
     def send_leave(self, player_name):
         try:
@@ -499,18 +527,28 @@ class ServerConnection:
 
     def get_state(self):
         try:
-            data = self.socket.recv(4096)
+            try:
+                data = self.socket.recv(4096)
+            except BlockingIOError:
+                return None
+
+            if not data:
+                print("SERVEUR FERME")
+                return None
+
+            print("RAW =", data)
+
             self.buffer += data.decode()
 
             while "\n" in self.buffer:
                 msg, self.buffer = self.buffer.split("\n", 1)
-                state = json.loads(msg)
 
-            if not state:
-                return None
+                print("MSG =", msg)
 
-            return json.loads(state)
-        except:
+                return json.loads(msg)
+
+        except Exception as e:
+            print("GET_STATE ERROR =", e)
             return None
 
 def load_texture():
@@ -534,7 +572,7 @@ def load_texture():
 if __name__ == "__main__":
 
     try:
-        server = Server(name="Mon serveur", world_path="Noa")
+        server = Server(name="Tera server", world_path="Noa")
         server.run_gui()
     except Exception as e:
         print(f"Une erreur est survenue : {e}")

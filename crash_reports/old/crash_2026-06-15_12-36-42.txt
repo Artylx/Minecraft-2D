@@ -1,0 +1,38 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-15 12:36:42
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'MultiplayerClient' object has no attribute 'world_name'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 213, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 321, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 463, in update
+    self.load_world_from_server(state["world"])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 471, in load_world_from_server
+    self.world = world.World(name=self.world_name, json_data=world_data.get("world"), callback_loading=self.game.end_loading)
+                                  ^^^^^^^^^^^^^^^
+AttributeError: 'MultiplayerClient' object has no attribute 'world_name'
+
+    

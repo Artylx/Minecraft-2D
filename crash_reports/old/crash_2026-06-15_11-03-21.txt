@@ -1,0 +1,35 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-15 11:03:21
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-121.41, 8.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'WorldSolo' object has no attribute 'render_debug'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 234, in run
+    self.render()
+    ~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 329, in render
+    self.game_manager.render(self, self.screen)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 323, in render
+    self.World.render_debug(screen, self.cam_rect)
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'WorldSolo' object has no attribute 'render_debug'
+
+    

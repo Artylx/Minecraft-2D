@@ -1,0 +1,35 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 10:03:49
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: (-2.91, 23.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'MultiplayerClient' object has no attribute 'update_screen_size'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 211, in run
+    self.handle_events()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 261, in handle_events
+    self.update_screen_size(event.w, event.h)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 187, in update_screen_size
+    self.game_manager.update_screen_size(width, height)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MultiplayerClient' object has no attribute 'update_screen_size'
+
+    

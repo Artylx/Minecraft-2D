@@ -36,7 +36,6 @@ class StructureManager:
             with open(game_property.get_resource_path(STRUCTURES_DIR + json_path), "r") as f:
                 data = json.load(f)
             self.structures[struct_type] = data
-            print(f"Structure '{struct_type}' chargée: {self.structures.get(struct_type)}")
 
         except Exception as e:
             print(f"Erreur en lisant {json_path}: {e}")

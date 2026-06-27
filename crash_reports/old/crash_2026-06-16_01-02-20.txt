@@ -1,0 +1,47 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 01:02:20
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'NoneType' object has no attribute 'inventory'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 211, in run
+    self.handle_events()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 270, in handle_events
+    self.menu.handle_events(event)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\interface.py", line 604, in handle_events
+    obj.handle_event(event)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\pygame_interface.py", line 21, in handle_event
+    self.callback()
+    ~~~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\interface.py", line 400, in <lambda>
+    lambda: self.game.connect_multiplayer(self.get_object_by_ref("ip", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("port", MenusCollection.CONNECT_MULTIPLAYER).text, self.get_object_by_ref("pseudo", MenusCollection.CONNECT_MULTIPLAYER).text)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 178, in connect_multiplayer
+    self.game_manager = client.MultiplayerClient(game=self, player_name=pseudo, server_ip=ip, server_port=int(port), width_screen=self.WIDTH_SCREEN, height_screen=self.HEIGHT_SCREEN)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 395, in __init__
+    self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat)
+                                                             ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'inventory'
+
+    

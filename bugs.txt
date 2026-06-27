@@ -8,3 +8,6 @@
 - Bug quand on split et qu'on swap => suppresion de l'ancien item
 - [FAIT] Scroll plus détecté
 - Proposer un pseudo au lancement d'un monde déjà lancé auparavant
+
+- Faire un systève avec PythonPlugin
+- Au lancement avoir un register d'event

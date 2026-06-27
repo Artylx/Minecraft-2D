@@ -82,8 +82,6 @@ class Game:
     def end_loading(self, message="", value=0):
         self.menu.set_loading(message, value)
 
-        print("Loading progress:", value)
-
         if value >= 100:
             self.menu.set_menu(interface.MenusCollection.GAME)
 
@@ -121,7 +119,8 @@ class Game:
             self.game_manager.running = False
 
             if isinstance(self.game_manager, client.MultiplayerClient):
-                self.game_manager.server_connection.send_leave(self.game_manager.player.name)
+                if self.game_manager.player:
+                    self.game_manager.server_connection.send_leave(self.game_manager.player.name)
 
             else:
                 self.game_manager.World.stop()
@@ -176,7 +175,7 @@ class Game:
         self.press_reset()
         self.menu.set_loading("Connexion au serveur...", 10)
 
-        self.game_manager = client.MultiplayerClient(self.game_name, self.game_name, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self, player_name=pseudo, server_ip=ip, server_port=int(port))
+        self.game_manager = client.MultiplayerClient(game=self, player_name=pseudo, server_ip=ip, server_port=int(port), width_screen=self.WIDTH_SCREEN, height_screen=self.HEIGHT_SCREEN)
 
     def update_screen_size(self, width, height):
         self.WIDTH_SCREEN = width
@@ -204,7 +203,7 @@ class Game:
             accumulator += frame_time
 
             # --- Update ---
-            max_updates = 5
+            max_updates = 10
             updates = 0
 
             while accumulator >= dt and updates < max_updates:
