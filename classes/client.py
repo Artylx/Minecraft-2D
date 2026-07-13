@@ -320,7 +320,7 @@ class GameClient:
         if game.toogle_.get(pygame.K_F3):
             self.World.hit_box_visible = True
             self.render_debug(screen)
-            self.World.render_debug(screen, self.cam_rect)
+            #self.World.render_debug(screen, self.cam_rect)
         else:
             self.World.hit_box_visible = False
 
@@ -353,7 +353,11 @@ class GameClient:
                 f"FPS: {int(self.game.fps)}\n"
                 f"X: {(self.player.rect.x / game_property.TILE_SIZE):.1f}, "
                 f"Y: {(self.player.rect.y / game_property.TILE_SIZE):.1f}\n"
-                f"Biome: {biome_name}"
+                f"Biome: {biome_name}\n"
+                f"Entitys: {len(self.World.get_entities())}\n"
+                f"Seed: {self.World.seed}\n"
+                f"World: {self.World.name}\n"
+                f"Player: {self.player.name}\n"
             )
 
             lines = debug_text.split("\n")

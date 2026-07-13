@@ -958,7 +958,7 @@ class Player(Humanoid):
                 if self.rect.colliderect(entity.rect):
 
                     # ajouter une flèche à l'inventaire
-                    self.inventory.add_item(
+                    self.inventory.insert(
                         inventory.ItemStack(game_type.ItemProperty.ARROW, 1)
                     )
 
@@ -1033,10 +1033,10 @@ class Player(Humanoid):
                 selected_item.use()
 
                 arrow = Arrow_entity(
-                    self.world,
                     (origin.x, origin.y),
                     v,
-                    self
+                    self,
+                    self.world,
                 )
                 self.world.create_entity(arrow)
             else:

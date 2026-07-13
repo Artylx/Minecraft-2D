@@ -31,21 +31,13 @@ class Server:
         self.logs = []
         self.terminal_lines = []
         self.command = ""
-        self.send_queue = queue.Queue()
         self.debug_values = {}
 
         self.player_to_client = {}
         self.clients = {}
+        self.send_queues = {}
 
         self.start_server()
-
-    def sender_loop(self, client):
-        while self.running:
-            try:
-                msg = self.send_queues[client].get()
-                client.sendall(msg)
-            except:
-                break
 
     def log(self, text):
         self.logs.append(text)
@@ -144,6 +136,8 @@ class Server:
             except:
                 pass
 
+            threading.Thread(target=self.sender_loop, args=(client,), daemon=True).start()
+
         elif action == "input":
             print(packet)
 
@@ -154,7 +148,7 @@ class Server:
             if right or left or up:
                 self.log("Move for player " + self.clients[client]["player_name"] + ": " + str(left) + ", " + str(right) + ", " + str(up))
 
-                player = self.normal_world.player_join(self.clients[client]["player_name"])
+                player = self.normal_world.get_player_by_name(self.clients[client]["player_name"])
 
                 if player:
                     if right:
@@ -237,7 +231,8 @@ class Server:
                     entity.add_velocity(1, 0)
 
                 if inputs.get("jump"):
-                    entity.jump()
+                    if entity.on_ground:
+                        entity.jump()
 
         self.normal_world.update(dt)
 
@@ -251,12 +246,22 @@ class Server:
 
         for client in self.clients:
             try:
-                client.sendall(packet)
+                self.send_queues[client].put(packet)
             except:
                 dead_clients.append(client)
 
         for client in dead_clients:
             self.disconnect_client(client)
+
+
+    def sender_loop(self, client):
+        while self.running:
+            packet = self.send_queues[client].get()
+
+            try:
+                client.sendall(packet)
+            except:
+                break
             
 
     def disconnect_client(self, client):
@@ -508,8 +513,6 @@ class ServerConnection:
             "player_name": player_name
         }
 
-        print("ENVOI JOIN", data)
-
         self.socket.sendall(
             (json.dumps(data) + "\n").encode()
         )
@@ -535,20 +538,14 @@ class ServerConnection:
             if not data:
                 print("SERVEUR FERME")
                 return None
-
-            print("RAW =", data)
-
+            
             self.buffer += data.decode()
-
             while "\n" in self.buffer:
                 msg, self.buffer = self.buffer.split("\n", 1)
-
-                print("MSG =", msg)
 
                 return json.loads(msg)
 
         except Exception as e:
-            print("GET_STATE ERROR =", e)
             return None
 
 def load_texture():
