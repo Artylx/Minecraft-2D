@@ -45,6 +45,10 @@ class Game:
         self.game_manager = None
         self.game_name = ""
 
+        self.launch_sound = pygame.mixer.Sound(
+            "resource_pack/default/audio/Sweden.mp3"
+        )
+
         self.fps_history = []
 
         self.full_screen = False
@@ -190,6 +194,9 @@ class Game:
         self.running = False
 
     def run(self):
+        self.launch_sound.play()
+        self.launch_sound.set_volume(0.1)
+
         dt = 1 / self.update_rate
 
         accumulator = 0

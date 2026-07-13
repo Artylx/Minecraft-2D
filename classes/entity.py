@@ -23,6 +23,40 @@ def apply_brightness(surface, brightness):
     result.blit(dark, (0, 0))
     return result
 
+def create_outline_surface(surface, thickness=3):
+
+    mask = pygame.mask.from_surface(surface)
+
+    size = (
+        surface.get_width() + thickness * 2,
+        surface.get_height() + thickness * 2
+    )
+
+    outline = pygame.Surface(
+        size,
+        pygame.SRCALPHA
+    )
+
+    # Décalage pour recentrer
+    offset = pygame.Vector2(thickness, thickness)
+
+    for x, y in mask.outline():
+
+        for dx in range(-thickness, thickness + 1):
+            for dy in range(-thickness, thickness + 1):
+
+                if dx * dx + dy * dy <= thickness * thickness:
+
+                    outline.set_at(
+                        (
+                            int(x + offset.x + dx),
+                            int(y + offset.y + dy)
+                        ),
+                        (255,255,255,255)
+                    )
+
+    return outline
+
 ATTACK_RANGE = 30
 
 class Entity:
@@ -340,11 +374,12 @@ class Annimation:
     NONE = "none"
 
 class Living_entity(Entity):
-    def __init__(self, rect, world=None, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True):
+    def __init__(self, rect, world=None, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False):
         super().__init__(rect, world, name, None, None, False, collidable=collidable)
         self.max_health = max_health
         self.health = health
         self.drops = drops
+        self.invulnerable = invulnerable
 
         self.orientation = "left"
         self.last_vx = 0
@@ -481,7 +516,7 @@ class Living_entity(Entity):
         return super().render_display_name(screen, cam_rect)
 
     def apply_damage(self, damage, dx):
-        if not self.is_taking_damage:
+        if not self.is_taking_damage and not self.invulnerable:
             self.health -= damage * game_property.DAMAGE_COEF
 
             knockback_force = 10
@@ -563,7 +598,7 @@ class Arrow_entity(Living_entity):
 
         rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
 
-        super().__init__(rect, world, name)
+        super().__init__(rect, world, name, invulnerable=True)
         self.sender = sender
 
         if texture is None:
@@ -672,14 +707,14 @@ class Arrow_entity(Living_entity):
         self.stucked = True
 
 class Humanoid(Living_entity):
-    def __init__(self, rect, world=None, name="Humanoid entity", health=20, max_health=20, drops=None, collidable=True, 
+    def __init__(self, rect, world=None, name="Humanoid entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False,
                  leg_texture: TextureType = None, 
                  arm_texture: TextureType = None, 
                  body_texture: TextureType = None, 
                  head_texture: TextureType = None
                  ):
         
-        super().__init__(rect, world, name, health, max_health, drops, collidable)
+        super().__init__(rect, world, name, health, max_health, drops, collidable, invulnerable)
 
         self.init_texture(head_texture, body_texture, leg_texture, arm_texture)
     
@@ -730,9 +765,42 @@ class Humanoid(Living_entity):
             "arm": tint_pack(self.textures["arm"], red_color),
         }
 
-    def render(self, screen, cam_rect, use_red=False):
+        self.textures_outline = {}
 
-        tex = self.textures_red if use_red else self.textures
+        for part in self.textures:
+
+            self.textures_outline[part] = {
+                "right": create_outline_surface(
+                    self.textures[part]["right"]
+                ),
+                "left": create_outline_surface(
+                    self.textures[part]["left"]
+                )
+            }
+
+    def blit_outline(self, screen, surface, pos):
+
+        offset = (
+            surface.get_width() // 2,
+            surface.get_height() // 2
+        )
+
+        screen.blit(
+            surface,
+            (
+                pos[0] - 3,
+                pos[1] - 3
+            )
+        )
+
+    def render(self, screen, cam_rect, use_red=False, outline=False):
+
+        if outline:
+            tex = self.textures_outline
+        else:
+            tex = self.textures_red if use_red else self.textures
+
+        gap_outline = 3 if outline else 0
 
         orientation = self.get_orientation()
         head = tex["head"][orientation]
@@ -748,7 +816,13 @@ class Humanoid(Living_entity):
         draw_x += 2
         draw_y += 4
         if head:
-            screen.blit(head, (draw_x, draw_y))
+            screen.blit(
+                head,
+                (
+                    draw_x - gap_outline,
+                    draw_y - gap_outline
+                )
+            )
 
         # =========================
         # BASE POSITION (évite recalculs)
@@ -758,13 +832,31 @@ class Humanoid(Living_entity):
         # =========================
         # BODY
         if body:
-            screen.blit(body, (base_x, base_y + self.rect.width))
+
+            pos = (
+                base_x - gap_outline,
+                base_y + self.rect.width - gap_outline
+            )
+
+            screen.blit(body, pos)
 
         # =========================
         # LEG
         if leg:
-            screen.blit(leg, (base_x + 2, base_y + self.rect.width * 2))
-            screen.blit(leg, (base_x + 2 + (self.rect.width - 4) // 2, base_y + self.rect.width * 2))
+
+            pos = (
+                base_x + 2 - gap_outline,
+                base_y + self.rect.width * 2 - gap_outline
+            )
+
+            screen.blit(leg, pos)
+
+            pos = (
+                base_x + 2 + (self.rect.width - 4) // 2 - gap_outline,
+                base_y + self.rect.width * 2 - gap_outline
+            )
+
+            screen.blit(leg, pos)
 
         # =========================
         # ARM
@@ -775,20 +867,106 @@ class Humanoid(Living_entity):
 
         arm_y = base_y + self.rect.width
         if arm:
-            screen.blit(arm, (arm_x, arm_y))
+            screen.blit(arm, (arm_x - gap_outline, arm_y - gap_outline))
         
 
-class Player(Humanoid):
-    def __init__(self, world=None, name="", rect=None, max_health=40):
+class Npc(Humanoid):
+    def __init__(self, rect=None, world=None, name="Npc entity", health=20, max_health=20, drops=None, collidable=True, gender="male"):
         if not rect:
             rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
 
-        super().__init__(rect, world, name, max_health=max_health, health=max_health, 
-                         body_texture=TextureType.PLAYER_BODY,
-                         arm_texture=TextureType.PLAYER_ARM,
-                         leg_texture=TextureType.PLAYER_LEG,
-                         head_texture=TextureType.PLAYER_HEAD)
+        leg_texture = TextureType.PLAYER_LEG_MALE
+        if gender == "female":
+            leg_texture = TextureType.PLAYER_LEG_FEMALE
+
+        arm_texture = TextureType.PLAYER_ARM_MALE
+        if gender == "female":
+            arm_texture = TextureType.PLAYER_ARM_FEMALE
+
+        head_texture = TextureType.PLAYER_HEAD_MALE
+        if gender == "female":
+            head_texture = TextureType.PLAYER_HEAD_FEMALE
+
+        body_texture = TextureType.PLAYER_BODY_MALE
+        if gender == "female":
+            body_texture = TextureType.PLAYER_BODY_FEMALE
+
+        super().__init__(rect, world, name, health, max_health, drops, collidable,
+                         leg_texture=leg_texture,
+                         arm_texture=arm_texture,
+                         body_texture=body_texture,
+                         head_texture=head_texture, 
+                         invulnerable=True)
         
+        self.highlight_distance = 75
+        self.highlight = False
+        
+    def render(self, screen, cam_rect):
+
+        if self.highlight:
+
+            super().render(
+                screen,
+                cam_rect,
+                False,
+                True
+            )
+
+
+        super().render_display_name(screen, cam_rect)
+
+        super().render(
+            screen,
+            cam_rect,
+            False,
+            False
+        )
+
+    def update(self, dt):
+
+        self.highlight = False
+
+        for p in self.world.get_entities(Player):
+            distance = pygame.Vector2(
+                self.rect.center
+            ).distance_to(
+                p.rect.center
+            )
+
+            if distance <= self.highlight_distance:
+                self.highlight = True
+
+
+        return super().update(dt)
+
+
+class Player(Humanoid):
+    def __init__(self, world=None, name="", rect=None, max_health=40, gender="male"):
+        if not rect:
+            rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
+
+        leg_texture = TextureType.PLAYER_LEG_MALE
+        if gender == "female":
+            leg_texture = TextureType.PLAYER_LEG_FEMALE
+
+        arm_texture = TextureType.PLAYER_ARM_MALE
+        if gender == "female":
+            arm_texture = TextureType.PLAYER_ARM_FEMALE
+
+        head_texture = TextureType.PLAYER_HEAD_MALE
+        if gender == "female":
+            head_texture = TextureType.PLAYER_HEAD_FEMALE
+
+        body_texture = TextureType.PLAYER_BODY_MALE
+        if gender == "female":
+            body_texture = TextureType.PLAYER_BODY_FEMALE
+
+        super().__init__(rect, world, name, max_health=max_health, health=max_health, 
+                         leg_texture=leg_texture,
+                         arm_texture=arm_texture,
+                         body_texture=body_texture,
+                         head_texture=head_texture)
+
         self.inventory = inventory.Entity_Inventory(self)
         self.speed = game_property.PLAYER_SPEED
 
@@ -947,22 +1125,21 @@ class Player(Humanoid):
                         if entity is not self and isinstance(entity, Living_entity):
                             entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
 
-        for entity in self.world.get_entities():
-            if isinstance(entity, Arrow_entity):
-                if not entity.stucked:
-                    continue
+        for entity in self.world.get_entities(Arrow_entity):
+            if not entity.stucked:
+                continue
 
-                if entity.attached_to is not None:
-                    continue
+            if entity.attached_to is not None:
+                continue
 
-                if self.rect.colliderect(entity.rect):
+            if self.rect.colliderect(entity.rect):
 
-                    # ajouter une flèche à l'inventaire
-                    self.inventory.insert(
-                        inventory.ItemStack(game_type.ItemProperty.ARROW, 1)
-                    )
+                # ajouter une flèche à l'inventaire
+                self.inventory.add_item(
+                    inventory.ItemStack(game_type.ItemProperty.ARROW, 1)
+                )
 
-                    entity.kill()
+                entity.kill()
                     
         return super().update(dt)
 

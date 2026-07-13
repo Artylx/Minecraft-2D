@@ -198,6 +198,11 @@ class GameClient:
                 self.World.create_entity(p)
 
                 self.tchat.send_message(p.name, "Salut les gens !")
+
+            if game.is_press(pygame.K_o):
+                p = entity.Npc(world=self.World, name="Armurier")
+                p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
+                self.World.create_entity(p)
             
             if game.is_press(pygame.K_e):
                 self.UI.open_crafting(self.player.inventory)

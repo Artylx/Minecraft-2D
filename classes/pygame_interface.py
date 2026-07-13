@@ -1,31 +1,114 @@
 import pygame
 
+def lerp(a, b, t):
+    return a + (b - a) * min(t, 1)
+
+
 class ObjectInterface:
-    def __init__(self, rect, callback=None, enable=True):
+
+    def __init__(
+            self,
+            rect,
+            callback=None,
+            enable=True,
+            annimation=False,
+            sound_enabled=False,
+            corner_radius=8
+        ):
+
         self.rect = pygame.Rect(rect)
+
         self.callback = callback
         self.enable = enable
 
-    def render(self, screen, color=(200, 200, 200)):
-        pygame.draw.rect(screen, color, self.rect)
+        self.corner_radius = corner_radius
+
+        # ---------- Animation ----------
+        self.scale = 1
+        self.target_scale = 1
+
+        self.offset_y = 0
+        self.target_offset_y = 0
+
+        self.hover_scale = 1.08
+        self.click_depth = 5
+
+        self.animation_speed = 12
+        self.click_speed = 18
+
+        self.annimation = annimation
+        self.sound_enabled = sound_enabled
+
+        self.click_sound = pygame.mixer.Sound(
+            "resource_pack/default/audio/click.ogg"
+        )
+
+    # ------------------------
+
+    def get_rect(self):
+
+        rect = self.rect.inflate(
+            self.rect.width * (self.scale - 1),
+            self.rect.height * (self.scale - 1)
+        )
+
+        rect.y += int(self.offset_y)
+
+        return rect
+
+    # ------------------------
+
+    def is_hover(self):
+
+        return self.rect.collidepoint(
+            pygame.mouse.get_pos()
+        )
+
+    # ------------------------
 
     def handle_event(self, event):
+
         if not self.enable:
             return
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                if event.button == 1:
-                    
-                    if self.callback:
-                        self.callback()
 
-    def is_hover(self):
-        mouse_pos = pygame.mouse.get_pos()
-        return self.rect.collidepoint(mouse_pos)
+            if event.button == 1 and self.is_hover():
+                
+                if self.annimation:
+                    self.target_offset_y = self.click_depth
+
+                if self.sound_enabled:
+                    self.click_sound.play()
+
+                if self.callback:
+                    self.callback()
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+
+            self.target_offset_y = 0
+
+    # ------------------------
 
     def update(self, dt):
-        pass
+
+        if self.is_hover():
+            if self.annimation:
+                self.target_scale = self.hover_scale
+        else:
+            self.target_scale = 1
+
+        self.scale = lerp(
+            self.scale,
+            self.target_scale,
+            dt * self.animation_speed
+        )
+
+        self.offset_y = lerp(
+            self.offset_y,
+            self.target_offset_y,
+            dt * self.click_speed
+        )
 
 class Texte(ObjectInterface):
     def __init__(self, text, pos, color=(255, 255, 255), center_pos=False, line_spacing=5, font_size=40):
@@ -66,10 +149,11 @@ class Button(ObjectInterface):
                  border_color=(255, 255, 255), 
                  background_color=(0, 0, 0), 
                  background_color_hover=(50, 50, 50),
-                 border_color_hover=(255, 255, 255)
+                 border_color_hover=(255, 255, 255),
+                 corner_radius=8
                  ):
         
-        super().__init__(rect, callback, enable)
+        super().__init__(rect, callback, enable, annimation=True, sound_enabled=True, corner_radius=corner_radius)
         self.text = text
         self.font = pygame.font.SysFont(None, 40)
 
@@ -83,17 +167,37 @@ class Button(ObjectInterface):
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def render(self, screen):
-        bg_color = self.background_color_hover if self.is_hover() else self.background_color
-        bd_color = self.border_color_hover if self.is_hover() else self.border_color
 
-        pygame.draw.rect(screen, bg_color, self.rect)
-        pygame.draw.rect(screen, bd_color, self.rect, 2)
+        rect = self.get_rect()
 
-        screen.blit(self.text_surface, self.text_rect)
+        bg = self.background_color_hover if self.is_hover() else self.background_color
+        bd = self.border_color_hover if self.is_hover() else self.border_color
+
+        pygame.draw.rect(
+            screen,
+            bg,
+            rect,
+            border_radius=self.corner_radius
+        )
+
+        pygame.draw.rect(
+            screen,
+            bd,
+            rect,
+            2,
+            border_radius=self.corner_radius
+        )
+
+        text_rect = self.text_surface.get_rect(center=rect.center)
+
+        screen.blit(
+            self.text_surface,
+            text_rect
+        )
 
 class ObjectReferencable(ObjectInterface):
-    def __init__(self, rect, ref="", callback=None):
-        super().__init__(rect, callback)
+    def __init__(self, rect, ref="", callback=None, sound_enabled=False, annimation=False, corner_radius=8):
+        super().__init__(rect, callback, sound_enabled=sound_enabled, annimation=annimation, corner_radius=corner_radius)
         self.ref = ref
 
     def is_ref(self, ref):
@@ -144,14 +248,15 @@ class TextBox(ObjectReferencable):
         self.cursor_index = max(0, min(self.cursor_index, len(self.text)))
 
     def render(self, screen):
+        rect = self.get_rect()
         bg_color = self.background_color_hover if self.selected else self.background_color
         bd_color = self.border_color_hover if self.selected else self.border_color
 
-        pygame.draw.rect(screen, bg_color, self.rect)
-        pygame.draw.rect(screen, bd_color, self.rect, 2)
+        pygame.draw.rect(screen, bg_color, rect, border_radius=self.corner_radius)
+        pygame.draw.rect(screen, bd_color, rect, 2, border_radius=self.corner_radius)
 
         old_clip = screen.get_clip()
-        screen.set_clip(self.rect)
+        screen.set_clip(rect)
 
         if self.text == "" and not self.selected:
             screen.blit(self.placeholder_surface, self.placeholder_rect)
@@ -159,7 +264,7 @@ class TextBox(ObjectReferencable):
             text_surface = self.font.render(self.text, True, self.text_color)
             text_width = text_surface.get_width()
 
-            max_width = self.rect.width - 20  # padding
+            max_width = rect.width - 20  # padding
 
             cursor_text = self.text[:self.cursor_index]
             cursor_surface = self.font.render(cursor_text, True, self.text_color)
@@ -180,7 +285,7 @@ class TextBox(ObjectReferencable):
             self.scroll_x = min(self.scroll_x, max(0, text_width - visible_width))
             
             text_rect = text_surface.get_rect(
-                midleft=(self.rect.midleft[0] + 10 - self.scroll_x, self.rect.midleft[1])
+                midleft=(rect.midleft[0] + 10 - self.scroll_x, rect.midleft[1])
             )
 
             screen.blit(text_surface, text_rect)
@@ -267,20 +372,51 @@ class Image(ObjectInterface):
         self.surface = pygame.transform.scale(surface, (self.rect.width, self.rect.height))
     
     def render(self, screen):
-        screen.blit(self.surface, self.rect)
+
+        rect = self.get_rect()
+
+        image = pygame.transform.smoothscale(
+            self.surface,
+            rect.size
+        )
+
+        screen.blit(image, rect)
 
 class Surface(ObjectInterface):
-    def __init__(self, rect, color=(200, 200, 200), alpha=255, callback=None):
-        super().__init__(rect, callback)
+    def __init__(
+        self,
+        rect,
+        color=(200, 200, 200),
+        alpha=255,
+        callback=None,
+        corner_radius=0
+    ):
+        super().__init__(
+            rect,
+            callback,
+            corner_radius=corner_radius
+        )
 
         self.color = color
         self.alpha = alpha
 
-        self.surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        self.surface.fill((self.color[0], self.color[1], self.color[2], self.alpha))
-    
     def render(self, screen):
-        screen.blit(self.surface, self.rect)
+
+        rect = self.get_rect()
+
+        surface = pygame.Surface(
+            rect.size,
+            pygame.SRCALPHA
+        )
+
+        pygame.draw.rect(
+            surface,
+            (*self.color, self.alpha),
+            surface.get_rect(),
+            border_radius=self.corner_radius
+        )
+
+        screen.blit(surface, rect)
 
 class SurfaceReferencable(ObjectReferencable):
     def __init__(self, rect, ref="", color=(200, 200, 200), alpha=255, callback=None):
@@ -304,7 +440,8 @@ class ItemsScrollContainer(SurfaceReferencable):
         scroll_speed=25,
         spacing=120,
         item_height=80,
-        center_elmt=False
+        center_elmt=False,
+        spacing_border=120,
     ):
         super().__init__(rect, ref=ref, color=color)
 
@@ -316,10 +453,12 @@ class ItemsScrollContainer(SurfaceReferencable):
         self.spacing = spacing
         self.item_height = item_height
         self.center_elmt = center_elmt
-
+        self.spacing_border = spacing_border
         self.content_height = 0
 
-        # SCROLLBAR
+        # SCROLLBAR DRAG
+        self.dragging_scrollbar = False
+        self.drag_offset_y = 0
         self.scrollbar_width = 10
 
         self.scrollbar_color = (80, 80, 80)
@@ -344,7 +483,7 @@ class ItemsScrollContainer(SurfaceReferencable):
 
         self.content_height = (
             len(self.items) * self.item_height +
-            (len(self.items) - 1) * self.spacing
+            (len(self.items) - 1) * self.spacing + self.spacing_border * 2
         )
 
     # -----------------------------
@@ -378,7 +517,7 @@ class ItemsScrollContainer(SurfaceReferencable):
             # souris dans le container
             if self.rect.collidepoint(event.pos):
 
-                y = self.rect.y - self.scroll_y
+                y = self.rect.y - self.scroll_y + self.spacing_border
 
                 for item in self.items:
 
@@ -399,12 +538,69 @@ class ItemsScrollContainer(SurfaceReferencable):
                     item.handle_event(event)
 
                     y += self.item_height + self.spacing
+        
+        # -----------------------------
+        # SCROLLBAR CLICK / DRAG
+        # -----------------------------
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+
+            if event.button == 1:
+
+                if self.content_height > self.rect.height:
+
+                    _, handle_rect = self.get_scrollbar_rects()
+
+                    if handle_rect.collidepoint(event.pos):
+
+                        self.dragging_scrollbar = True
+
+                        self.drag_offset_y = (
+                            event.pos[1] - handle_rect.y
+                        )
+
+                        return
+        if event.type == pygame.MOUSEMOTION:
+
+            if self.dragging_scrollbar:
+
+                bar_rect, handle_rect = self.get_scrollbar_rects()
+
+                new_y = (
+                    event.pos[1]
+                    - self.drag_offset_y
+                )
+
+                min_y = bar_rect.y
+                max_y = bar_rect.bottom - handle_rect.height
+
+                new_y = max(
+                    min_y,
+                    min(new_y, max_y)
+                )
+
+
+                ratio = (
+                    new_y - min_y
+                ) / (max_y - min_y)
+
+
+                self.scroll_y = (
+                    self.content_height - self.rect.height
+                ) * ratio
+
+                return
+        if event.type == pygame.MOUSEBUTTONUP:
+
+            if event.button == 1:
+                self.dragging_scrollbar = False
 
     # -----------------------------
     # UPDATE
     # -----------------------------
     def update(self, dt):
-        pass
+        for item in self.items:
+            item.update(dt) 
 
     # -----------------------------
     # RENDER
@@ -416,7 +612,7 @@ class ItemsScrollContainer(SurfaceReferencable):
         old_clip = screen.get_clip()
         screen.set_clip(self.rect)
 
-        y = self.rect.y - self.scroll_y
+        y = self.rect.y - self.scroll_y + self.spacing_border
 
         # -----------------------------
         # ITEMS
@@ -448,16 +644,10 @@ class ItemsScrollContainer(SurfaceReferencable):
     # -----------------------------
     def render_scrollbar(self, screen):
 
-        # pas besoin de scrollbar
         if self.content_height <= self.rect.height:
             return
 
-        bar_rect = pygame.Rect(
-            self.rect.right - self.scrollbar_width - 4,
-            self.rect.y + 4,
-            self.scrollbar_width,
-            self.rect.height - 8
-        )
+        bar_rect, handle_rect = self.get_scrollbar_rects()
 
         pygame.draw.rect(
             screen,
@@ -466,7 +656,22 @@ class ItemsScrollContainer(SurfaceReferencable):
             border_radius=8
         )
 
-        # ratio visible
+        pygame.draw.rect(
+            screen,
+            self.scrollbar_handle_color,
+            handle_rect,
+            border_radius=8
+        )
+
+    def get_scrollbar_rects(self):
+
+        bar_rect = pygame.Rect(
+            self.rect.right - self.scrollbar_width - 4,
+            self.rect.y + 4,
+            self.scrollbar_width,
+            self.rect.height - 8
+        )
+
         visible_ratio = self.rect.height / self.content_height
 
         handle_height = max(
@@ -476,7 +681,7 @@ class ItemsScrollContainer(SurfaceReferencable):
 
         max_scroll = self.content_height - self.rect.height
 
-        scroll_ratio = self.scroll_y / max_scroll
+        scroll_ratio = self.scroll_y / max_scroll if max_scroll > 0 else 0
 
         handle_y = (
             bar_rect.y +
@@ -490,9 +695,101 @@ class ItemsScrollContainer(SurfaceReferencable):
             handle_height
         )
 
+        return bar_rect, handle_rect
+    
+class LoadingBar(ObjectReferencable):
+    def __init__(
+        self,
+        rect,
+        ref="",
+        value=0,
+        background_color=(50,50,50),
+        progress_color=(0,200,100),
+        border_color=(255,255,255),
+        border_width=2,
+        corner_radius=10,
+        smooth=True
+    ):
+
+        super().__init__(
+            rect, ref,
+            corner_radius=corner_radius
+        )
+
+        self.value = value
+        self.target_value = value
+
+        self.background_color = background_color
+        self.progress_color = progress_color
+        self.border_color = border_color
+
+        self.border_width = border_width
+        self.smooth = smooth
+
+        self.animation_speed = 8
+
+
+    def set_value(self, value):
+        self.target_value = max(0, min(value, 100))
+
+
+    def update(self, dt):
+
+        if self.smooth:
+
+            self.value = lerp(
+                self.value,
+                self.target_value,
+                dt * self.animation_speed
+            )
+
+        else:
+            self.value = self.target_value
+
+
+    def render(self, screen):
+
+        rect = self.get_rect()
+
+
+        # Fond
         pygame.draw.rect(
             screen,
-            self.scrollbar_handle_color,
-            handle_rect,
-            border_radius=8
+            self.background_color,
+            rect,
+            border_radius=self.corner_radius
         )
+
+
+        # Progression
+        progress_width = int(
+            rect.width * (self.value / 100)
+        )
+
+        if progress_width > 0:
+
+            progress_rect = pygame.Rect(
+                rect.x,
+                rect.y,
+                progress_width,
+                rect.height
+            )
+
+            pygame.draw.rect(
+                screen,
+                self.progress_color,
+                progress_rect,
+                border_radius=self.corner_radius
+            )
+
+
+        # Bordure
+        if self.border_width:
+
+            pygame.draw.rect(
+                screen,
+                self.border_color,
+                rect,
+                self.border_width,
+                border_radius=self.corner_radius
+            )

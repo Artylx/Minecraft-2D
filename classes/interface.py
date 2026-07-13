@@ -2,7 +2,7 @@ import os
 from classes import game_property
 import pygame
 from classes.texture_manager import TextureType
-from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer
+from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer, LoadingBar
 
 class CreditsItem(ObjectInterface):
     def __init__(self, rect, version, description):
@@ -128,6 +128,7 @@ class MenusCollection:
     PSEUDO = "pseudo"
     ERROR = "error"
     CONNECT_MULTIPLAYER = "connect_multiplayer"
+    LAUNCH = "launch"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
@@ -262,12 +263,41 @@ class MainMenu:
         self.set_menu(MenusCollection.SETTINGS_WORLD)
 
     def set_loading(self, message, value):
+        self.loading_bar = LoadingBar(
+            (
+                self.center_x - 250,
+                self.center_y + 150,
+                500,
+                40
+            ),
+            "loading_bar",
+            value=value,
+            corner_radius=20
+        )
+            
         self.menus[MenusCollection.LOADING_WORLD] = [
-            Surface((0, 0, self.screen_size[0], self.screen_size[1]), (10, 10, 10), 255),
 
-            Texte("Chargement du monde...", (self.center_x, self.center_y, 160, 50), center_pos=True),
-            Texte(message + f" - {value}%", (self.center_x, self.center_y + 80, 160, 50), center_pos=True)
+            Surface(
+                (0,0,self.screen_size[0],self.screen_size[1]),
+                (10,10,10),
+                255
+            ),
+
+            Texte(
+                "Chargement du monde...",
+                (self.center_x,self.center_y-80),
+                center_pos=True
+            ),
+
+            Texte(
+                message,
+                (self.center_x,self.center_y+80),
+                center_pos=True
+            ),
+
+            self.loading_bar
         ]
+
 
         self.set_menu(MenusCollection.LOADING_WORLD)
 
@@ -275,14 +305,18 @@ class MainMenu:
         if self.texture_manager is None:
             return
 
-        
+        self.menus[MenusCollection.LAUNCH] = [
+            Surface((0, 0, self.screen_size[0], self.screen_size[1]), (10, 10, 10), 255),
+
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+        ]
 
         self.menus[MenusCollection.MAIN] = [
             Image((0, 0, self.screen_size[0], self.screen_size[1]), self.texture_manager.get_texture(TextureType.MAIN_MENU)),
 
             Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
 
-            Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, (BUTTON_HEIGHT + MARGIN_UI) * 5 + MARGIN_UI), (0, 0, 0), 160),
+            Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, (BUTTON_HEIGHT + MARGIN_UI) * 5 + MARGIN_UI), (0, 0, 0), 160, corner_radius=26),
 
             Button(
                 "Solo",
@@ -407,7 +441,8 @@ class MainMenu:
 
         credits_container = ItemsScrollContainer(
             (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 3 + BUTTON_HEIGHT * 2, min(1200, self.screen_size[0] // 2), self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT - MARGIN_UI * 3 - BUTTON_HEIGHT * 2),
-            color=(10, 10, 10)
+            color=(10, 10, 10),
+            spacing_border=0,
         )
 
         credits_container.set_items([
@@ -553,7 +588,8 @@ class MainMenu:
                 color=(10, 10, 10),
                 spacing=MARGIN_UI,
                 item_height=BUTTON_HEIGHT,
-                center_elmt=True
+                center_elmt=True,
+                spacing_border=MARGIN_UI,
             ),
 
             Button(

@@ -81,10 +81,15 @@ class TextureType:
     DIAMOND_PICKAXE = "diamond_pickaxe"
     DIAMOND_AXE = "diamond_axe"
     
-    PLAYER_HEAD = "player_head"
-    PLAYER_BODY = "player_body"
-    PLAYER_LEG = "player_leg"
-    PLAYER_ARM = "player_arm"
+    PLAYER_HEAD_MALE = "player_head_male"
+    PLAYER_BODY_MALE = "player_body_male"
+    PLAYER_LEG_MALE = "player_leg_male"
+    PLAYER_ARM_MALE = "player_arm_male"
+
+    PLAYER_HEAD_FEMALE = "player_head_female"
+    PLAYER_BODY_FEMALE = "player_body_female"
+    PLAYER_LEG_FEMALE = "player_leg_female"
+    PLAYER_ARM_FEMALE = "player_arm_female"
 
     ZOMBIE_HEAD = "zombie_head"
     ZOMBIE_BODY = "zombie_body"
@@ -201,10 +206,15 @@ class TextureManager:
             self.load_texture(TextureType.BOW_ARROW, ITEMS_PATH + TOOLS_PATH + "bow_arrow.png")
 
             # PLAYER
-            self.load_texture(TextureType.PLAYER_HEAD, ENTITIES_PATH + PLAYER_PATH + "male/head.png")
-            self.load_texture(TextureType.PLAYER_BODY, ENTITIES_PATH + PLAYER_PATH + "male/body.png")
-            self.load_texture(TextureType.PLAYER_ARM, ENTITIES_PATH + PLAYER_PATH + "male/arm.png")
-            self.load_texture(TextureType.PLAYER_LEG, ENTITIES_PATH + PLAYER_PATH + "male/leg.png")
+            self.load_texture(TextureType.PLAYER_HEAD_MALE, ENTITIES_PATH + PLAYER_PATH + "male/head.png")
+            self.load_texture(TextureType.PLAYER_BODY_MALE, ENTITIES_PATH + PLAYER_PATH + "male/body.png")
+            self.load_texture(TextureType.PLAYER_ARM_MALE, ENTITIES_PATH + PLAYER_PATH + "male/arm.png")
+            self.load_texture(TextureType.PLAYER_LEG_MALE, ENTITIES_PATH + PLAYER_PATH + "male/leg.png")
+
+            self.load_texture(TextureType.PLAYER_HEAD_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/head.png")
+            self.load_texture(TextureType.PLAYER_BODY_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/body.png")
+            self.load_texture(TextureType.PLAYER_ARM_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/arm.png")
+            self.load_texture(TextureType.PLAYER_LEG_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/leg.png")
 
             # ZOMBIE
             self.load_texture(TextureType.ZOMBIE_HEAD, ENTITIES_PATH + MOBS_PATH + "zombie/head.png")

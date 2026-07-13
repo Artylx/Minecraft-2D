@@ -276,7 +276,7 @@ class CommandManager:
             
             print("Item " + str(item))
             for i in range(count):
-                player.inventory.insert(ItemStack(item, 1))
+                player.inventory.add_item(ItemStack(item, 1))
             self.tchat.send_message("", f"{count} Item {item.item_name} give to player {player.name}")
 
         elif command == "clear":
