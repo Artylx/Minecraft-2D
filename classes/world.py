@@ -249,7 +249,7 @@ class World():
 
                         to_remove.append(entity)
 
-                        player.inventory.insert(
+                        player.inventory.add_item(
                             inventory.ItemStack(entity.item_type, 1)
                         )
                 
@@ -813,7 +813,7 @@ class WorldSolo():
 
                         to_remove.append(entity)
 
-                        player.inventory.insert(
+                        player.inventory.add_item(
                             inventory.ItemStack(entity.item_type, 1)
                         )
                 

@@ -116,7 +116,7 @@ class InventoryController:
         return
 
     def drop_outside(self):
-        self.inventory.insert(self.drag.stack)
+        self.inventory.add_item(self.drag.stack)
         self._clear()
 
     def _clear(self):

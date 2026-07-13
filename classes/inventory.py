@@ -378,7 +378,7 @@ class CraftManager():
             for item in self.items:
 
                 if item:
-                    self.current_inv.insert(item)
+                    self.current_inv.add_item(item)
 
     def craft(self):
         if not self.result:
@@ -766,7 +766,7 @@ class Inventory():
         dst_slot.set(src_stack)
         return dst_stack
     
-    def insert(self, stack):
+    def add_item(self, stack):
         if not stack:
             return None
 
