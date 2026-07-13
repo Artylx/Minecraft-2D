@@ -372,17 +372,20 @@ class MainMenu:
             TextBox(
                 (self.center_x - 160, self.center_y - BUTTON_HEIGHT // 2 - 100, 320, BUTTON_HEIGHT),
                 "Adresse IP",
-                "ip"
+                "ip",
+                text="localhost"
             ),
             TextBox(
                 (self.center_x - 160, self.center_y + BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
                 "Port",
-                "port"
+                "port",
+                text="12345"
             ),
             TextBox(
                 (self.center_x - 160, self.center_y + BUTTON_HEIGHT // 2 + 100, 320, BUTTON_HEIGHT),
                 "Pseudo",
-                "pseudo"
+                "pseudo",
+                text="Arthur"
             ),
             
             Button(
@@ -408,7 +411,7 @@ class MainMenu:
         )
 
         credits_container.set_items([
-            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - ...", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n-"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.10 - 27/04/2026", ""),

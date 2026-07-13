@@ -315,14 +315,12 @@ class GameClient:
     def render(self, game, screen):
         pygame.draw.rect(screen, (135, 206, 235), (0, 0, self.width_screen, self.height_screen))
 
-        print(f"Render cam_rect: {self.cam_rect}")
-
         self.World.render(screen, self.cam_rect)
 
         if game.toogle_.get(pygame.K_F3):
             self.World.hit_box_visible = True
             self.render_debug(screen)
-            self.World.render_debug(screen, self.cam_rect)
+            #self.World.render_debug(screen, self.cam_rect)
         else:
             self.World.hit_box_visible = False
 
@@ -355,7 +353,11 @@ class GameClient:
                 f"FPS: {int(self.game.fps)}\n"
                 f"X: {(self.player.rect.x / game_property.TILE_SIZE):.1f}, "
                 f"Y: {(self.player.rect.y / game_property.TILE_SIZE):.1f}\n"
-                f"Biome: {biome_name}"
+                f"Biome: {biome_name}\n"
+                f"Entitys: {len(self.World.get_entities())}\n"
+                f"Seed: {self.World.seed}\n"
+                f"World: {self.World.name}\n"
+                f"Player: {self.player.name}\n"
             )
 
             lines = debug_text.split("\n")
@@ -374,45 +376,149 @@ class GameClient:
             y += 20
 
 
-class MultiplayerClient(GameClient):
-    def __init__(self, world_path, world_name, width, height, callback, game, player_name, server_ip, server_port):
-        super().__init__(world_path, world_name, width, height, callback, game, player_name)
+class MultiplayerClient():
+    def __init__(self, game, player_name, server_ip, server_port, width_screen, height_screen):
+        self.width_screen = width_screen
+        self.height_screen = height_screen
+        self.cam_rect = pygame.Rect(0, 0, self.width_screen, self.height_screen)
+
+        self.clock = pygame.time.Clock()
+        self.running = True
+        self.update_rate = game_property.UPDATE_RATE
+        self.highlight = True
+
         self.server_ip = server_ip
         self.server_port = server_port
         self.server_connection = ServerConnection(self.server_ip, self.server_port)
 
         self.server_connection.send_join(player_name)
 
+        self.player_name = player_name
+        self.world = None
+        self.game = game
+        self.player = None
+
+        self.debug_font = pygame.font.SysFont(None, 24)
+        self.fps_history = []
+        self.debug_timer = 0
+        self.debug_surface = None
+
+        self.old_current_bock_pos = None
+        self.current_block_pos = None
+        self.mouse_pos_world = None
+
+        self.tchat = tchat.Tchat((self.width_screen, self.height_screen))
+        tchat.CommandManager.game = self
+        self.tchat.send_message("", "Bienvenue sur le serveur de TeraCraft")
+
     def update(self, dt, game):
-        inputs = {
-            "left": game.keys_.get(pygame.K_q) or game.keys_.get(pygame.K_LEFT),
-            "right": game.keys_.get(pygame.K_d) or game.keys_.get(pygame.K_RIGHT),
-            "jump": game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP),
-        }
 
-        # 1. APPLY LOCAL PREDICTION (instant 120 fps)
-        self.World.update(dt)
+        if self.world and self.player:
+            inputs = {
+                "action": "input",
+                "left": game.keys_.get(pygame.K_q) or game.keys_.get(pygame.K_LEFT),
+                "right": game.keys_.get(pygame.K_d) or game.keys_.get(pygame.K_RIGHT),
+                "up": game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP),
+            }
 
-        self.apply_inputs_locally(inputs, dt)
+            self.world.update(dt)
 
-        # 2. SEND TO SERVER
-        self.server_connection.send_inputs(inputs)
+            self.apply_inputs_locally(inputs, dt)
 
-        state = self.server_connection.get_state()
+            # 2. SEND TO SERVER
+            self.server_connection.send_inputs(inputs)
 
-        if state:
-            if state.get("type") == "world_init":
-                self.load_world_from_server(state["world"])
+            state = self.server_connection.get_state()
+
+            if state:
+                if state.get("type") == "snapshot":
+                    self.apply_server_state(state)
+                    
+
+            if not self.tchat.oppened and not self.UI.is_open_inv():
+                # Index selected hotbar
+                if game.is_press(pygame.K_1):
+                    self.player.inventory.ui.set_selected_index(0)
+                if game.is_press(pygame.K_2):
+                    self.player.inventory.ui.set_selected_index(1)
+                if game.is_press(pygame.K_3):
+                    self.player.inventory.ui.set_selected_index(2)
+                if game.is_press(pygame.K_4):
+                    self.player.inventory.ui.set_selected_index(3)
+                if game.is_press(pygame.K_5):
+                    self.player.inventory.ui.set_selected_index(4)
+                if game.is_press(pygame.K_6):
+                    self.player.inventory.ui.set_selected_index(5)
+                
+                if game.is_press(pygame.K_e):
+                    self.UI.open_crafting(self.player.inventory)
+
+                if game.is_press(pygame.K_ESCAPE):
+                    game.menu.set_menu(interface.MenusCollection.GAME_PAUSED)
+
+                if game.mouse_scroll_y != 0:
+                    if game.mouse_scroll_y > 0:
+                        self.player.inventory.ui.move_selected_index(1)
+                    else:
+                        self.player.inventory.ui.move_selected_index(-1)
+
+            elif self.UI.is_open_inv():
+                if game.is_press(pygame.K_ESCAPE) or game.is_press(pygame.K_e):
+                    self.UI.close_inv()
+
+            if game.keys_.get(game.event_mouse_get(1)):
+                if not game.prev_keys_.get(game.event_mouse_get(1)):
+                    self.UI.mouse_down(1)
             else:
-                self.apply_server_state(state)
+                if game.prev_keys_.get(game.event_mouse_get(1)):
+                    self.UI.mouse_up(1)
+            
+            if game.keys_.get(game.event_mouse_get(3)):
+                if not game.prev_keys_.get(game.event_mouse_get(3)):
+                    self.UI.mouse_down(3)
+            else:
+                if game.prev_keys_.get(game.event_mouse_get(3)):
+                    self.UI.mouse_up(3)
+
+            self.update_cam_rect()
+
+        else:
+            state = self.server_connection.get_state()
+
+            if state:
+                if state.get("type") == "world_init":
+                    print(state)
+
+                    self.load_world_from_server(state)
+
+            if not self.player and self.world:
+                self.player = self.world.get_player_by_name(self.player_name)
+
+                self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat)
+    
+    def render(self, game, screen):
+        pygame.draw.rect(screen, (135, 206, 235), (0, 0, self.width_screen, self.height_screen))
+
+        self.world.render(screen, self.cam_rect)
+
+        if game.toogle_.get(pygame.K_F3):
+            self.world.hit_box_visible = True
+            self.render_debug(screen)
+            self.world.render_debug(screen, self.cam_rect)
+        else:
+            self.world.hit_box_visible = False
+
+        if self.highlight and not self.tchat.oppened and not self.UI.is_open_inv():
+            self.UI.highlight_block(screen, self.current_block_pos, self.cam_rect, self.player)
+
+        self.world.render_entitys(screen, self.cam_rect)
+
+        self.UI.render(screen, self.player)
 
     def load_world_from_server(self, world_data):
         print("World reçu du serveur")
 
-        self.world = world.World(name=self.world_name, json_data=world_data.get("seed"), callback_loading=self.game.end_loading)
-
-        for b in world_data["modified_blocks"]:
-            self.world.set_block_json(b)
+        self.world = world.World(name=world_data.get("world_name"), json_data=world_data.get("world"), callback_loading=self.game.end_loading)
 
     def apply_inputs_locally(self, inputs, dt):
         speed = 200
@@ -426,10 +532,16 @@ class MultiplayerClient(GameClient):
 
         self.player.add_velocity(vx * dt, 0)
 
-        if inputs["jump"] and self.player.on_ground:
+        if inputs["up"] and self.player.on_ground:
             self.player.jump(game_property.JUMP_VELOCITY)
 
+    def update_cam_rect(self):
+        self.cam_rect.centerx = self.player.rect.centerx
+        self.cam_rect.centery = self.player.rect.centery
+
     def apply_server_state(self, state):
+        return
+    
         server_x = state["x"]
         server_y = state["y"]
 
@@ -448,9 +560,36 @@ class MultiplayerClient(GameClient):
     def apply_server_state(self, state):
         if not state:
             return
+        entitys_remove = self.world.get_entities().copy()
 
         # exemple minimal
-        if "players" in state:
-            for p in state["players"]:
-                # update positions players
-                pass
+        for e in state.get("entitys"):
+            uuid = e.get("uuid", None)
+
+            if uuid:
+                current_entity = self.world.get_entity(uuid)
+
+                if current_entity:
+                    self.update_entity(current_entity, (e.get("x"), e.get("y")), (e.get("vx"), e.get("vy")))
+                    entitys_remove.remove(current_entity)
+                else:
+                    self.world.create_entity(entity.dict_to_entity(e, self.world))
+
+        for e in entitys_remove:
+            self.world.remove_entity(e)
+
+    def update_entity(self, entity, pos, vel):
+        dx = pos[0] - entity.rect.x
+        dy = pos[1] - entity.rect.y
+
+        correction_factor = 0.15
+
+        entity.rect.x += dx * correction_factor
+        entity.rect.y += dy * correction_factor
+
+        entity.set_velocity(vel[0], vel[1])
+
+
+
+    def handle_events(self):
+        pass

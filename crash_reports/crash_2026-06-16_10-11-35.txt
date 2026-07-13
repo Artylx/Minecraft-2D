@@ -1,0 +1,35 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 10:11:35
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: (17.12, 27.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'MultiplayerClient' object has no attribute 'render_debug'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 233, in run
+    self.render()
+    ~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 328, in render
+    self.game_manager.render(self, self.screen)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 502, in render
+    self.render_debug(screen)
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'MultiplayerClient' object has no attribute 'render_debug'
+
+    

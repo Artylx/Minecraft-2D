@@ -52,7 +52,7 @@ def save_world_json(world, world_path, world_name):
 
 
 class World():
-    def __init__(self, name="Unamed world", seed=None, callback_loading=None):
+    def __init__(self, name="Unamed world", json_data=None, callback_loading=None):
         """
         Constructeur unique qui gère soit :
         - la génération d'un monde depuis une seed
@@ -62,14 +62,60 @@ class World():
         self.callback_loading = callback_loading
         self.is_loaded = False
 
-        self.modified_blocks_runtime = {}
-
         self.entitys = []  
         self.offline_entitys = []
         self.saved_modified_blocks = {}
         
         self.structure_manager = StructureManager()
         self.biome_manager = BiomeManager()
+
+        self.init()
+
+        if json_data is not None:
+            self.set_json(json_data)
+    
+    def init(self):
+        self.hit_box_visible = False
+
+        self.chunks = {}
+        self.light_map = {} 
+        self.block_light_queue = deque()
+        self.sky_light_queue = deque()
+        self.sky_column_queue = deque()
+
+        self.block_light = {}
+        self.light_sources = set()
+        self.dirty_chunks = set()
+
+        self.total_chunks_to_load = 0
+        self.loaded_chunks = 0
+
+        self.total_columns = 0
+        self.done_columns = 0
+
+        self.total_light_steps = 0
+        self.done_light_steps = 0
+
+
+    def set_json(self, json):
+        seed = json.get("seed", None)
+        entitys = json.get("entitys", None)
+        modified_blocks = json.get("modified_blocks", None)
+
+        if seed is not None and entitys is not None and modified_blocks is not None:
+            self.seed = seed
+            self.entitys = []
+            self.offline_entitys = []
+
+            for e in entity.dict_to_entitys(entitys, self):
+                self.create_entity(e)
+            
+            self.saved_modified_blocks = modified_blocks
+
+            print("World chargé avec succés")
+        else:
+            print("World non recevable")
+            exit(1)
 
     def add_chunk(self, chunk_x):
         if chunk_x not in self.chunks:
@@ -79,8 +125,6 @@ class World():
 
             chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
             self.chunks[chunk_x] = chunk
-
-            self.build_mob_spawn_points_chunk(chunk_x)
 
             # appliquer les modifications sauvegardées
             blc = 0
@@ -155,11 +199,6 @@ class World():
                 self.callback_loading("Chargement des chunks...", 20)
 
         return end_loading
-    
-    def flush_loaded_chunks(self):
-
-        for chunk_x in list(self.chunks.keys()):
-            self.save_chunk_modified_blocks(chunk_x)
 
     def unload_chunk(self, chunk_cord):
 
@@ -177,7 +216,6 @@ class World():
             self.entitys.remove(entity)
 
         # supprimer le chunk
-        self.save_chunk_modified_blocks(chunk_cord)
         del self.chunks[chunk_cord]
 
     def get_light_level(self, x, y):
@@ -211,12 +249,6 @@ class World():
     def update(self, dt):
         print("update world")
         end_loading = self.update_chunks()
-
-        self.mob_spawn_timer += dt
-
-        if self.mob_spawn_timer >= 3:
-            self.mob_spawn_timer = 0
-            self.try_spawn_mobs()
 
         if end_loading:
             self.compute_sky_column()
@@ -293,6 +325,13 @@ class World():
         if player:
             self.remove_entity(player)
             self.add_offline_entity(player)
+
+    def get_player_by_name(self, player_name):
+        for current_entity in self.entitys:
+            if current_entity and isinstance(current_entity, EntityClass.Player):
+                if current_entity.name == player_name:
+                    return current_entity
+        return None
     
     def get_player_offline(self, player_name):
         for e in self.offline_entitys:
@@ -301,6 +340,84 @@ class World():
                 if e.name == player_name:
                     return e
         return None
+    
+    def get_block(self, X, Y):
+        chunk_x = X // game_property.CHUNK_WIDTH
+
+        if chunk_x not in self.chunks:
+            return None
+
+        chunk = self.chunks[chunk_x]
+
+        return chunk.blocks.get((X, Y))
+    
+    def update_light_area(self):
+        self.block_light_queue.clear()
+
+        for chunk in self.chunks.values():
+            for block in chunk.blocks.values():
+                block.block_light = 0
+
+        for x, y in self.light_sources:
+            block = self.get_block(x, y)
+            if block:
+                block.block_light = block.block_property.light_emission
+                self.block_light_queue.append((x, y))
+
+        self.propagate_block_light()
+    
+    def get_player(self, uuid):
+        p = self.get_entity(uuid)
+        if p and isinstance(p, EntityClass.Player):
+            return p
+        return None
+    
+    def get_entity(self, uuid):
+        for current_entity in self.entitys:
+            if current_entity.get_uuid() == uuid:
+                return current_entity
+        return None
+
+    def contains_entity(self, entity):
+        return entity in self.entitys
+    
+    def get_entities(self, class_=None) -> list:
+        if class_ is None:
+            return self.entitys
+
+        if not isinstance(class_, type):
+            raise TypeError("class_ doit être une classe")
+
+        return [e for e in self.entitys if isinstance(e, class_)]
+    
+    def get_entities_by_pos(self, pos):
+        x, y = pos
+        result = []
+
+        for e in self.entitys:
+            if e is None:
+                continue
+
+            # Vérifie si l'entité est dans la case
+            if e.rect.collidepoint(x, y):
+                result.append(e)
+
+        return result
+    
+    def get_entities_by_rect(self, rect):
+        result = []
+
+        for e in self.entitys:
+            if e is None:
+                continue
+
+            if e.rect.colliderect(rect):
+                result.append(e)
+
+        return result
+    
+    def get_players(self):
+        return self.get_entities(entity.Player)
 
     def create_entity(self, entity):
         self.entitys.append(entity)
@@ -344,8 +461,209 @@ class World():
         chunk.set_block(X, Y, block)
 
         return True
-
     
+    def set_blocks(self, list_block, update_range=1):
+        """
+        Modifier tous les blocks et actualiser la limière une fois
+
+        :param list_block: liste de tuples (x, y, block)
+        """
+
+        for x, y, block in list_block:
+            
+            chunk_x = x // game_property.CHUNK_WIDTH
+            if chunk_x not in self.chunks:
+                return False
+
+            chunk = self.chunks[chunk_x]
+
+            chunk.set_block(x, y, block)
+
+            if block.block_property.light_emission > 0:
+                self.light_sources.add((x, y))
+        
+            self.sky_column_queue.append(x)
+            for x in range(x - update_range, x + update_range):
+                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((x, y))
+
+        self.update_light_area()
+        return True
+
+    def render(self, screen, cam_rect):
+        tile = game_property.TILE_SIZE
+
+        start_x = cam_rect.left // tile
+        end_x = cam_rect.right // tile + 1
+
+        start_y = cam_rect.top // tile
+        end_y = cam_rect.bottom // tile + 1
+
+        for x in range(start_x, end_x):
+            chunk_x = x // game_property.CHUNK_WIDTH
+
+            if chunk_x not in self.chunks:
+                continue
+
+            chunk = self.chunks[chunk_x]
+
+            for y in range(start_y, end_y):
+
+                block = chunk.blocks.get((x, y))
+
+                if block:
+                    block.render(screen, cam_rect)
+
+    def render_entitys(self, screen, cam_rect):
+        for entity in self.entitys:
+            entity.render(screen, cam_rect)
+            if self.hit_box_visible:
+                entity.render_hit_box(screen, cam_rect)
+
+    def seed_block_light(self, cx, cy, radius):
+        for x in range(cx-radius, cx+radius+1):
+            for y in range(cy-radius, cy+radius+1):
+                block = self.get_block(x, y)
+                if not block:
+                    continue
+
+                # SAFE CHECK
+                if block.block_property.light_emission > 0:
+                    block.block_light = block.block_property.light_emission
+                    self.block_light_queue.append((x, y))
+    
+    def compute_sky_column(self, max_steps=10):
+        for _ in range(max_steps):
+            if not self.sky_column_queue:
+                return
+            
+            x = self.sky_column_queue.popleft()
+
+            self.done_columns += 1
+
+            light = 15
+
+            for y in reversed(range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT)):
+                block = self.get_block(x, y)
+                if not block:
+                    continue
+
+                block.sky_light = light
+
+                if block.can_collide():
+                    light = max(light - 2, 0)
+
+    # def reset_light_area(self, cx, cy, radius):
+    #     for x in range(cx-radius, cx+radius+1):
+    #         for y in range(cy-radius, cy+radius+1):
+    #             block = self.get_block(x, y)
+    #             if block:
+    #                 block.block_light = 0
+    
+    def propagate_sky_light(self, max_steps=1000):
+        for _ in range(max_steps):
+            if not self.sky_light_queue:
+                return
+
+            x, y = self.sky_light_queue.popleft()
+            block = self.get_block(x, y)
+
+            self.done_light_steps += 1
+
+            if not block:
+                continue
+
+            current = block.sky_light
+
+            for dx, dy in [(1,0), (-1,0), (0,-1), (0,1)]:
+                nx, ny = x + dx, y + dy
+                neighbor = self.get_block(nx, ny)
+
+                if not neighbor:
+                    continue
+
+                absorb = self.get_propagate_value(neighbor)
+
+                new_light = current - absorb
+
+                if new_light <= 0:
+                    continue
+
+                if new_light > neighbor.sky_light:
+                    neighbor.sky_light = new_light
+                    self.sky_light_queue.append((nx, ny))
+    
+    def propagate_block_light(self):
+        while self.block_light_queue:
+            x, y = self.block_light_queue.popleft()
+            block = self.get_block(x, y)
+
+            if not block:
+                continue
+
+            current = block.block_light
+
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                nx, ny = x + dx, y + dy
+                neighbor = self.get_block(nx, ny)
+
+                if not neighbor:
+                    continue
+
+                absorb = self.get_propagate_value(neighbor)
+                new_light = current - absorb
+
+                if new_light <= 0:
+                    continue
+
+                if new_light > neighbor.block_light:
+                    neighbor.block_light = new_light
+                    self.block_light_queue.append((nx, ny))
+
+    def get_propagate_value(self, block):
+        if block.can_collide():
+            return 4
+        return 0.8
+    
+    def get_light_absorption(block):
+        if block.can_collide():
+            return 4
+        return 0
+
+    def is_collide(self, entity):
+        return self.is_collide_at(entity.rect)
+
+
+    def is_collide_at(self, rect):
+        """Teste si un rect collide avec les blocs solides"""
+
+        tile = game_property.TILE_SIZE
+
+        # coordonnées des tuiles couvertes par le rect
+        start_x = rect.left // tile
+        end_x = rect.right // tile
+
+        start_y = rect.top // tile
+        end_y = rect.bottom // tile
+
+        for x in range(start_x, end_x + 1):
+
+            chunk_x = x // game_property.CHUNK_WIDTH
+
+            chunk = self.chunks.get(chunk_x)
+            if not chunk:
+                continue
+
+            for y in range(start_y, end_y + 1):
+
+                block = chunk.blocks.get((x, y))
+
+                if block and block.can_collide():
+                    return True
+
+        return False
+
+            
 
 
 class WorldSolo():
@@ -1213,10 +1531,15 @@ class WorldSolo():
         return None
 
     def get_player(self, uuid):
+        p = self.get_entity(uuid)
+        if p and isinstance(p, EntityClass.Player):
+            return p
+        return None
+    
+    def get_entity(self, uuid):
         for current_entity in self.entitys:
-            if current_entity and isinstance(current_entity, EntityClass.Player):
-                if current_entity.get_uuid() == uuid:
-                    return current_entity
+            if current_entity.get_uuid() == uuid:
+                return current_entity
         return None
 
     def contains_entity(self, entity):

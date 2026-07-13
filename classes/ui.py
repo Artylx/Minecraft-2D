@@ -803,7 +803,6 @@ class UI:
 
     def highlight_block(self, screen, current_block, cam_rect, player):
         if not current_block:
-            print("Erreur current_block is None")
             return
 
         # centre du bloc

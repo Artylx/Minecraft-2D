@@ -1,0 +1,41 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 09:29:04
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: (0.0, 26.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: module 'classes.world' has no attribute 'get_entity_light'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 233, in run
+    self.render()
+    ~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 328, in render
+    self.game_manager.render(self, self.screen)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 512, in render
+    self.world.render_entitys(screen, self.cam_rect)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\world.py", line 519, in render_entitys
+    entity.render(screen, cam_rect)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\entity.py", line 1268, in render
+    light = self.world.get_entity_light(self)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'classes.world' has no attribute 'get_entity_light'
+
+    

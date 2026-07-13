@@ -176,6 +176,9 @@ class Entity:
         self.rect.y = y * game_property.TILE_SIZE
 
     def update(self, dt):
+
+        max_steps = 100
+        steps = 0
         
         try:
             self.apply_gravity(dt)
@@ -193,12 +196,17 @@ class Entity:
             if not self.world.is_collide_at(self.temp_rect):
                 self.move(new_x - self.rect.x, 0)
             else:
-                step = 1 if self.velocity.x > 0 else -1
+                if self.velocity.x != 0:
+                    step = 1 if self.velocity.x > 0 else -1
 
-                while not self.world.is_collide_at(self.rect.move(step, 0)):
-                    self.move(step, 0)
+                    while not self.world.is_collide_at(self.rect.move(step, 0)):
+                        self.move(step, 0)
+                        steps += 1
 
-                self.velocity.x = 0
+                        if steps > max_steps:
+                            break
+
+                    self.velocity.x = 0
 
 
             # ----- VERTICAL -----
@@ -950,7 +958,7 @@ class Player(Humanoid):
                 if self.rect.colliderect(entity.rect):
 
                     # ajouter une flèche à l'inventaire
-                    self.inventory.add_item(
+                    self.inventory.insert(
                         inventory.ItemStack(game_type.ItemProperty.ARROW, 1)
                     )
 
@@ -1025,10 +1033,10 @@ class Player(Humanoid):
                 selected_item.use()
 
                 arrow = Arrow_entity(
-                    self.world,
                     (origin.x, origin.y),
                     v,
-                    self
+                    self,
+                    self.world,
                 )
                 self.world.create_entity(arrow)
             else:

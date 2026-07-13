@@ -25,7 +25,376 @@
                 "items": [],
                 "owner_uuid": "d836aa7d-60b9-4431-a978-ed8e64635de0"
             }
+        },
+        {
+            "type": "Player",
+            "uuid": "9a516c83-dbc2-4085-8a53-ca322d56f90c",
+            "x": -4930,
+            "y": -256,
+            "w": 27,
+            "h": 80,
+            "vx": -0.04708658144974668,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Arthur",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "3a715f1f-692b-46d1-978f-35efb5da7c6d",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "grass",
+                            "count": 2
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "stone",
+                            "count": 29
+                        }
+                    },
+                    {
+                        "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 3,
+                        "itemStack": {
+                            "item_type_name": "oak_plank",
+                            "count": 1
+                        }
+                    },
+                    {
+                        "slot": 4,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 2
+                        }
+                    },
+                    {
+                        "slot": 5,
+                        "itemStack": {
+                            "item_type_name": "torch",
+                            "count": 5
+                        }
+                    },
+                    {
+                        "slot": 6,
+                        "itemStack": {
+                            "item_type_name": "coal",
+                            "count": 8
+                        }
+                    }
+                ],
+                "owner_uuid": "9a516c83-dbc2-4085-8a53-ca322d56f90c"
+            }
         }
     ],
-    "modified_blocks": {}
+    "modified_blocks": {
+        "0": [
+            {
+                "x": 2,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 0,
+                "y": 27,
+                "block": "grass"
+            },
+            {
+                "x": 0,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": 0,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 28,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 29,
+                "block": "air"
+            },
+            {
+                "x": 4,
+                "y": 30,
+                "block": "air"
+            },
+            {
+                "x": 3,
+                "y": 28,
+                "block": "air"
+            }
+        ],
+        "-3": [
+            {
+                "x": -41,
+                "y": 14,
+                "block": "air"
+            }
+        ],
+        "-9": [
+            {
+                "x": -130,
+                "y": 25,
+                "block": "crafting_table"
+            },
+            {
+                "x": -131,
+                "y": 26,
+                "block": "air"
+            },
+            {
+                "x": -131,
+                "y": 27,
+                "block": "air"
+            },
+            {
+                "x": -131,
+                "y": 28,
+                "block": "air"
+            }
+        ],
+        "-10": [
+            {
+                "x": -146,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -147,
+                "y": 25,
+                "block": "air"
+            },
+            {
+                "x": -147,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -147,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -147,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 23,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 24,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 22,
+                "block": "torch"
+            },
+            {
+                "x": -145,
+                "y": 22,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 21,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 20,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 19,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 18,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 17,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 16,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 15,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 14,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 13,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 12,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 11,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 10,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 9,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 8,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 4,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 3,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 2,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 1,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": 0,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": -1,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": -2,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": -2,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": -3,
+                "block": "air"
+            },
+            {
+                "x": -145,
+                "y": -3,
+                "block": "air"
+            },
+            {
+                "x": -146,
+                "y": -1,
+                "block": "air"
+            },
+            {
+                "x": -148,
+                "y": -3,
+                "block": "torch"
+            },
+            {
+                "x": -155,
+                "y": -6,
+                "block": "torch"
+            },
+            {
+                "x": -157,
+                "y": -7,
+                "block": "torch"
+            }
+        ]
+    }
 }

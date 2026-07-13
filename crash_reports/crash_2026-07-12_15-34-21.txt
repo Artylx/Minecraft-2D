@@ -1,0 +1,50 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-07-12 15:34:21
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: None
+    Player Position: (-122.22, 8.0)
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: 'WorldSolo' object is not subscriptable
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 213, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 321, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 165, in update
+    self.player.stop_use_selected_item(self.cam_rect)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\entity.py", line 1007, in stop_use_selected_item
+    self.use_selected_item(cam_rect)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\entity.py", line 1004, in use_selected_item
+    self.use_item(direction)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\entity.py", line 1035, in use_item
+    arrow = Arrow_entity(
+        self.world,
+    ...<2 lines>...
+        self
+    )
+  File "c:\Users\ptitg\Minecraft-2D\classes\entity.py", line 564, in __init__
+    rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
+                       ~~~^^^
+TypeError: 'WorldSolo' object is not subscriptable
+
+    

@@ -1,0 +1,38 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 02:00:37
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: (0.0, 26.0)
+
+    --- EXCEPTION ---
+    Type: TypeError
+    Message: dict_to_entity() missing 1 required positional argument: 'world'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 213, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 321, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 430, in update
+    self.apply_server_state(state)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 572, in apply_server_state
+    self.world.create_entity(entity.dict_to_entity(e))
+                             ~~~~~~~~~~~~~~~~~~~~~^^^
+TypeError: dict_to_entity() missing 1 required positional argument: 'world'
+
+    

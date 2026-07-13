@@ -1,0 +1,32 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 00:27:10
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: Unknown
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'MultiplayerClient' object has no attribute 'tchat'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 211, in run
+    self.handle_events()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 255, in handle_events
+    if self.game_is_start() and self.game_manager.tchat.oppened:
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MultiplayerClient' object has no attribute 'tchat'
+
+    

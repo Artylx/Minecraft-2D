@@ -1,0 +1,43 @@
+
+    ==========================
+            CRASH REPORT
+    ==========================
+
+    Date: 2026-06-16 00:57:04
+
+    --- SYSTEM ---
+    Platform: Windows
+    Platform Version: 10.0.26200
+    Python Version: 3.13.0
+    Pygame Version: 2.6.1
+
+    --- GAME ---
+    World Loaded: Unknown
+    Player Position: (0.0, 26.0)
+
+    --- EXCEPTION ---
+    Type: AttributeError
+    Message: 'World' object has no attribute 'set_blocks'
+
+    --- TRACEBACK ---
+    Traceback (most recent call last):
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 213, in run
+    self.update(dt)
+    ~~~~~~~~~~~^^^^
+  File "c:\Users\ptitg\Minecraft-2D\main.py", line 321, in update
+    self.game_manager.update(dt, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\client.py", line 397, in update
+    self.world.update(dt)
+    ~~~~~~~~~~~~~~~~~^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\world.py", line 263, in update
+    end_loading = self.update_chunks()
+  File "c:\Users\ptitg\Minecraft-2D\classes\world.py", line 196, in update_chunks
+    self.add_chunk(chunk_x)
+    ~~~~~~~~~~~~~~^^^^^^^^^
+  File "c:\Users\ptitg\Minecraft-2D\classes\world.py", line 152, in add_chunk
+    self.set_blocks(list_blocks, update_range=0)
+    ^^^^^^^^^^^^^^^
+AttributeError: 'World' object has no attribute 'set_blocks'. Did you mean: 'set_block'?
+
+    
