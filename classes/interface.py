@@ -129,6 +129,7 @@ class MenusCollection:
     ERROR = "error"
     CONNECT_MULTIPLAYER = "connect_multiplayer"
     LAUNCH = "launch"
+    DIED = "died"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
@@ -349,6 +350,21 @@ class MainMenu:
         def return_to_game(self):
             self.game.press_reset()
             self.set_menu(MenusCollection.GAME)
+
+        self.menus[MenusCollection.DIED] = [
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            
+            Button(
+                "Réapparaitre",
+                (self.center_x - 200, self.center_y - 100 - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
+                lambda: self.game.repsawn()
+            ),
+            Button(
+                "Quitter",
+                (self.center_x - 200, self.center_y - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
+                lambda: self.game.stop_game()
+            ),
+        ]
 
         self.menus[MenusCollection.GAME_PAUSED] = [
             Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),

@@ -3,72 +3,9 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "25dba447-5148-4887-834a-ceaf6a37060e",
-            "x": -3612,
-            "y": -499,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": -27.73333333333352,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "0c52bdaa-6efa-40cd-95f0-2e855effb8b0",
-            "x": -3676,
-            "y": -608,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "918e5273-8f7c-4697-819c-8d79c483f41e",
-            "x": -3648,
-            "y": -567,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": -471.4666666666669,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "be5111d4-341c-4d8f-8e0d-a89ebfb27c93",
-            "x": -3608,
-            "y": -533,
+            "uuid": "c3406e16-dd3a-40ab-8508-a487d5027874",
+            "x": -896,
+            "y": -576,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -84,108 +21,6 @@
             "IA": true,
             "auto_jump": true,
             "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "88d0c266-b6de-47d8-88e3-4f5d2578dba0",
-            "x": -3676,
-            "y": -593,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "e49000b5-d548-44c7-af9f-9f9a3146fdd0",
-            "x": -3676,
-            "y": -608,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "e81fb076-cbec-44ce-9a55-81ebc2113374",
-            "x": -3612,
-            "y": -544,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "7ec1fdf9-2a45-4fdc-9154-92355b9604d9",
-            "x": -3676,
-            "y": -599,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": -166.4,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Living_entity",
-            "uuid": "4e71e425-1faf-4bfe-9182-a4940b8375b3",
-            "x": -3902,
-            "y": 256,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Armurier",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": []
         },
         {
             "type": "Player",
@@ -214,12 +49,12 @@
         },
         {
             "type": "Player",
-            "uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8",
-            "x": -3956,
-            "y": 256,
+            "uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce",
+            "x": -758,
+            "y": 448,
             "w": 27,
             "h": 80,
-            "vx": 2.6692909758796586e-08,
+            "vx": -3.386585423772225e-32,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -227,213 +62,14 @@
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
-                "uuid": "96ff6b36-12f0-42a1-9d81-1db388829267",
+                "uuid": "f04c435f-e7df-4fde-8c08-be667598cda4",
                 "size": 24,
                 "title": "Inventory of Arthur",
-                "items": [
-                    {
-                        "slot": 0,
-                        "itemStack": {
-                            "item_type_name": "golden_pickaxe",
-                            "count": 1,
-                            "durability": 432,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 1,
-                        "itemStack": {
-                            "item_type_name": "golden_sword",
-                            "count": 1,
-                            "durability": 432,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 2,
-                        "itemStack": {
-                            "item_type_name": "torch",
-                            "count": 15,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 4,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 94,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 5,
-                        "itemStack": {
-                            "item_type_name": "arrow",
-                            "count": 2,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 6,
-                        "itemStack": {
-                            "item_type_name": "grass",
-                            "count": 19,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 7,
-                        "itemStack": {
-                            "item_type_name": "iron_ore",
-                            "count": 21,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 8,
-                        "itemStack": {
-                            "item_type_name": "stick",
-                            "count": 2,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 9,
-                        "itemStack": {
-                            "item_type_name": "cooked_egg",
-                            "count": 10,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 10,
-                        "itemStack": {
-                            "item_type_name": "gold_ingot",
-                            "count": 13,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 11,
-                        "itemStack": {
-                            "item_type_name": "gold_ore",
-                            "count": 12,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 12,
-                        "itemStack": {
-                            "item_type_name": "iron_ingot",
-                            "count": 21,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 13,
-                        "itemStack": {
-                            "item_type_name": "stone_pickaxe",
-                            "count": 1,
-                            "durability": 240,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 14,
-                        "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 14,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 15,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 100,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 16,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 44,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 17,
-                        "itemStack": {
-                            "item_type_name": "dirt",
-                            "count": 50,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 18,
-                        "itemStack": {
-                            "item_type_name": "cooked_egg",
-                            "count": 1,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 19,
-                        "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 11,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 21,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 7,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 22,
-                        "itemStack": {
-                            "item_type_name": "cooked_egg",
-                            "count": 4,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 23,
-                        "itemStack": {
-                            "item_type_name": "oak_trunk",
-                            "count": 73,
-                            "durability": null,
-                            "components": []
-                        }
-                    }
-                ],
-                "owner_uuid": "b217cda8-643a-42f0-8372-0bd121f7ffe8"
+                "items": [],
+                "owner_uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce"
             }
         }
     ],
@@ -1646,7 +1282,7 @@
             "-65:19": {
                 "x": -65,
                 "y": 19,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-70:16": {
@@ -1844,7 +1480,7 @@
             "-66:20": {
                 "x": -66,
                 "y": 20,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-74:16": {
@@ -2180,13 +1816,13 @@
             "-66:19": {
                 "x": -66,
                 "y": 19,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-65:18": {
                 "x": -65,
                 "y": 18,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-70:15": {
@@ -2486,7 +2122,7 @@
             "-65:17": {
                 "x": -65,
                 "y": 17,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "-70:14": {
@@ -3566,6 +3202,18 @@
                 "y": -43,
                 "block": "stone",
                 "components": []
+            },
+            "-38:12": {
+                "x": -38,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-44:12": {
+                "x": -44,
+                "y": 12,
+                "block": "air",
+                "components": []
             }
         },
         "-2": {
@@ -3716,6 +3364,42 @@
             "-18:-50": {
                 "x": -18,
                 "y": -50,
+                "block": "air",
+                "components": []
+            },
+            "-28:15": {
+                "x": -28,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-28:13": {
+                "x": -28,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-28:14": {
+                "x": -28,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-23:16": {
+                "x": -23,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-23:14": {
+                "x": -23,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-23:15": {
+                "x": -23,
+                "y": 15,
                 "block": "air",
                 "components": []
             }
@@ -4346,6 +4030,60 @@
                 "y": -47,
                 "block": "air",
                 "components": []
+            },
+            "-11:21": {
+                "x": -11,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "-7:23": {
+                "x": -7,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-7:22": {
+                "x": -7,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "-11:20": {
+                "x": -11,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "-11:19": {
+                "x": -11,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-7:21": {
+                "x": -7,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "-5:23": {
+                "x": -5,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-5:24": {
+                "x": -5,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-5:22": {
+                "x": -5,
+                "y": 22,
+                "block": "air",
+                "components": []
             }
         },
         "0": {
@@ -4520,6 +4258,24 @@
             "1:-52": {
                 "x": 1,
                 "y": -52,
+                "block": "air",
+                "components": []
+            },
+            "3:26": {
+                "x": 3,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "3:27": {
+                "x": 3,
+                "y": 27,
+                "block": "air",
+                "components": []
+            },
+            "3:28": {
+                "x": 3,
+                "y": 28,
                 "block": "air",
                 "components": []
             }

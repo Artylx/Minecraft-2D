@@ -63,6 +63,18 @@ class Game:
             self.select_world(debug.AUTO_START["world_name"])
             self.load_game(debug.AUTO_START["player_name"])
 
+    def repsawn(self):
+        self.press_reset()
+
+        if isinstance(self.game_manager, client.GameClient):
+            self.game_manager.spawn_player()
+
+        self.menu.set_menu(interface.MenusCollection.GAME)
+
+    def died(self):
+        self.press_reset()
+        self.menu.set_menu(interface.MenusCollection.DIED)
+
     def select_world(self, game_name):
         self.press_reset()
         self.menu.set_menu(interface.MenusCollection.PSEUDO)
@@ -81,7 +93,7 @@ class Game:
 
         config.Config().set("last_pseudo", pseudo)
 
-        self.game_manager = client.GameClient(self.game_name, self.game_manager, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self, player_name=pseudo)
+        self.game_manager = client.GameClient(self.game_name, self.game_manager, self.WIDTH_SCREEN, self.HEIGHT_SCREEN, callback=self.end_loading, game=self, player_name=pseudo, texture_manager=self.texture_manager)
 
     def end_loading(self, message="", value=0):
         self.menu.set_loading(message, value)

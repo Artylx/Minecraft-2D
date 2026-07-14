@@ -4,10 +4,11 @@ from classes import tchat, world, game_property, game_type, entity, ui, interfac
 from server import ServerConnection
 
 class GameClient:
-    def __init__(self, world_path, world_name, width, height, callback, game, player_name):
+    def __init__(self, world_path, world_name, width, height, callback, game, player_name, texture_manager):
         self.width_screen = width
         self.height_screen = height
         self.cam_rect = pygame.Rect(0, 0, self.width_screen, self.height_screen)
+        self.texture_manager = texture_manager
 
         self.tchat = tchat.Tchat((self.width_screen, self.height_screen))
         tchat.CommandManager.game = self
@@ -39,12 +40,21 @@ class GameClient:
             
         self.World = world.WorldSolo(name=self.world_name, json_data=json, seed=seed, callback_loading=callback)
 
-        self.player = self.World.player_join(player_name)
+        self.player_name = player_name
 
-        self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat)
+        self.player = None
+        self.UI = None
+        if self.World.player_is_offline(self.player_name):
+            self.spawn_player()
+        else:
+            game.died()
 
         self.update_screen_size(self.width_screen, self.height_screen)
         print(f"Seed {self.World.seed}")
+
+    def spawn_player(self):
+        self.player = self.World.player_join(self.player_name)
+        self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat, self.texture_manager)
 
     # START GAME
     def run(self):
@@ -105,8 +115,11 @@ class GameClient:
         return f"mouse{button}"
 
     def update_cam_rect(self):
-        self.cam_rect.centerx = self.player.rect.centerx
-        self.cam_rect.centery = self.player.rect.centery
+        if self.player:
+            self.cam_rect.center = (
+                int(self.player.rect.centerx),
+                int(self.player.rect.centery)
+            )
 
     def update_screen_size(self, width, height):
         self.width_screen = width
@@ -119,10 +132,16 @@ class GameClient:
 
         self.update_cam_rect()
 
-        self.UI.update_screen_size(screen_size)
+        if self.UI:
+            self.UI.update_screen_size(screen_size)
 
     # UPDATE
     def update(self, dt, game):
+
+        if not self.player.is_alive:
+            game.died()
+            return
+
         if game.toogle_.get(pygame.K_F3):
             self.update_debug(dt)
         else:
@@ -277,7 +296,7 @@ class GameClient:
 
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
-                    self.UI.open_crafting(player.inventory, interface.Crafting_types.CRAFTING_TABLE)
+                    self.UI.open_crafting(player.inventory, ui.Crafting_types.CRAFTING_TABLE)
                     return True
                 elif old_block.block_property == game_type.BlockProperty.FURNACE:
 
@@ -320,21 +339,22 @@ class GameClient:
     def render(self, game, screen):
         pygame.draw.rect(screen, (135, 206, 235), (0, 0, self.width_screen, self.height_screen))
 
-        self.World.render(screen, self.cam_rect)
+        if self.player:
+            self.World.render(screen, self.cam_rect)
 
-        if game.toogle_.get(pygame.K_F3):
-            self.World.hit_box_visible = True
-            self.render_debug(screen)
-            #self.World.render_debug(screen, self.cam_rect)
-        else:
-            self.World.hit_box_visible = False
+            if game.toogle_.get(pygame.K_F3):
+                self.World.hit_box_visible = True
+                self.render_debug(screen)
+                #self.World.render_debug(screen, self.cam_rect)
+            else:
+                self.World.hit_box_visible = False
 
-        if self.highlight and not self.tchat.oppened and not self.UI.is_open_inv():
-            self.UI.highlight_block(screen, self.current_block_pos, self.cam_rect, self.player)
+            if self.highlight and not self.tchat.oppened and not self.UI.is_open_inv():
+                self.UI.highlight_block(screen, self.current_block_pos, self.cam_rect, self.player)
 
-        self.World.render_entitys(screen, self.cam_rect)
+            self.World.render_entitys(screen, self.cam_rect)
 
-        self.UI.render(screen, self.player)
+            self.UI.render(screen, self.player)
 
     def update_debug(self, dt):
         self.debug_timer += dt

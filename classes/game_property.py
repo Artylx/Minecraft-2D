@@ -31,15 +31,27 @@ LIGHT_COEF = 1
 
 VERSION = "1.14"
 
+# def world_to_screen(x, y, h, cam_rect):
+#     sx = x - cam_rect.x
+#     sy = cam_rect.height - (y - cam_rect.y) - h
+#     return int(sx), int(sy)
+
+# def screen_to_world(sx, sy, h, cam_rect):
+#     x = sx + cam_rect.x
+#     y = (cam_rect.height - sy - h) + cam_rect.y
+#     return int(x), int(y)
+
 def world_to_screen(x, y, h, cam_rect):
     sx = x - cam_rect.x
     sy = cam_rect.height - (y - cam_rect.y) - h
-    return sx, sy
+
+    return int(sx), int(sy)
 
 def screen_to_world(sx, sy, h, cam_rect):
     x = sx + cam_rect.x
     y = (cam_rect.height - sy - h) + cam_rect.y
-    return x, y
+
+    return int(x), int(y)
 
 from pathlib import Path
 import sys

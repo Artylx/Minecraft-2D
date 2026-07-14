@@ -318,6 +318,10 @@ class World():
 
                 self.create_entity(player)
                 return player
+    
+    def player_is_offline(self, player_name):
+        player = self.get_player_offline(player_name)
+        return player is not None
 
     def player_quit(self, player_name):
         player = self.get_player_by_name(player_name)
@@ -723,6 +727,12 @@ class WorldSolo():
         self.mob_spawn_points = {}
         self.MAX_MOB_PER_SPAWN_POINT = 1
 
+    def apply_damage_to_entity(self, entity, damage, dx, source):
+        if isinstance(entity, EntityClass.Living_entity):
+
+            entity.apply_damage(damage, dx)
+            print("Damage applied to entity:", entity.get_name(), "Damage:", damage, "Source:", source.get_name())
+
     def build_mob_spawn_points_chunk(self, chunk_x, chunk_y=0):
 
         chunk_key = (chunk_x, chunk_y)
@@ -924,6 +934,10 @@ class WorldSolo():
 
                 self.create_entity(player)
                 return player
+            
+    def player_is_offline(self, player_name):
+        player = self.get_player_offline(player_name)
+        return player is not None
 
     def player_quit(self, player_name):
         player = self.get_player_by_name(player_name)

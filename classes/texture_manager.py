@@ -120,6 +120,10 @@ class TextureType:
     MAIN_MENU = "main_menu"
     TITLE = "title"
 
+    HEART_FULL = "heart_full"
+    HEART_HALF = "heart_half"
+    HEART_EMPTY = "heart_empty"
+
 class TextureManager:
     def __init__(self, init_directory="resource_pack/"):
         self.default_texture = self.get_default_texture()
@@ -240,6 +244,11 @@ class TextureManager:
             # MENU
             self.load_texture(TextureType.MAIN_MENU, UI_PATH + "main_menu.png", size=None)
             self.load_texture(TextureType.TITLE, UI_PATH + "title.png", size=None)
+
+            self.load_texture(TextureType.HEART_FULL, UI_PATH + "heart_full.png")
+            self.load_texture(TextureType.HEART_HALF, UI_PATH + "heart_half.png")
+            self.load_texture(TextureType.HEART_EMPTY, UI_PATH + "heart_empty.png")
+
         except Exception as e:
             print(f"Erreur lors du chargement des textures: {e}")
             return False

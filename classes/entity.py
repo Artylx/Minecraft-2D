@@ -1123,7 +1123,10 @@ class Player(Humanoid):
                     entities = self.world.get_entities_by_rect(self.get_rect_attack())
                     for entity in entities:
                         if entity is not self and isinstance(entity, Living_entity):
-                            entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
+
+                            self.world.apply_damage_to_entity(entity, selected_item.item_property.get_attack_damage(), self.get_anim_direction(), self)
+
+                            # entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
 
         for entity in self.world.get_entities(Arrow_entity):
             if not entity.stucked:
@@ -1179,9 +1182,25 @@ class Player(Humanoid):
                 if direction.length() != 0:
                     direction = direction.normalize()
                     self.use_item(direction)
+            elif isinstance(selected_item.item_property, game_type.Consumable):
+                
+                if isinstance(selected_item.item_property, game_type.Hanger_consumable):
+                    self.health = min(self.health + selected_item.item_property.life_regen, self.max_health)
+
+                self.inventory.delete_item(self.inventory.ui.selected_index)
 
     def stop_use_selected_item(self, cam_rect):
-        self.use_selected_item(cam_rect)
+        selected_item = self.inventory.ui.get_selected_item()
+        if selected_item:
+            if isinstance(selected_item.item_property, game_type.Tool):
+                sx, sy = pygame.mouse.get_pos() 
+                mx, my = game_property.screen_to_world(sx, sy, 0, cam_rect) 
+                
+                direction = pygame.Vector2(mx - self.rect.centerx, my - self.rect.centery)
+
+                if direction.length() != 0:
+                    direction = direction.normalize()
+                    self.use_item(direction)
     
     def use_item(self, direction):
         selected_item = self.inventory.ui.get_selected_item()
@@ -1373,27 +1392,7 @@ class Mob(Living_entity):
         self.inventory = inventory
 
     def update(self, dt):
-        ia_control = self.knockback_timer <= 0
-        if ia_control:
-            if self.move_timer <= 0:
-                self.move_direction = random.choice([-1, 1, 0])
-                self.move_timer = random.randint(0, 6)
-                self.move_speed = random.randint(80, 120)
-
-            target = self.move_direction * self.move_speed
-
-            if target != 0:
-                if target > 0:
-                    vx = max(self.velocity.x, target)
-                else:
-                    vx = min(self.velocity.x, target)
-            else:
-                vx = self.velocity.x
-        else:
-            # pendant knockback → ne pas écraser velocity.x
-            vx = self.velocity.x
-
-        self.set_velocity(vx, None)
+        self.apply_horizontal_target()
 
         # Décrémenter le timer
         self.move_timer -= dt
@@ -1410,6 +1409,23 @@ class Mob(Living_entity):
 
         # Appel du super pour appliquer le mouvement
         super().update(dt)
+
+    def apply_horizontal_target(self):
+        ia_control = self.knockback_timer <= 0
+
+        if ia_control:
+            target = self.move_direction * self.move_speed
+
+            if target > 0:
+                vx = max(self.velocity.x, target)
+            elif target < 0:
+                vx = min(self.velocity.x, target)
+            else:
+                vx = self.velocity.x
+        else:
+            vx = self.velocity.x
+
+        self.set_velocity(vx, None)
 
     def load(self, data, add_map=None):
         if add_map is None:
@@ -1443,10 +1459,92 @@ class Mob(Living_entity):
         return super().to_json(type_, data)
 
 class Zombie(Mob):
+    DETECTION_DISTANCE = 400
+
     def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True, spawn_point=None):
         rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
         super().__init__(rect, None, world, name, health, max_health, moving, spawn_point)
         self.update_texture()
+
+        self.attack_cooldown = 0
+    
+    def update(self, dt):
+        player = self.get_nearest_player()
+
+        self.attack_cooldown -= dt
+
+        # Aucun joueur à portée -> déplacement aléatoire
+        if player is None:
+            return super().update(dt)
+
+        # Joueur détecté -> le poursuivre
+        else:
+            # Bord droit du zombie -> bord gauche du joueur
+            ATTACK_RANGE = 10  # pixels
+
+            # Le zombie est à gauche du joueur
+            if self.rect.centerx < player.rect.centerx:
+                distance = player.rect.left - self.rect.right
+
+                if distance > ATTACK_RANGE:
+                    self.move_direction = 1
+                else:
+                    self.move_direction = 0
+                    
+                    if self.attack_cooldown <= 0:
+                        self.attack(player)
+                        self.attack_cooldown = 0.8
+
+            # Le zombie est à droite
+            else:
+                distance = self.rect.left - player.rect.right
+
+                if distance > ATTACK_RANGE:
+                    self.move_direction = -1
+                else:
+                    self.move_direction = 0
+
+                    if self.attack_cooldown <= 0:
+                        self.attack(player)
+                        self.attack_cooldown = 0.8
+
+            self.move_speed = 120
+            
+            super().apply_horizontal_target()
+
+            # Saut automatique
+            if self.auto_jump:
+                front = self.rect.copy()
+                front.x += self.move_direction * 5
+                front.y += 1
+
+                if self.world.is_collide_at(front) and self.on_ground:
+                    self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
+                    self.on_ground = False
+
+            return super().update(dt)
+        
+    def attack(self, player):
+        # apply damage
+        self.world.apply_damage_to_entity(player, 15, self.move_direction, self)
+
+        print("Zombie attacks player!", player.get_name())
+        pass
+
+    def get_nearest_player(self):
+        nearest = None
+        nearest_distance = self.DETECTION_DISTANCE
+
+        for player in self.world.get_entities(Player):
+            dx = player.rect.centerx - self.rect.centerx
+            dy = player.rect.centery - self.rect.centery
+
+            distance = math.hypot(dx, dy)
+
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest = player
+        return nearest
 
     def render(self, screen, cam_rect):
         # 🎯 Gestion du clignotement (effet Terraria)

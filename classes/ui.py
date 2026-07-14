@@ -1,7 +1,10 @@
+import math
+
 from classes import language
 import pygame
 from classes import game_property, game_type
 from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
+from classes.texture_manager import TextureType, TextureManager
     
 class DragState:
     def __init__(self):
@@ -9,6 +12,8 @@ class DragState:
         self.source_slot = None
     
 class InventoryController:
+    texture_manager = None
+
     def __init__(self, inventory):
         self.inventory = inventory
         self.drag = DragState()
@@ -135,9 +140,10 @@ class UI_menu:
         self.tchat.update_screen_size(screen_size)
 
 class UI:
-    def __init__(self, screen_size, inventory, tchat):
+    def __init__(self, screen_size, inventory, tchat, texture_manager):
         self.inventory = inventory
         self.tchat = tchat
+        self.texture_manager = texture_manager
 
         self.open_inventory = None
 
@@ -178,7 +184,7 @@ class UI:
         if not self.is_open_inv():
             self.tchat.render(screen)
 
-            self.render_hotbar(screen, player.inventory)
+            self.render_hotbar(screen, player.inventory, player, True)
         else:
             if self.opened_chest:
                 self.render_chest_ui(screen)
@@ -832,7 +838,7 @@ class UI:
         rect = pygame.Rect(draw_x, draw_y, game_property.TILE_SIZE, game_property.TILE_SIZE)
         pygame.draw.rect(screen, (255,255,255), rect, 2)
     
-    def render_hotbar(self, screen, inv):
+    def render_hotbar(self, screen, inv, player, health_bar=True):
         case_size = game_property.INVENTORY_SIZE_CASE
         margin = 15
         case_count = inv.ui.case_number
@@ -872,6 +878,45 @@ class UI:
                 pygame.draw.rect(screen, (255, 255, 255), rect, 2)
 
             screen.blit(self._hotbar_numbers[i], (x + 5, y + 2))
+
+        if health_bar:
+            self.render_health_bar(screen, player, start_x, start_y, width)
+
+    def render_health_bar(self, screen, player, hotbar_x, hotbar_y, hotbar_width):
+        height = 15
+        y = hotbar_y - height - 10
+
+        # Fond de la barre
+        background = pygame.Rect(
+            hotbar_x,
+            y,
+            hotbar_width,
+            height
+        )
+
+        pygame.draw.rect(screen, (50, 50, 50), background)
+        pygame.draw.rect(screen, (120, 120, 120), background, 2)
+
+        # Progression de vie
+        health_ratio = max(0, min(1, player.health / player.max_health))
+
+        health_width = int(hotbar_width * health_ratio)
+
+        health_rect = pygame.Rect(
+            hotbar_x,
+            y,
+            health_width,
+            height
+        )
+
+        # Couleur dynamique :
+        # 1.0 = vert, 0.0 = rouge
+        red = int(255 * (1 - health_ratio))
+        green = int(255 * health_ratio)
+
+        color = (red, green, 0)
+
+        pygame.draw.rect(screen, color, health_rect)
     
     def is_open_inv(self):
         if self.open_inventory:
