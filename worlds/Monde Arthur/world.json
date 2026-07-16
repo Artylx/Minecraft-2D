@@ -3,9 +3,9 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "c3406e16-dd3a-40ab-8508-a487d5027874",
-            "x": -896,
-            "y": -576,
+            "uuid": "3f2a3985-eadd-420d-ac0a-f588a34aca11",
+            "x": 384,
+            "y": -2016,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -49,12 +49,12 @@
         },
         {
             "type": "Player",
-            "uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce",
-            "x": -758,
-            "y": 448,
+            "uuid": "a0b2f7e3-2ed3-44ec-aa88-39b59733c55b",
+            "x": -1453,
+            "y": 384,
             "w": 27,
             "h": 80,
-            "vx": -3.386585423772225e-32,
+            "vx": 4.243863312441207e-19,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -62,14 +62,14 @@
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "inventory": {
-                "uuid": "f04c435f-e7df-4fde-8c08-be667598cda4",
+                "uuid": "4fe8cf76-4d3e-48a3-b319-e22834248483",
                 "size": 24,
                 "title": "Inventory of Arthur",
                 "items": [],
-                "owner_uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce"
+                "owner_uuid": "a0b2f7e3-2ed3-44ec-aa88-39b59733c55b"
             }
         }
     ],
@@ -4930,6 +4930,36 @@
             "20:51": {
                 "x": 20,
                 "y": 51,
+                "block": "air",
+                "components": []
+            },
+            "22:56": {
+                "x": 22,
+                "y": 56,
+                "block": "air",
+                "components": []
+            },
+            "22:58": {
+                "x": 22,
+                "y": 58,
+                "block": "air",
+                "components": []
+            },
+            "22:55": {
+                "x": 22,
+                "y": 55,
+                "block": "air",
+                "components": []
+            },
+            "22:54": {
+                "x": 22,
+                "y": 54,
+                "block": "air",
+                "components": []
+            },
+            "22:57": {
+                "x": 22,
+                "y": 57,
                 "block": "air",
                 "components": []
             }

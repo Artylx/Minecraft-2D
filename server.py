@@ -494,8 +494,15 @@ class ServerConnection:
         self.ip = ip
         self.port = port
 
+        self.disconnected = False
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((ip, port))
+        try:
+            self.socket.connect((ip, port))
+        except Exception as e:
+            print(f"Erreur de connexion au serveur : {e}")
+            self.disconnected = True
+        
         self.socket.setblocking(False)
 
         self.buffer = ""
