@@ -1,10 +1,10 @@
 import math
 
-from classes import language
+from terrakit import language
 import pygame
-from classes import game_property, game_type
-from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
-from classes.texture_manager import TextureType, TextureManager
+from terrakit import game_property, game_type
+from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
+from terrakit.texture_manager import TextureType, TextureManager
     
 class DragState:
     def __init__(self):

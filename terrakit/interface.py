@@ -1,8 +1,8 @@
 import os
-from classes import game_property
+from terrakit import game_property
 import pygame
-from classes.texture_manager import TextureType
-from classes.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer, LoadingBar
+from terrakit.texture_manager import TextureType
+from terrakit.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer, LoadingBar
 
 class CreditsItem(ObjectInterface):
     def __init__(self, rect, version, description):
@@ -104,11 +104,15 @@ class WorldInterface(ObjectReferencable):
             center=self.btn_settings.rect.center
         )
 
-    def render(self, screen):
-        self.update_layout()
+    def update(self, dt):
+        self.btn_play.update(dt)
+        self.btn_settings.update(dt)
 
+    def render(self, screen):
         self.btn_play.render(screen)
         self.btn_settings.render(screen)
+
+        self.update_layout()
 
     def handle_event(self, event):
         self.btn_play.handle_event(event)
@@ -183,18 +187,20 @@ class MainMenu:
         self.current_value = (q, callback)
 
         self.menus[MenusCollection.CONFIRM] = [
-            Surface((0, 0, self.screen_size[0], self.screen_size[1]), (10, 10, 10), 255),
+            Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT * 2), (30, 30, 30), 255),
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2 - BUTTON_HEIGHT), (10, 10, 10), 255),
 
-            Texte(q, (self.center_x, self.center_y - 100, 160, 50), center_pos=True),
+            Texte(q, (self.center_x, MARGIN_UI + BUTTON_HEIGHT // 2, 160, 50), center_pos=True),
 
             Button(
                 "Confirmer",
-                (self.center_x - 150, self.center_y + 100, 160, 50),
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
                 lambda: callback(True)
             ),
             Button(
                 "Annuler",
-                (self.center_x + 150, self.center_y + 100, 160, 50),
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
                 lambda: callback(False)
             )
         ]
@@ -322,7 +328,7 @@ class MainMenu:
             Button(
                 "Solo",
                 (self.center_x - 160, self.center_y - 100 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
-                lambda: self.set_menu(MenusCollection.SINGLEPLAYER)
+                lambda: self.set_menu(MenusCollection.SINGLEPLAYER),
             ),
             Button(
                 "Multijoueur",
@@ -396,7 +402,8 @@ class MainMenu:
             Button(
                 "Host un monde",
                 (MARGIN_UI, self.screen_size[1] - ( MARGIN_UI + BUTTON_HEIGHT ) * 2, self.screen_size[0] - MARGIN_UI * 2, BUTTON_HEIGHT),
-                lambda: None
+                lambda: None,
+                enable=False
             ),
             
             Button(
@@ -462,7 +469,7 @@ class MainMenu:
         )
 
         credits_container.set_items([
-            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n- Généralisation des textures et création du package terrakit.\n- Amélioration et rectification de bug sur l'ui.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.10 - 27/04/2026", ""),

@@ -1,5 +1,5 @@
 import pygame
-from classes import game_property
+from terrakit import game_property
 
 BLOCKS_PATH = "blocks/"
 ITEMS_PATH = "items/"

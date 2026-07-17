@@ -1,5 +1,5 @@
 from enum import Enum
-from classes.struct import StructureType
+from terrakit.struct import StructureType
 from noise import pnoise1
 import math
 

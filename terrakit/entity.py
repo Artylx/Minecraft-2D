@@ -1,9 +1,9 @@
 import pygame
-from classes import game_property, inventory, game_type
+from terrakit import game_property, inventory, game_type
 import math
 import random
 import uuid
-from classes.texture_manager import TextureType
+from terrakit.texture_manager import TextureType
 
 def rotate_around_pivot(image, angle, pivot, offset):
     rotated_image = pygame.transform.rotate(image, angle)

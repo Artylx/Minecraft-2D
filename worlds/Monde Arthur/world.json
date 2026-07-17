@@ -2,27 +2,6 @@
     "seed": 679814,
     "entitys": [
         {
-            "type": "Zombie",
-            "uuid": "3f2a3985-eadd-420d-ac0a-f588a34aca11",
-            "x": 384,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "name": "Unamed entity",
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
             "type": "Player",
             "uuid": "54ab6da3-81da-4b44-b38f-099da2476fdf",
             "x": -3408,
@@ -50,11 +29,11 @@
         {
             "type": "Player",
             "uuid": "a0b2f7e3-2ed3-44ec-aa88-39b59733c55b",
-            "x": -1453,
-            "y": 384,
+            "x": -2947,
+            "y": -384,
             "w": 27,
             "h": 80,
-            "vx": 4.243863312441207e-19,
+            "vx": 2.8198656845421106,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -632,20 +611,7 @@
                 "x": -95,
                 "y": -10,
                 "block": "iron_chest",
-                "components": [
-                    {
-                        "key": "chest",
-                        "component": {
-                            "type": "chestManager",
-                            "inventory": {
-                                "uuid": "5f799559-646b-43db-b436-36938e69612a",
-                                "size": 36,
-                                "title": "Inventory uuid:5f799559-646b-43db-b436-36938e69612a",
-                                "items": []
-                            }
-                        }
-                    }
-                ]
+                "components": []
             },
             "-88:-13": {
                 "x": -88,

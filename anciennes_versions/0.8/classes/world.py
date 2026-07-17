@@ -1,5 +1,5 @@
 import pygame
-import classes.game_property as game_property
+import terrakit.game_property as game_property
 
 class World:
     def __init__(self, seed, name, width=800, height=600):

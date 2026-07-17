@@ -1,8 +1,8 @@
 import time
 import threading
 import pygame
-from classes import world, game_property
-from classes.texture_manager import TextureManager
+from terrakit import world, game_property
+from terrakit.texture_manager import TextureManager
 import socket
 import json
 import queue
@@ -558,19 +558,19 @@ class ServerConnection:
 def load_texture():
     texture_manager = TextureManager()
 
-    from classes.world import Block
+    from terrakit.world import Block
     Block.texture_manager = texture_manager
 
-    from classes.inventory import ItemStack
+    from terrakit.inventory import ItemStack
     ItemStack.texture_manager = texture_manager
 
-    from classes.entity import Entity
+    from terrakit.entity import Entity
     Entity.texture_manager = texture_manager
 
-    from classes.game_type import ItemProperty
+    from terrakit.game_type import ItemProperty
     ItemProperty.texture_manager = texture_manager
 
-    from classes.interface import MainMenu
+    from terrakit.interface import MainMenu
     MainMenu.texture_manager = texture_manager
 
 if __name__ == "__main__":

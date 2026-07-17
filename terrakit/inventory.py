@@ -1,9 +1,9 @@
 from matplotlib.pylab import matrix
 import random
-from classes.texture_manager import  TextureManager
+from terrakit.texture_manager import  TextureManager
 import pygame
-from classes import game_property, game_type
-import classes.entity as entity
+from terrakit import game_property, game_type
+import terrakit.entity as entity
 import uuid
 
 class RotationMode:

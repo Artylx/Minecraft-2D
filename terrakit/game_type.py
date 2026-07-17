@@ -1,4 +1,4 @@
-from classes.texture_manager import TextureType
+from terrakit.texture_manager import TextureType
 import copy
 
 class BlockProperty:

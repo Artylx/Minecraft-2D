@@ -13,15 +13,18 @@ class ObjectInterface:
             enable=True,
             annimation=False,
             sound_enabled=False,
-            corner_radius=8
+            corner_radius=8,
+            debug=False,
         ):
 
         self.rect = pygame.Rect(rect)
 
         self.callback = callback
-        self.enable = enable
+        self.set_enable(enable)
 
         self.corner_radius = corner_radius
+        self.pressed = False
+        self.debug = debug
 
         # ---------- Animation ----------
         self.scale = 1
@@ -42,6 +45,9 @@ class ObjectInterface:
         self.click_sound = pygame.mixer.Sound(
             "resource_pack/default/audio/click.ogg"
         )
+
+    def set_enable(self, value):
+        self.enable = value
 
     # ------------------------
 
@@ -70,6 +76,9 @@ class ObjectInterface:
 
         if not self.enable:
             return
+        
+        if self.debug:
+            print(f"hover={self.is_hover()}, event={event.type}, pressed={self.pressed}")
 
         if event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -81,16 +90,24 @@ class ObjectInterface:
                 if self.sound_enabled:
                     self.click_sound.play()
 
-                if self.callback:
-                    self.callback()
+                self.pressed = True
 
         elif event.type == pygame.MOUSEBUTTONUP:
+            
+            if self.pressed:
+                self.target_offset_y = 0
 
-            self.target_offset_y = 0
+                if self.callback and self.is_hover():
+                    self.callback()
+                    
+                self.pressed = False
 
     # ------------------------
 
     def update(self, dt):
+
+        if not self.enable:
+            return
 
         if self.is_hover():
             if self.annimation:
@@ -116,25 +133,33 @@ class Texte(ObjectInterface):
         self.text = text
         self.color = color
         self.line_spacing = line_spacing
+        self.center_pos = center_pos
+        self.pos = pos
 
-        self.lines = text.split("\n")
+        self.deep_update()
 
-        self.surfaces = [self.font.render(line, True, color) for line in self.lines]
+        super().__init__(self.rect)
+
+    def set_text(self, text):
+        self.text = text
+        self.deep_update()
+
+    def deep_update(self):
+        self.lines = self.text.split("\n")
+
+        self.surfaces = [self.font.render(line, True, self.color) for line in self.lines]
 
         # calcul taille totale
         width = max(s.get_width() for s in self.surfaces) if self.surfaces else 0
-        height = sum(s.get_height() for s in self.surfaces) + line_spacing * (len(self.surfaces) - 1)
+        height = sum(s.get_height() for s in self.surfaces) + self.line_spacing * (len(self.surfaces) - 1)
 
-        if center_pos:
-            temp_rect = pygame.Rect(pos[0], pos[1], width, height)
-            pos = (pos[0] - width // 2, pos[1] - height // 2)
+        if self.center_pos:
+            self.pos = (self.pos[0] - width // 2, self.pos[1] - height // 2)
 
-        self.pos = pos
         self.width = width
         self.height = height
 
-        rect = pygame.Rect(pos[0], pos[1], width, height)
-        super().__init__(rect)
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], self.width, self.height)
 
     def render(self, screen):
         x, y = self.pos
@@ -150,10 +175,13 @@ class Button(ObjectInterface):
                  background_color=(0, 0, 0), 
                  background_color_hover=(50, 50, 50),
                  border_color_hover=(255, 255, 255),
-                 corner_radius=8
+                 corner_radius=8,
+                 disable_text_color=(200, 200, 200),
+                 disable_border_color=(160, 160, 160),
+                 disable_background_color=(100, 100, 100),
+                 debug=False,
                  ):
         
-        super().__init__(rect, callback, enable, annimation=True, sound_enabled=True, corner_radius=corner_radius)
         self.text = text
         self.font = pygame.font.SysFont(None, 40)
 
@@ -163,8 +191,23 @@ class Button(ObjectInterface):
         self.background_color_hover = background_color_hover
         self.border_color_hover = border_color_hover
 
-        self.text_surface = self.font.render(self.text, True, text_color)
-        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
+        self.disable_text_color = disable_text_color
+        self.disable_border_color = disable_border_color
+        self.disable_background_color = disable_background_color
+
+        super().__init__(rect, callback, enable, annimation=True, sound_enabled=True, corner_radius=corner_radius, debug=debug)
+
+    def set_enable(self, value):
+        super().set_enable(value)
+        self.update_layout()
+
+    def update_layout(self):
+        if self.enable:
+            self.text_surface = self.font.render(self.text, True, self.text_color)
+            self.text_rect = self.text_surface.get_rect(center=self.rect.center)
+        else:
+            self.text_surface = self.font.render(self.text, True, self.disable_text_color)
+            self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def render(self, screen):
 
@@ -172,6 +215,9 @@ class Button(ObjectInterface):
 
         bg = self.background_color_hover if self.is_hover() else self.background_color
         bd = self.border_color_hover if self.is_hover() else self.border_color
+
+        bg = bg if self.enable else self.disable_background_color
+        bd = bd if self.enable else self.disable_border_color
 
         pygame.draw.rect(
             screen,
@@ -188,16 +234,14 @@ class Button(ObjectInterface):
             border_radius=self.corner_radius
         )
 
-        text_rect = self.text_surface.get_rect(center=rect.center)
-
         screen.blit(
             self.text_surface,
-            text_rect
+            self.text_rect
         )
 
 class ObjectReferencable(ObjectInterface):
-    def __init__(self, rect, ref="", callback=None, sound_enabled=False, annimation=False, corner_radius=8):
-        super().__init__(rect, callback, sound_enabled=sound_enabled, annimation=annimation, corner_radius=corner_radius)
+    def __init__(self, rect, ref="", callback=None, sound_enabled=False, annimation=False, corner_radius=8, debug=False):
+        super().__init__(rect, callback, sound_enabled=sound_enabled, annimation=annimation, corner_radius=corner_radius, debug=debug)
         self.ref = ref
 
     def is_ref(self, ref):
@@ -512,32 +556,12 @@ class ItemsScrollContainer(SurfaceReferencable):
         # -----------------------------
         # CHILD EVENTS
         # -----------------------------
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        for item in self.items:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not self.is_hover(): # Sécurité pour pas cliquer dans le vide et tomber sur un controle invisible pour l'utilisateur
+                    continue
 
-            # souris dans le container
-            if self.rect.collidepoint(event.pos):
-
-                y = self.rect.y - self.scroll_y + self.spacing_border
-
-                for item in self.items:
-
-                    if not self.center_elmt:
-                        x = self.rect.x + 10
-                    else:
-                        x = self.rect.x + (
-                            self.rect.width - item.rect.width
-                        ) // 2
-
-                    # IMPORTANT
-                    item.rect.topleft = (x, y)
-
-                    # update boutons AVANT collision
-                    if hasattr(item, "update_layout"):
-                        item.update_layout()
-
-                    item.handle_event(event)
-
-                    y += self.item_height + self.spacing
+            item.handle_event(event)
         
         # -----------------------------
         # SCROLLBAR CLICK / DRAG

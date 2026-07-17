@@ -1,6 +1,6 @@
 import json, pygame
 from enum import Enum
-from classes import game_property, game_type
+from terrakit import game_property, game_type
 
 STRUCTURES_DIR = "classes/structs/"
 

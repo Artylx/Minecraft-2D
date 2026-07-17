@@ -1,0 +1,233 @@
+{
+    "seed": 319267,
+    "entitys": [
+        {
+            "type": "Zombie",
+            "uuid": "57d1346b-91ce-46f0-9e9c-4bbc256a46bc",
+            "x": 4544,
+            "y": -1792,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "1a7b5c21-9cd6-43eb-8919-94980610767a",
+            "x": 6144,
+            "y": -1856,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "2de1c36b-7d96-4e09-aeee-0b6ec5e7a2f0",
+            "x": 7200,
+            "y": -1376,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Player",
+            "uuid": "b72dcb12-b8fb-4038-b370-6806dd2643a4",
+            "x": 7488,
+            "y": 512,
+            "w": 27,
+            "h": 80,
+            "vx": 0.5449685315932512,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Arthur",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "right",
+            "drops": [],
+            "inventory": {
+                "uuid": "1d849f96-84ec-4a97-838b-ac033bbc5996",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 1,
+                            "durability": null,
+                            "components": []
+                        }
+                    }
+                ],
+                "owner_uuid": "b72dcb12-b8fb-4038-b370-6806dd2643a4"
+            }
+        }
+    ],
+    "modified_blocks": {
+        "-5": {
+            "-79:27": {
+                "x": -79,
+                "y": 27,
+                "block": "air",
+                "components": []
+            },
+            "-78:27": {
+                "x": -78,
+                "y": 27,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-4": {
+            "-59:25": {
+                "x": -59,
+                "y": 25,
+                "block": "dirt",
+                "components": []
+            },
+            "-56:26": {
+                "x": -56,
+                "y": 26,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-1": {
+            "-2:24": {
+                "x": -2,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-5:7": {
+                "x": -5,
+                "y": 7,
+                "block": "grass",
+                "components": []
+            },
+            "-6:11": {
+                "x": -6,
+                "y": 11,
+                "block": "grass",
+                "components": []
+            },
+            "-7:-1": {
+                "x": -7,
+                "y": -1,
+                "block": "dirt",
+                "components": []
+            },
+            "-6:3": {
+                "x": -6,
+                "y": 3,
+                "block": "dirt",
+                "components": []
+            },
+            "-7:22": {
+                "x": -7,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "-6:23": {
+                "x": -6,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-2:25": {
+                "x": -2,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "-4:25": {
+                "x": -4,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "-6:19": {
+                "x": -6,
+                "y": 19,
+                "block": "grass",
+                "components": []
+            },
+            "-3:25": {
+                "x": -3,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "-5:24": {
+                "x": -5,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-7:18": {
+                "x": -7,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-6:12": {
+                "x": -6,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-7:15": {
+                "x": -7,
+                "y": 15,
+                "block": "grass",
+                "components": []
+            }
+        },
+        "0": {
+            "13:19": {
+                "x": 13,
+                "y": 19,
+                "block": "grass",
+                "components": []
+            }
+        }
+    }
+}
