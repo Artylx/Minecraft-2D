@@ -2,7 +2,7 @@ import json, pygame
 from enum import Enum
 from terrakit import game_property, game_type
 
-STRUCTURES_DIR = "classes/structs/"
+STRUCTURES_DIR = "terrakit/structs/"
 
 class StructureType(Enum):
     SMALL_TREE = "small_tree"

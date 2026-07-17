@@ -2,6 +2,27 @@
     "seed": 679814,
     "entitys": [
         {
+            "type": "Zombie",
+            "uuid": "586bfbeb-3f08-492e-b31c-67ba50431c3f",
+            "x": -2080,
+            "y": 544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Unamed entity",
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
             "type": "Player",
             "uuid": "54ab6da3-81da-4b44-b38f-099da2476fdf",
             "x": -3408,
@@ -28,37 +49,27 @@
         },
         {
             "type": "Player",
-            "uuid": "a0b2f7e3-2ed3-44ec-aa88-39b59733c55b",
-            "x": -2947,
-            "y": -384,
+            "uuid": "f789645c-f866-42d8-9636-343b6eef29a8",
+            "x": -2461,
+            "y": 704,
             "w": 27,
             "h": 80,
-            "vx": 2.8198656845421106,
+            "vx": -47.430753466317036,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
             "name": "Arthur",
-            "health": 40,
+            "health": 15.0,
             "max_health": 40,
             "orientation": "left",
             "drops": [],
             "inventory": {
-                "uuid": "f04c435f-e7df-4fde-8c08-be667598cda4",
+                "uuid": "d4525039-1a20-406b-9a2c-8667cd99eefe",
                 "size": 24,
                 "title": "Inventory of Arthur",
-                "items": [
-                    {
-                        "slot": 0,
-                        "itemStack": {
-                            "item_type_name": "iron_sword",
-                            "count": 1,
-                            "durability": 523,
-                            "components": []
-                        }
-                    }
-                ],
-                "owner_uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce"
+                "items": [],
+                "owner_uuid": "f789645c-f866-42d8-9636-343b6eef29a8"
             }
         }
     ],

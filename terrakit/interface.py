@@ -383,7 +383,8 @@ class MainMenu:
             Button(
                 "Paramètres",
                 (self.center_x - 200, self.center_y - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
-                lambda: print("Settings")
+                lambda: print("Settings"),
+                enable=False
             ),
             Button(
                 "Sauvegarder et quitter",
