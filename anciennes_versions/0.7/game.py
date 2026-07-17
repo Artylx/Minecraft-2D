@@ -1,5 +1,5 @@
 import pygame
-from classes.world import World
+from terrakit.world import World
 
 class Game:
     def __init__(self, update_rate=60):
@@ -14,7 +14,7 @@ class Game:
         self.running = True
         self.update_rate = update_rate
 
-        from classes.world import Block
+        from terrakit.world import Block
         Block.texture_manager.load_default_textures()
 
         self.WORLD = World(seed=12345, name="")

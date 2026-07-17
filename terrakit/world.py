@@ -2,17 +2,17 @@ from turtle import pos
 
 import pygame
 from noise import pnoise1, pnoise2
-from classes import inventory
-from classes import entity as EntityClass, game_property, game_type
+from terrakit import inventory
+from terrakit import entity as EntityClass, game_property, game_type
 import random
-from classes import entity
-from classes.struct import StructureManager, StructureType
-from classes.game_type import BlockProperty
+from terrakit import entity
+from terrakit.struct import StructureManager, StructureType
+from terrakit.game_type import BlockProperty
 import json
 import os
-from classes.biome import BiomeType, BiomeManager
+from terrakit.biome import BiomeType, BiomeManager
 from collections import deque
-from classes import debug
+from terrakit import debug
 
 def load_world_json(world_path):
     """

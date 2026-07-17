@@ -1,9 +1,9 @@
 import pygame
-from classes import game_property, inventory, game_type
+from terrakit import game_property, inventory, game_type
 import math
 import random
 import uuid
-from classes.texture_manager import TextureType
+from terrakit.texture_manager import TextureType
 
 def rotate_around_pivot(image, angle, pivot, offset):
     rotated_image = pygame.transform.rotate(image, angle)
@@ -1387,16 +1387,29 @@ class Mob(Living_entity):
 
         self.move_timer = 0
         self.move_direction = 0
-        self.move_speed = 3
+        self.move_speed = 120
 
         self.inventory = inventory
 
     def update(self, dt):
+        # Décrémenter le timer
+        if self.IA:
+            self.move_timer -= dt
+
+            if self.move_timer <= 0:
+                self.move_timer = random.uniform(2, 5)
+
+                # choisir une direction
+                self.move_direction = random.choice([-1, 0, 1])
+
         self.apply_horizontal_target()
 
-        # Décrémenter le timer
-        self.move_timer -= dt
+        self.apply_auto_jump()
 
+        # Appel du super pour appliquer le mouvement
+        super().update(dt)
+
+    def apply_auto_jump(self):
         if self.auto_jump:
             self.front_rect = self.rect.copy()
             self.front_rect.x += self.move_direction * 5  # quelques pixels devant
@@ -1406,9 +1419,6 @@ class Mob(Living_entity):
                 # appliquer un saut
                 self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
                 self.on_ground = False
-
-        # Appel du super pour appliquer le mouvement
-        super().update(dt)
 
     def apply_horizontal_target(self):
         ia_control = self.knockback_timer <= 0
@@ -1459,7 +1469,7 @@ class Mob(Living_entity):
         return super().to_json(type_, data)
 
 class Zombie(Mob):
-    DETECTION_DISTANCE = 400
+    DETECTION_DISTANCE = game_property.TILE_SIZE * 6
 
     def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True, spawn_point=None):
         rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
@@ -1467,62 +1477,81 @@ class Zombie(Mob):
         self.update_texture()
 
         self.attack_cooldown = 0
+        self.walk_animation = 0
     
     def update(self, dt):
-        player = self.get_nearest_player()
+        self.detected_player = self.get_nearest_player()
 
         self.attack_cooldown -= dt
 
+        if abs(self.velocity.x) > 5:
+            self.walk_animation += dt * 10
+
         # Aucun joueur à portée -> déplacement aléatoire
-        if player is None:
+        if self.detected_player is None:
             return super().update(dt)
 
         # Joueur détecté -> le poursuivre
         else:
             # Bord droit du zombie -> bord gauche du joueur
-            ATTACK_RANGE = 10  # pixels
+            ATTACK_RANGE = 10
 
-            # Le zombie est à gauche du joueur
-            if self.rect.centerx < player.rect.centerx:
-                distance = player.rect.left - self.rect.right
+            ARM_REACH = 18
 
-                if distance > ATTACK_RANGE:
-                    self.move_direction = 1
-                else:
-                    self.move_direction = 0
-                    
-                    if self.attack_cooldown <= 0:
-                        self.attack(player)
-                        self.attack_cooldown = 0.8
-
-            # Le zombie est à droite
+            # Création de la hitbox des bras
+            if self.orientation == "right":
+                attack_rect = pygame.Rect(
+                    self.rect.right,
+                    self.rect.y - 10,
+                    ARM_REACH,
+                    self.rect.height + 20
+                )
             else:
-                distance = self.rect.left - player.rect.right
+                attack_rect = pygame.Rect(
+                    self.rect.left - ARM_REACH,
+                    self.rect.y - 10,
+                    ARM_REACH,
+                    self.rect.height + 20
+                )
 
-                if distance > ATTACK_RANGE:
-                    self.move_direction = -1
+
+            # Le joueur est à portée du bras
+            if attack_rect.colliderect(self.detected_player.rect):
+
+                self.move_direction = 0
+
+                if self.attack_cooldown <= 0:
+                    self.attack(self.detected_player)
+                    self.attack_cooldown = 0.8
+
+
+            # Sinon on poursuit le joueur
+            else:
+
+                # Joueur à droite
+                if self.rect.centerx < self.detected_player.rect.centerx:
+                    distance = self.detected_player.rect.left - self.rect.right
+
+                    if distance > ATTACK_RANGE:
+                        self.move_direction = 1
+                    else:
+                        self.move_direction = 0
+
+
+                # Joueur à gauche
                 else:
-                    self.move_direction = 0
+                    distance = self.rect.left - self.detected_player.rect.right
 
-                    if self.attack_cooldown <= 0:
-                        self.attack(player)
-                        self.attack_cooldown = 0.8
-
-            self.move_speed = 120
+                    if distance > ATTACK_RANGE:
+                        self.move_direction = -1
+                    else:
+                        self.move_direction = 0
             
             super().apply_horizontal_target()
 
-            # Saut automatique
-            if self.auto_jump:
-                front = self.rect.copy()
-                front.x += self.move_direction * 5
-                front.y += 1
+            super().apply_auto_jump()
 
-                if self.world.is_collide_at(front) and self.on_ground:
-                    self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
-                    self.on_ground = False
-
-            return super().update(dt)
+        return super().update(dt)
         
     def attack(self, player):
         # apply damage
@@ -1596,14 +1625,49 @@ class Zombie(Mob):
         screen.blit(leg, (draw_x, draw_y))
 
         # =========================
-        # ARM (différent selon orientation)
+        # ARM (animation zombie)
+
         if self.orientation == "left":
             draw_x = self.rect.x - cam_rect.x + self.rect.width // 2
+            base_angle = -90
         else:
             draw_x = self.rect.x - cam_rect.x
+            base_angle = 90
 
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
-        screen.blit(arm, (draw_x, draw_y))
+        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width + 5
+
+
+        # Animation du bras
+        if abs(self.velocity.x) > 5:
+            # Bras levé devant quand il marche
+            angle = base_angle + math.sin(self.walk_animation) * 10
+        else:
+            # Bras le long du corps au repos
+            angle = 0
+
+
+        # Position de l'épaule
+        pivot = pygame.Vector2(
+            draw_x + arm.get_width() // 2,
+            draw_y
+        )
+
+
+        # Décalage du pivot dans l'image originale
+        offset = pygame.Vector2(
+            0,
+            arm.get_height() // 2
+        )
+
+
+        rotated_arm, arm_rect = rotate_around_pivot(
+            arm,
+            angle,
+            pivot,
+            offset
+        )
+
+        screen.blit(rotated_arm, arm_rect)
 
         super().render(screen, cam_rect, None)
 

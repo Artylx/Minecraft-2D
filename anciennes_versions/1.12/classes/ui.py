@@ -1,8 +1,8 @@
 from operator import inv
-from classes import language
+from terrakit import language
 import pygame
-from classes import game_property
-from classes.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager
+from terrakit import game_property
+from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager
     
 class DragState:
     def __init__(self):

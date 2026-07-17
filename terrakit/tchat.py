@@ -1,8 +1,8 @@
 import pygame
-from classes import game_property, game_type
+from terrakit import game_property, game_type
 import re
 import time
-from classes.inventory import ItemStack
+from terrakit.inventory import ItemStack
 
 COLORS = {
     "&0": (0, 0, 0),

@@ -1,6 +1,6 @@
 import pygame
 import random, json
-from classes import tchat, world, game_property, game_type, entity, ui, interface
+from terrakit import tchat, world, game_property, game_type, entity, ui, interface
 from server import ServerConnection
 
 class GameClient:

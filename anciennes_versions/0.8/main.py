@@ -1,6 +1,6 @@
 import pygame
-from classes.world import World
-import classes.game_property as game_property
+from terrakit.world import World
+import terrakit.game_property as game_property
 
 SCREEN_SIZE = (800, 600)
 
@@ -17,7 +17,7 @@ class Game:
         self.running = True
         self.update_rate = game_property.UPDATE_RATE
 
-        from classes.world import Block
+        from terrakit.world import Block
         Block.texture_manager.load_default_textures()
 
         self.WORLD = World(seed=12345, name="My World", width=self.WIDTH_SCREEN, height=self.HEIGHT_SCREEN)

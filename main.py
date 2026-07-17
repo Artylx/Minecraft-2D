@@ -2,20 +2,16 @@ from importlib.resources import path
 
 import pygame
 from tomlkit import value
-from classes import game_property, entity, interface, world, tchat, game_type, ui
-from classes.texture_manager import TextureManager
-from classes.inventory import Crafting_types
-import random
+from terrakit import game_property, entity, interface, world, tchat, game_type, ui
+import terrakit
 import os
 import shutil
 import os
 import traceback
 import datetime
 import platform
-
-from classes import client
-
-from classes import debug
+from terrakit import client
+from terrakit import debug
 
 import config
 
@@ -58,9 +54,9 @@ class Game:
 
         self.press_reset()
 
+        terrakit.init()
+        self.texture_manager = terrakit.context.texture_manager
         self.menu = interface.MainMenu(self)
-
-        self.load_texture()
 
         if debug.AUTO_START["enable"]:
             self.select_world(debug.AUTO_START["world_name"])
@@ -155,26 +151,6 @@ class Game:
 
     def game_is_start(self):
         return self.game_manager is not None
-
-    def load_texture(self):
-        self.texture_manager = TextureManager()
-        self.texture_manager.load_default_textures()
-
-        from classes.world import Block
-        Block.texture_manager = self.texture_manager
-
-        from classes.inventory import ItemStack
-        ItemStack.texture_manager = self.texture_manager
-
-        from classes.entity import Entity
-        Entity.texture_manager = self.texture_manager
-
-        from classes.game_type import ItemProperty
-        ItemProperty.texture_manager = self.texture_manager
-
-        from classes.interface import MainMenu
-        MainMenu.texture_manager = self.texture_manager
-        self.menu.reload()
 
     def update_full_screen(self):
         if self.full_screen:

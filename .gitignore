@@ -1,6 +1,6 @@
 # Cache Python
 __pycache__/
-classes/__pycache__/
+terrakit/__pycache__/
 
 # Crash logs
 crash_reports/
