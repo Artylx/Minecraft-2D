@@ -400,6 +400,22 @@ class GameClient:
             screen.blit(surf, (10, y))
             y += 20
 
+        pygame.draw.line(
+            screen,
+            (0, 255, 0),
+            (0, self.height_screen // 2),
+            (self.width_screen, self.height_screen // 2),
+            1
+        )
+
+        pygame.draw.line(
+            screen,
+            (0, 255, 0),
+            (self.width_screen // 2, 0),
+            (self.width_screen // 2, self.height_screen),
+            1
+        )
+
 
 class MultiplayerClient():
     def __init__(self, game, player_name, server_ip, server_port, width_screen, height_screen):

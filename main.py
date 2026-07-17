@@ -29,7 +29,10 @@ class Game:
         self.WIDTH_SCREEN = self.WIDTH
         self.HEIGHT_SCREEN = self.HEIGHT
 
-        self.screen = pygame.display.set_mode((self.WIDTH_SCREEN, self.HEIGHT_SCREEN), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode(
+            (self.WIDTH_SCREEN, self.HEIGHT_SCREEN), 
+            pygame.RESIZABLE | pygame.DOUBLEBUF
+        )
 
         # ICON
         icon = pygame.image.load(game_property.get_resource_path("resource_pack/Default/texture/blocks/grass_block.png")).convert_alpha()

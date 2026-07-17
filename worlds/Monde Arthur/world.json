@@ -41,14 +41,24 @@
             "name": "Arthur",
             "health": 40,
             "max_health": 40,
-            "orientation": "right",
+            "orientation": "left",
             "drops": [],
             "inventory": {
-                "uuid": "4fe8cf76-4d3e-48a3-b319-e22834248483",
+                "uuid": "f04c435f-e7df-4fde-8c08-be667598cda4",
                 "size": 24,
                 "title": "Inventory of Arthur",
-                "items": [],
-                "owner_uuid": "a0b2f7e3-2ed3-44ec-aa88-39b59733c55b"
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "iron_sword",
+                            "count": 1,
+                            "durability": 523,
+                            "components": []
+                        }
+                    }
+                ],
+                "owner_uuid": "54a41c78-b86d-47a1-9a64-c0b4b13e41ce"
             }
         }
     ],
@@ -92,24 +102,6 @@
                                 "size": 24,
                                 "title": "Inventory uuid:7c51e8ae-3864-48cd-a722-fe38d83c9dad",
                                 "items": [
-                                    {
-                                        "slot": 0,
-                                        "itemStack": {
-                                            "item_type_name": "iron_sword",
-                                            "count": 1,
-                                            "durability": 523,
-                                            "components": []
-                                        }
-                                    },
-                                    {
-                                        "slot": 1,
-                                        "itemStack": {
-                                            "item_type_name": "iron_pickaxe",
-                                            "count": 1,
-                                            "durability": 523,
-                                            "components": []
-                                        }
-                                    },
                                     {
                                         "slot": 2,
                                         "itemStack": {
@@ -372,6 +364,60 @@
                                             "durability": null,
                                             "components": []
                                         }
+                                    },
+                                    {
+                                        "slot": 18,
+                                        "itemStack": {
+                                            "item_type_name": "coal_ingot",
+                                            "count": 1,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 19,
+                                        "itemStack": {
+                                            "item_type_name": "iron_pickaxe",
+                                            "count": 1,
+                                            "durability": 523,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 20,
+                                        "itemStack": {
+                                            "item_type_name": "dirt",
+                                            "count": 2,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 21,
+                                        "itemStack": {
+                                            "item_type_name": "grass",
+                                            "count": 1,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 22,
+                                        "itemStack": {
+                                            "item_type_name": "stone",
+                                            "count": 64,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 23,
+                                        "itemStack": {
+                                            "item_type_name": "iron_ore",
+                                            "count": 5,
+                                            "durability": null,
+                                            "components": []
+                                        }
                                     }
                                 ]
                             }
@@ -629,6 +675,24 @@
                 "x": -84,
                 "y": 16,
                 "block": "stone",
+                "components": []
+            },
+            "-88:10": {
+                "x": -88,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-88:9": {
+                "x": -88,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-88:11": {
+                "x": -88,
+                "y": 11,
+                "block": "air",
                 "components": []
             }
         },
@@ -2932,7 +2996,7 @@
             "-33:-44": {
                 "x": -33,
                 "y": -44,
-                "block": "air",
+                "block": "torch",
                 "components": []
             },
             "-42:-41": {
@@ -2992,7 +3056,7 @@
             "-36:-44": {
                 "x": -36,
                 "y": -44,
-                "block": "torch",
+                "block": "air",
                 "components": []
             },
             "-33:-45": {
@@ -3178,6 +3242,156 @@
             "-44:12": {
                 "x": -44,
                 "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-39:-60": {
+                "x": -39,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-38:-58": {
+                "x": -38,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-36:-58": {
+                "x": -36,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-33:-59": {
+                "x": -33,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-40:-59": {
+                "x": -40,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-37:-60": {
+                "x": -37,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-34:-58": {
+                "x": -34,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-35:-60": {
+                "x": -35,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-38:-59": {
+                "x": -38,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-36:-59": {
+                "x": -36,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-39:-58": {
+                "x": -39,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-33:-60": {
+                "x": -33,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-40:-60": {
+                "x": -40,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-34:-59": {
+                "x": -34,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-37:-58": {
+                "x": -37,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-35:-58": {
+                "x": -35,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-39:-59": {
+                "x": -39,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-38:-60": {
+                "x": -38,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-36:-60": {
+                "x": -36,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-33:-58": {
+                "x": -33,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-40:-61": {
+                "x": -40,
+                "y": -61,
+                "block": "air",
+                "components": []
+            },
+            "-40:-58": {
+                "x": -40,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-37:-59": {
+                "x": -37,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-35:-59": {
+                "x": -35,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-34:-60": {
+                "x": -34,
+                "y": -60,
                 "block": "air",
                 "components": []
             }
@@ -3366,6 +3580,276 @@
             "-23:15": {
                 "x": -23,
                 "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-21:-54": {
+                "x": -21,
+                "y": -54,
+                "block": "air",
+                "components": []
+            },
+            "-28:-60": {
+                "x": -28,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-29:-58": {
+                "x": -29,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-21:-51": {
+                "x": -21,
+                "y": -51,
+                "block": "air",
+                "components": []
+            },
+            "-30:-60": {
+                "x": -30,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-27:-58": {
+                "x": -27,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-25:-58": {
+                "x": -25,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-23:-55": {
+                "x": -23,
+                "y": -55,
+                "block": "air",
+                "components": []
+            },
+            "-22:-56": {
+                "x": -22,
+                "y": -56,
+                "block": "air",
+                "components": []
+            },
+            "-23:-58": {
+                "x": -23,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-31:-59": {
+                "x": -31,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-22:-53": {
+                "x": -22,
+                "y": -53,
+                "block": "air",
+                "components": []
+            },
+            "-32:-58": {
+                "x": -32,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-24:-60": {
+                "x": -24,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-26:-60": {
+                "x": -26,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-24:-57": {
+                "x": -24,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "-29:-59": {
+                "x": -29,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-21:-52": {
+                "x": -21,
+                "y": -52,
+                "block": "air",
+                "components": []
+            },
+            "-27:-59": {
+                "x": -27,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-30:-58": {
+                "x": -30,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-28:-58": {
+                "x": -28,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-25:-59": {
+                "x": -25,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-22:-57": {
+                "x": -22,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "-23:-59": {
+                "x": -23,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-22:-54": {
+                "x": -22,
+                "y": -54,
+                "block": "air",
+                "components": []
+            },
+            "-23:-56": {
+                "x": -23,
+                "y": -56,
+                "block": "air",
+                "components": []
+            },
+            "-32:-59": {
+                "x": -32,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-31:-60": {
+                "x": -31,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-26:-58": {
+                "x": -26,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-24:-58": {
+                "x": -24,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-30:-59": {
+                "x": -30,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-29:-60": {
+                "x": -29,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-21:-53": {
+                "x": -21,
+                "y": -53,
+                "block": "air",
+                "components": []
+            },
+            "-28:-59": {
+                "x": -28,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-27:-60": {
+                "x": -27,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-23:-60": {
+                "x": -23,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-25:-60": {
+                "x": -25,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-22:-55": {
+                "x": -22,
+                "y": -55,
+                "block": "air",
+                "components": []
+            },
+            "-23:-57": {
+                "x": -23,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "-32:-60": {
+                "x": -32,
+                "y": -60,
+                "block": "air",
+                "components": []
+            },
+            "-22:-52": {
+                "x": -22,
+                "y": -52,
+                "block": "air",
+                "components": []
+            },
+            "-31:-58": {
+                "x": -31,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "-26:-59": {
+                "x": -26,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-24:-59": {
+                "x": -24,
+                "y": -59,
+                "block": "air",
+                "components": []
+            },
+            "-24:-56": {
+                "x": -24,
+                "y": -56,
                 "block": "air",
                 "components": []
             }
@@ -4896,36 +5380,6 @@
             "20:51": {
                 "x": 20,
                 "y": 51,
-                "block": "air",
-                "components": []
-            },
-            "22:56": {
-                "x": 22,
-                "y": 56,
-                "block": "air",
-                "components": []
-            },
-            "22:58": {
-                "x": 22,
-                "y": 58,
-                "block": "air",
-                "components": []
-            },
-            "22:55": {
-                "x": 22,
-                "y": 55,
-                "block": "air",
-                "components": []
-            },
-            "22:54": {
-                "x": 22,
-                "y": 54,
-                "block": "air",
-                "components": []
-            },
-            "22:57": {
-                "x": 22,
-                "y": 57,
                 "block": "air",
                 "components": []
             }
