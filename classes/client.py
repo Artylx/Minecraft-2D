@@ -452,6 +452,9 @@ class MultiplayerClient():
         tchat.CommandManager.game = self
         self.tchat.send_message("", "Bienvenue sur le serveur de TeraCraft")
 
+    def is_connected(self):
+        return not self.server_connection.disconnected
+
     def update(self, dt, game):
 
         if self.world and self.player:

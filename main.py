@@ -334,6 +334,14 @@ class Game:
         self.toogle_[key] = not self.toogle_.get(key, False)
 
     def update(self, dt):
+        if self.game_is_start() and isinstance(self.game_manager, client.MultiplayerClient):
+            if not self.game_manager.is_connected():
+                self.stop_game()
+                self.menu.open_error(
+                    title="Déconnecté du serveur",
+                    message="Vous avez été déconnecté du serveur."
+                )
+
         if self.is_press(pygame.K_F11):
             self.full_screen = not self.full_screen
             self.update_full_screen()
@@ -398,7 +406,7 @@ class Game:
     Pygame Version: {pygame.version.ver}
 
     --- GAME ---
-    World Loaded: {getattr(self.game_manager, "world_name", "Unknown")}
+    World Loaded: {getattr(self.game_manager, "name", "Unknown")}
     Player Position: {
         self.game_manager.player.get_pos_tile()
         if hasattr(self.game_manager, "player") and self.game_manager.player
