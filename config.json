@@ -1,3 +1,5 @@
 {
-    "last_pseudo": "Arthur"
+    "last_pseudo": "Arthur",
+    "global_volume": 20,
+    "sound_volume": 50
 }

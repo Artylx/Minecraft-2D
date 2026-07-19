@@ -212,11 +212,9 @@ class GameClient:
                 self.World.create_entity(z)
                 
             if game.is_press(pygame.K_p):
-                p = entity.Player(world=self.World, name="Player2")
-                p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
-                self.World.create_entity(p)
-
-                self.tchat.send_message(p.name, "Salut les gens !")
+                s = entity.Skeleton(world=self.World)
+                s.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
+                self.World.create_entity(s)
 
             if game.is_press(pygame.K_o):
                 p = entity.Npc(world=self.World, name="Armurier")

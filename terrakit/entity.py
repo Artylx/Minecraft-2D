@@ -4,6 +4,7 @@ import math
 import random
 import uuid
 from terrakit.texture_manager import TextureType
+from terrakit import context
 
 def rotate_around_pivot(image, angle, pivot, offset):
     rotated_image = pygame.transform.rotate(image, angle)
@@ -62,7 +63,7 @@ ATTACK_RANGE = 30
 class Entity:
     texture_manager = None
 
-    def __init__(self, rect, world=None, name="Unamed entity", texture=None, dif_pos_render=None, display_name=False, gravity=game_property.GRAVITY, collidable=True):
+    def __init__(self, rect, world=None, name="Unamed entity", texture=None, dif_pos_render=None, display_name=False, gravity=game_property.GRAVITY, collidable=True, live_time=None):
         self.uuid = uuid.uuid4()
         self.rect = rect
         self.name = name
@@ -74,6 +75,7 @@ class Entity:
         self.gravity = gravity
         self.collidable = collidable
         self.is_alive = True
+        self.live_time = live_time
         if dif_pos_render is None:
             dif_pos_render = [0, 0]
         self.dif_pos_render = dif_pos_render
@@ -98,6 +100,10 @@ class Entity:
         self.temp_rect = None
         self.attached_entities = []
         self.attached_to = None
+
+        self.alpha_texture = 255
+        self.removing = False
+        self.remove_speed = 100
 
     def is_valid(self): 
         if self.world:
@@ -160,6 +166,8 @@ class Entity:
 
             tex.blit(shade, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
 
+            tex.set_alpha(int(self.alpha_texture))
+
             screen.blit(tex, (draw_x, draw_y))
         else:
             if color:
@@ -168,7 +176,11 @@ class Entity:
                     int(color[1] * brightness),
                     int(color[2] * brightness)
                 )
-                pygame.draw.rect(screen, c, (draw_x, draw_y, self.rect.width, self.rect.height))
+                surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+
+                surface.fill((*c, int(self.alpha_texture)))
+
+                screen.blit(surface, (draw_x, draw_y))
 
     def render_display_name(self, screen, cam_rect):        
         draw_x, draw_y = game_property.world_to_screen(
@@ -209,7 +221,26 @@ class Entity:
         self.rect.x = x * game_property.TILE_SIZE
         self.rect.y = y * game_property.TILE_SIZE
 
-    def update(self, dt):
+    def update_live_time(self, dt):
+        if self.live_time is not None:
+            self.live_time -= dt
+        
+            if self.live_time <= 0:
+                self.removing = True
+
+        if self.removing:
+            self.alpha_texture -= self.remove_speed * dt
+
+            if self.alpha_texture <= 0:
+                self.alpha_texture = 0
+
+                self.kill()
+
+                return
+
+    def update(self, dt, update_live=True):
+        if update_live:
+            self.update_live_time(dt)
 
         max_steps = 100
         steps = 0
@@ -363,6 +394,7 @@ class Entity:
             "speed": self.speed,
             "display_name": self.display_name,
             "name": self.name,
+            "live_time": self.live_time,
         }
 
         data.update(dict_)   # ajoute les champs supplémentaires
@@ -374,8 +406,8 @@ class Annimation:
     NONE = "none"
 
 class Living_entity(Entity):
-    def __init__(self, rect, world=None, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False):
-        super().__init__(rect, world, name, None, None, False, collidable=collidable)
+    def __init__(self, rect, world=None, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False, live_time=None):
+        super().__init__(rect, world, name, None, None, False, collidable=collidable, live_time=live_time)
         self.max_health = max_health
         self.health = health
         self.drops = drops
@@ -389,8 +421,9 @@ class Living_entity(Entity):
 
         self.knockback_timer = 0
         self.knockback_resistance = 0.0
+        self.walk_animation = 0
     
-    def update(self, dt):
+    def update(self, dt, update_live=True):
         if self.annim_time > 0:
             self.annim_time -= dt
         else:
@@ -408,7 +441,7 @@ class Living_entity(Entity):
         if self.knockback_timer > 0:
             self.knockback_timer -= dt
         
-        return super().update(dt)
+        return super().update(dt, update_live)
 
     def set_orientation(self, orientation):
         if self.annim_time > 0 and self.annim_orientation:
@@ -591,62 +624,83 @@ class Living_entity(Entity):
         return super().to_json(type_, data)
 
 class Arrow_entity(Living_entity):
-    def __init__(self, pos, v_initial, sender, world=None, name="Arrow entity", texture=None, damage=10, penetration_depth=3):
+    def __init__(self, pos, v_initial, sender, world=None, name="Arrow entity", texture=None, damage=10, penetration_depth=3, can_be_picked=True):
         self.damage = damage
         self.penetration_depth = penetration_depth
         self.penetration_counter = 0
 
         rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
 
-        super().__init__(rect, world, name, invulnerable=True)
+        super().__init__(rect, world, name, invulnerable=True, live_time=10)
         self.sender = sender
 
         if texture is None:
-            texture = self.texture_manager.get_texture(TextureType.ARROW)
+            texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ARROW)
         self.texture = texture
         self.stucked = False
 
         self.add_velocity(v_initial.x, v_initial.y)
+        self.can_be_picked = can_be_picked
 
     def get_damage(self):
         return self.damage
     
     def render(self, screen, cam_rect):
-        texture = self.texture
+        if self.texture is None:
+            return
 
-        # position écran
+        # Position écran
         draw_x, draw_y = game_property.world_to_screen(
             self.rect.x, self.rect.y, self.rect.height, cam_rect
         )
 
-        # angle basé sur la vitesse
-        if self.velocity.length() > 0:
+        # Copie de la texture
+        tex = self.texture.copy()
+
+        # Luminosité
+        light = self.world.get_entity_light(self)
+        brightness = max(0.2, light / 15)
+
+        shade = pygame.Surface(tex.get_size(), pygame.SRCALPHA)
+        shade.fill((
+            int(255 * brightness),
+            int(255 * brightness),
+            int(255 * brightness),
+            255
+        ))
+
+        tex.blit(shade, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+
+        # Alpha de disparition
+        tex.set_alpha(int(self.alpha_texture))
+
+        # Angle basé sur la vitesse
+        if self.velocity.length_squared() > 0:
             angle = -self.velocity.angle_to(pygame.Vector2(1, 0)) - 45
         else:
             angle = 0
 
-        # pivot = centre
+        # Rotation autour du centre
         pivot = pygame.Vector2(
             draw_x + self.rect.width / 2,
             draw_y + self.rect.height / 2
         )
 
-        offset = pygame.Vector2(0, 0)
-
         rotated_image, rotated_rect = rotate_around_pivot(
-            texture,
+            tex,
             angle,
             pivot,
-            offset
+            pygame.Vector2(0, 0)
         )
 
-        screen.blit(rotated_image, rotated_rect.topleft)
+        screen.blit(rotated_image, rotated_rect)
 
     def move(self, x, y):
         return super().move(x, y)
 
     def update(self, dt):
         if self.stucked:
+            self.update_live_time(dt)
             return
 
         # --- PHYSIQUE ---
@@ -716,6 +770,7 @@ class Humanoid(Living_entity):
         
         super().__init__(rect, world, name, health, max_health, drops, collidable, invulnerable)
 
+        self.arm_angle = 0
         self.init_texture(head_texture, body_texture, leg_texture, arm_texture)
     
     def init_texture(self, head_texture, body_texture, leg_texture, arm_texture):
@@ -747,10 +802,10 @@ class Humanoid(Living_entity):
         # BASE TEXTURES
         # -------------------------
         self.textures = {
-            "head": build(self.texture_manager.get_texture(head_texture), head_size),
-            "body": build(self.texture_manager.get_texture(body_texture), body_size),
-            "leg": build(self.texture_manager.get_texture(leg_texture), leg_size),
-            "arm": build(self.texture_manager.get_texture(arm_texture), arm_size),
+            "head": build(context.get_resource_pack().texture_manager().get_texture(head_texture), head_size),
+            "body": build(context.get_resource_pack().texture_manager().get_texture(body_texture), body_size),
+            "leg": build(context.get_resource_pack().texture_manager().get_texture(leg_texture), leg_size),
+            "arm": build(context.get_resource_pack().texture_manager().get_texture(arm_texture), arm_size),
         }
 
         # -------------------------
@@ -860,14 +915,40 @@ class Humanoid(Living_entity):
 
         # =========================
         # ARM
+
         if self.get_orientation() == "left":
             arm_x = base_x + self.rect.width // 2
+            angle = -self.arm_angle
         else:
             arm_x = base_x
+            angle = self.arm_angle
 
         arm_y = base_y + self.rect.width
+
         if arm:
-            screen.blit(arm, (arm_x - gap_outline, arm_y - gap_outline))
+            # Position de l'épaule
+            pivot = pygame.Vector2(
+                arm_x + arm.get_width() // 2,
+                arm_y
+            )
+
+            # Point de rotation dans le sprite
+            offset = pygame.Vector2(
+                0,
+                arm.get_height() / 2
+            )
+
+            rotated_arm, arm_rect = rotate_around_pivot(
+                arm,
+                angle,
+                pivot,
+                offset
+            )
+
+            screen.blit(rotated_arm, (
+                arm_rect.x - gap_outline,
+                arm_rect.y - gap_outline
+            ))
         
 
 class Npc(Humanoid):
@@ -997,10 +1078,14 @@ class Player(Humanoid):
         if selected_item:
             item_property = selected_item.item_property
 
+            self.arm_angle = 20
+
             if isinstance(item_property, game_type.Tool):
 
                 if isinstance(item_property, game_type.Bow_tool):
                     texture = selected_item.get_texture()
+
+                    self.arm_angle = 50
 
                     if texture:
                         weapon_size = int(self.rect.width * 1.8)
@@ -1095,6 +1180,8 @@ class Player(Humanoid):
                     draw_number=False,
                     texture_size=(self.rect.width // 2, self.rect.width // 2)
                 )
+        else:
+            self.arm_angle = 0
 
     def render_hit_box(self, screen, cam_rect, color=(255, 255, 255), width=1):
         if self.is_attacking():
@@ -1129,7 +1216,7 @@ class Player(Humanoid):
                             # entity.apply_damage(selected_item.item_property.get_attack_damage(), self.get_anim_direction())
 
         for entity in self.world.get_entities(Arrow_entity):
-            if not entity.stucked:
+            if not entity.stucked or not entity.can_be_picked:
                 continue
 
             if entity.attached_to is not None:
@@ -1185,6 +1272,7 @@ class Player(Humanoid):
             elif isinstance(selected_item.item_property, game_type.Consumable):
                 
                 if isinstance(selected_item.item_property, game_type.Hanger_consumable):
+                    print(f"health={self.health}, life_regen={selected_item.item_property.life_regen}, max_health={self.max_health}")
                     self.health = min(self.health + selected_item.item_property.life_regen, self.max_health)
 
                 self.inventory.delete_item(self.inventory.ui.selected_index)
@@ -1312,14 +1400,19 @@ class Player(Humanoid):
         return self
 
 class Item(Entity):
-    def __init__(self, world=None, item_type=None, pos=(0, 0), size=(game_property.SIZE_ITEM, game_property.SIZE_ITEM)):
+    def __init__(self, world=None, item_type=None, pos=(0, 0), size=(game_property.SIZE_ITEM, game_property.SIZE_ITEM), timer_picked=1):
         rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
-        super().__init__(rect, world, "Item")
+        super().__init__(rect, world, "Item", live_time=240)
         self.phase = random.random() * math.pi * 2
         self.item_type = item_type
         self.t = 0
 
         self.update_texture()
+        self._can_be_picked = False
+        self.timer_picked = timer_picked
+
+    def can_be_picked(self):
+        return self._can_be_picked
 
     def update_texture(self):
         if self.item_type is None:
@@ -1346,8 +1439,15 @@ class Item(Entity):
         #super().render_hit_box(screen, cam_rect)
 
     def update(self, dt):
-        super().update(dt)
+        super().update(dt, False)
         self.t = pygame.time.get_ticks() / 500
+
+        if self.timer_picked <= 0:
+            self._can_be_picked = True
+
+            super().update_live_time(dt)
+        else:
+            self.timer_picked -= dt
 
     def load(self, data, add_map=None):
 
@@ -1379,6 +1479,8 @@ class Item(Entity):
         return super().to_json(type_, data)
 
 class Mob(Living_entity):
+    DETECTION_DISTANCE = None
+
     def __init__(self, rect, inventory=None, world=None, name="Unamed entity", health=20, max_health=20, IA=True, spawn_point=None):
         super().__init__(rect, world, name, health, max_health)
         self.auto_jump = True
@@ -1392,6 +1494,9 @@ class Mob(Living_entity):
         self.inventory = inventory
 
     def update(self, dt):
+        if abs(self.velocity.x) > 5:
+            self.walk_animation += dt * 10
+
         # Décrémenter le timer
         if self.IA:
             self.move_timer -= dt
@@ -1408,6 +1513,24 @@ class Mob(Living_entity):
 
         # Appel du super pour appliquer le mouvement
         super().update(dt)
+
+    def get_nearest_player(self):
+        nearest = None
+
+        if not self.DETECTION_DISTANCE:
+            return nearest
+        nearest_distance = self.DETECTION_DISTANCE
+
+        for player in self.world.get_entities(Player):
+            dx = player.rect.centerx - self.rect.centerx
+            dy = player.rect.centery - self.rect.centery
+
+            distance = math.hypot(dx, dy)
+
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest = player
+        return nearest
 
     def apply_auto_jump(self):
         if self.auto_jump:
@@ -1467,25 +1590,227 @@ class Mob(Living_entity):
         data.update(dict_)
         
         return super().to_json(type_, data)
+    
 
-class Zombie(Mob):
-    DETECTION_DISTANCE = game_property.TILE_SIZE * 6
+class MobHumanoid(Mob):
+    def __init__(self, rect, inventory=None, world=None, name="Unamed entity", health=20, max_health=20, IA=True, spawn_point=None,
+                 leg_texture: TextureType = None, 
+                 arm_texture: TextureType = None, 
+                 body_texture: TextureType = None, 
+                 head_texture: TextureType = None
+                 ):
+        super().__init__(rect, inventory, world, name, health, max_health, IA, spawn_point)
+        self.init_texture(head_texture, body_texture, leg_texture, arm_texture)
+
+        self.arm_angle = 0
+
+    def init_texture(self, head_texture, body_texture, leg_texture, arm_texture):
+
+        def build(tex, size):
+            base = pygame.transform.scale(tex, size)
+            flipped = pygame.transform.flip(base, True, False)
+
+            return {
+                "right": base,
+                "left": flipped
+            }
+
+        def tint_pack(tex_dict, color):
+            return {
+                "right": tint_surface(tex_dict["right"], color),
+                "left": tint_surface(tex_dict["left"], color)
+            }
+
+        # -------------------------
+        # BASE SIZES
+        # -------------------------
+        head_size = (self.rect.width - 4, self.rect.width - 4)
+        body_size = (self.rect.width, self.rect.width)
+        leg_size = ((self.rect.width - 2) // 2, self.rect.width)
+        arm_size = (self.rect.width // 2, self.rect.width)
+
+        # -------------------------
+        # BASE TEXTURES
+        # -------------------------
+        self.textures = {
+            "head": build(context.get_resource_pack().texture_manager().get_texture(head_texture), head_size),
+            "body": build(context.get_resource_pack().texture_manager().get_texture(body_texture), body_size),
+            "leg": build(context.get_resource_pack().texture_manager().get_texture(leg_texture), leg_size),
+            "arm": build(context.get_resource_pack().texture_manager().get_texture(arm_texture), arm_size),
+        }
+
+        # -------------------------
+        # RED VARIANT (exemple)
+        # -------------------------
+        red_color = (200, 100, 100)
+
+        self.textures_red = {
+            "head": tint_pack(self.textures["head"], red_color),
+            "body": tint_pack(self.textures["body"], red_color),
+            "leg": tint_pack(self.textures["leg"], red_color),
+            "arm": tint_pack(self.textures["arm"], red_color),
+        }
+
+        self.textures_outline = {}
+
+        for part in self.textures:
+
+            self.textures_outline[part] = {
+                "right": create_outline_surface(
+                    self.textures[part]["right"]
+                ),
+                "left": create_outline_surface(
+                    self.textures[part]["left"]
+                )
+            }
+
+    def render(self, screen, cam_rect, outline=False):
+
+        gap_outline = 3 if outline else 0
+
+        # 🎯 Gestion du clignotement (effet Terraria)
+        light = self.world.get_entity_light(self)
+        brightness = light / 15
+
+        use_red = False
+        if self.is_taking_damage:
+            # clignote rapidement
+            if int(self.annim_damage_time * 20) % 2 == 0:
+                use_red = True
+
+        if outline:
+            tex = self.textures_outline
+        else:
+            tex = self.textures_red if use_red else self.textures
+
+        orientation = self.get_orientation()
+        head = tex["head"][orientation]
+        body = tex["body"][orientation]
+        leg  = tex["leg"][orientation]
+        arm  = tex["arm"][orientation]
+
+        head = apply_brightness(head, brightness)
+        body = apply_brightness(body, brightness)
+        leg = apply_brightness(leg, brightness)
+        arm = apply_brightness(arm, brightness)
+
+        # =========================
+        # HEAD (avec world_to_screen)
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+        draw_x += 2
+        draw_y += 4
+        if head:
+            screen.blit(
+                head,
+                (
+                    draw_x - gap_outline,
+                    draw_y - gap_outline
+                )
+            )
+
+        # =========================
+        # BASE POSITION (évite recalculs)
+        base_x = self.rect.x - cam_rect.x
+        base_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height
+
+        # =========================
+        # BODY
+        if body:
+
+            pos = (
+                base_x - gap_outline,
+                base_y + self.rect.width - gap_outline
+            )
+
+            screen.blit(body, pos)
+
+        # =========================
+        # LEG
+        if leg:
+
+            pos = (
+                base_x + 2 - gap_outline,
+                base_y + self.rect.width * 2 - gap_outline
+            )
+
+            screen.blit(leg, pos)
+
+            pos = (
+                base_x + 2 + (self.rect.width - 4) // 2 - gap_outline,
+                base_y + self.rect.width * 2 - gap_outline
+            )
+
+            screen.blit(leg, pos)
+
+        # =========================
+        # ARM
+
+        if self.get_orientation() == "left":
+            arm_x = base_x + self.rect.width // 2
+            angle = -self.arm_angle
+        else:
+            arm_x = base_x
+            angle = self.arm_angle
+
+        arm_y = base_y + self.rect.width
+
+        if arm:
+            # Position de l'épaule
+            pivot = pygame.Vector2(
+                arm_x + arm.get_width() // 2,
+                arm_y
+            )
+
+            # Point de rotation dans le sprite
+            offset = pygame.Vector2(
+                0,
+                arm.get_height() / 2
+            )
+
+            rotated_arm, arm_rect = rotate_around_pivot(
+                arm,
+                angle,
+                pivot,
+                offset
+            )
+
+            screen.blit(rotated_arm, (
+                arm_rect.x - gap_outline,
+                arm_rect.y - gap_outline
+            ))
+
+        super().render(screen, cam_rect, None)
+
+
+class Zombie(MobHumanoid):
+    DETECTION_DISTANCE = game_property.TILE_SIZE * 20
 
     def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True, spawn_point=None):
-        rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
-        super().__init__(rect, None, world, name, health, max_health, moving, spawn_point)
-        self.update_texture()
+        if not rect:
+            rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
+        super().__init__(rect, None, world, name, health, max_health, moving, spawn_point,
+                         leg_texture=TextureType.ZOMBIE_LEG,
+                         arm_texture=TextureType.ZOMBIE_ARM,
+                         body_texture=TextureType.ZOMBIE_BODY,
+                         head_texture=TextureType.ZOMBIE_HEAD,
+                         )
 
         self.attack_cooldown = 0
-        self.walk_animation = 0
     
     def update(self, dt):
         self.detected_player = self.get_nearest_player()
 
         self.attack_cooldown -= dt
 
+        # Animation du bras
         if abs(self.velocity.x) > 5:
-            self.walk_animation += dt * 10
+            # Bras levé devant quand il marche
+            self.arm_angle = 90 + math.sin(self.walk_animation) * 10
+        else:
+            # Bras le long du corps au repos
+            self.arm_angle = 0
 
         # Aucun joueur à portée -> déplacement aléatoire
         if self.detected_player is None:
@@ -1560,132 +1885,21 @@ class Zombie(Mob):
         print("Zombie attacks player!", player.get_name())
         pass
 
-    def get_nearest_player(self):
-        nearest = None
-        nearest_distance = self.DETECTION_DISTANCE
-
-        for player in self.world.get_entities(Player):
-            dx = player.rect.centerx - self.rect.centerx
-            dy = player.rect.centery - self.rect.centery
-
-            distance = math.hypot(dx, dy)
-
-            if distance < nearest_distance:
-                nearest_distance = distance
-                nearest = player
-        return nearest
-
-    def render(self, screen, cam_rect):
-        # 🎯 Gestion du clignotement (effet Terraria)
-        light = self.world.get_entity_light(self)
-        brightness = light / 15
-
-        use_red = False
-        if self.is_taking_damage:
-            # clignote rapidement
-            if int(self.annim_damage_time * 20) % 2 == 0:
-                use_red = True
-
-        # 🎯 Choix des textures
-        if use_red:
-            head = self.head_texture_red
-            body = self.body_texture_red
-            leg = self.leg_texture_red
-            arm = self.arm_texture_red
-        else:
-            head = self.head_texture
-            body = self.body_texture
-            leg = self.leg_texture
-            arm = self.arm_texture
-
-        head = apply_brightness(head, brightness)
-        body = apply_brightness(body, brightness)
-        leg = apply_brightness(leg, brightness)
-        arm = apply_brightness(arm, brightness)
-
-        # =========================
-        # HEAD
-        draw_x, draw_y = game_property.world_to_screen(
-            self.rect.x, self.rect.y, self.rect.height, cam_rect
-        )
-        draw_x += 2
-        draw_y += 4
-        screen.blit(head, (draw_x, draw_y))
-
-        # =========================
-        # BODY
-        draw_x = self.rect.x - cam_rect.x
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
-        screen.blit(body, (draw_x, draw_y))
-
-        # =========================
-        # LEG
-        draw_x = self.rect.x - cam_rect.x + 2
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width * 2
-        screen.blit(leg, (draw_x, draw_y))
-
-        # =========================
-        # ARM (animation zombie)
-
-        if self.orientation == "left":
-            draw_x = self.rect.x - cam_rect.x + self.rect.width // 2
-            base_angle = -90
-        else:
-            draw_x = self.rect.x - cam_rect.x
-            base_angle = 90
-
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width + 5
-
-
-        # Animation du bras
-        if abs(self.velocity.x) > 5:
-            # Bras levé devant quand il marche
-            angle = base_angle + math.sin(self.walk_animation) * 10
-        else:
-            # Bras le long du corps au repos
-            angle = 0
-
-
-        # Position de l'épaule
-        pivot = pygame.Vector2(
-            draw_x + arm.get_width() // 2,
-            draw_y
-        )
-
-
-        # Décalage du pivot dans l'image originale
-        offset = pygame.Vector2(
-            0,
-            arm.get_height() // 2
-        )
-
-
-        rotated_arm, arm_rect = rotate_around_pivot(
-            arm,
-            angle,
-            pivot,
-            offset
-        )
-
-        screen.blit(rotated_arm, arm_rect)
-
-        super().render(screen, cam_rect, None)
-
     def set_orientation(self, orientation):
         if super().set_orientation(orientation):
             self.update_texture()
 
     def update_texture(self):
-        self.head_texture = self.texture_manager.get_texture(TextureType.ZOMBIE_HEAD)
+        self.head_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_HEAD)
         self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
 
-        self.body_texture = self.texture_manager.get_texture(TextureType.ZOMBIE_BODY)
+        self.body_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_BODY)
         self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
 
-        self.leg_texture = self.texture_manager.get_texture(TextureType.ZOMBIE_LEG)
+        self.leg_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_LEG)
         self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
         
-        self.arm_texture = self.texture_manager.get_texture(TextureType.ZOMBIE_ARM)
+        self.arm_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_ARM)
         self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
 
         if self.orientation == "right":
@@ -1714,100 +1928,262 @@ class Zombie(Mob):
     def __str__(self):
         return f"Zombie(pos:{self.get_pos_tile()})"
 
-class Skeleton(Mob):
-    def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, moving=True):
-        rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
-        super().__init__(rect, inventory=inventory.Entity_Inventory(self, size=1), world=world, name=name, health=health, max_health=max_health, moving=moving)
+class Skeleton(MobHumanoid):
+    DETECTION_DISTANCE = game_property.TILE_SIZE * 15
+
+    MIN_DISTANCE = game_property.TILE_SIZE * 0.5   # distance minimale (il recule si trop proche)
+    SHOOT_DISTANCE = game_property.TILE_SIZE * 9 # commence à bander l'arc
+
+    def __init__(self, rect=None, world=None, name="Unamed entity", health=20, max_health=20, IA=True, spawn_point=None):
+        if not rect:
+            rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
+        super().__init__(rect, inventory=None, world=world, name=name, health=health, max_health=max_health, IA=IA, spawn_point=spawn_point,
+                         leg_texture=TextureType.SKELETON_LEG,
+                         arm_texture=TextureType.SKELETON_ARM,
+                         body_texture=TextureType.SKELETON_BODY,
+                         head_texture=TextureType.SKELETON_HEAD,
+                         )
         self.update_texture()
+        self.inventory = inventory.Entity_Inventory(self, size=1)
+
+        self.inventory.add_item(inventory.ItemStack(game_type.ItemProperty.BOW, 1, 999))
+
+        self.timer_draw_bow = 0
+        self.attack_cooldown = 0
+        self.is_drawing_bow = False
 
     def render(self, screen, cam_rect):
-        # 🎯 Gestion du clignotement (effet Terraria)
-        light = self.world.get_entity_light(self)
-        brightness = light / 15
+        super().render(screen, cam_rect)
 
-        use_red = False
-        if self.is_taking_damage:
-            # clignote rapidement
-            if int(self.annim_damage_time * 20) % 2 == 0:
-                use_red = True
+    def update(self, dt):
 
-        # 🎯 Choix des textures
-        if use_red:
-            head = self.head_texture_red
-            body = self.body_texture_red
-            leg = self.leg_texture_red
-            arm = self.arm_texture_red
-        else:
-            head = self.head_texture
-            body = self.body_texture
-            leg = self.leg_texture
-            arm = self.arm_texture
+        self.attack_cooldown -= dt
+        self.timer_draw_bow -= dt
 
-        head = apply_brightness(head, brightness)
-        body = apply_brightness(body, brightness)
-        leg = apply_brightness(leg, brightness)
-        arm = apply_brightness(arm, brightness)
+        bow = self.inventory.get_item(0)
 
-        # =========================
-        # HEAD
-        draw_x, draw_y = game_property.world_to_screen(
-            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        if self.has_bow():
+
+            player = self.get_nearest_player()
+
+            if player:
+
+                distance = self.rect.centerx - player.rect.centerx
+                abs_distance = abs(distance)
+
+
+                # Trop proche -> reculer
+                if abs_distance < self.MIN_DISTANCE:
+
+                    self.is_drawing_bow = False
+                    bow.used = False
+
+                    if distance > 0:
+                        self.move_direction = 1
+                    else:
+                        self.move_direction = -1
+
+
+                # Trop loin -> avancer
+                elif abs_distance > self.SHOOT_DISTANCE:
+
+                    self.is_drawing_bow = False
+                    bow.used = False
+
+                    if distance > 0:
+                        self.move_direction = -1
+                    else:
+                        self.move_direction = 1
+
+
+                # Bonne distance -> tirer
+                else:
+
+                    self.move_direction = 0
+
+                    self.try_use_bow()
+
+
+            else:
+                self.attack_cooldown = 0
+                self.is_drawing_bow = False
+
+                if bow:
+                    bow.used = False
+
+
+        return super().update(dt)
+    
+    def try_use_bow(self):
+        bow = self.inventory.get_item(0)
+
+        if bow is None:
+            return
+
+        # Attendre le cooldown
+        if self.attack_cooldown > 0:
+            return
+
+        # Début de l'armement
+        if not self.is_drawing_bow:
+            self.is_drawing_bow = True
+            self.timer_draw_bow = 0.7
+            bow.used = True
+            return
+
+        # Arc encore en train d'être armé
+        if self.timer_draw_bow > 0:
+            return
+
+        # Tir
+        bow.used = False
+        self.is_drawing_bow = False
+        self.attack_cooldown = 0.2
+
+        self.use_bow()
+
+
+    def use_bow(self):
+        bow = self.inventory.get_item(0)
+
+        if bow is None:
+            return
+
+        player = self.get_nearest_player()
+
+        if player is None:
+            return
+
+        origin = pygame.Vector2(self.rect.center)
+        target = pygame.Vector2(
+            player.rect.centerx,
+            player.rect.bottom
         )
-        draw_x += 2
-        draw_y += 4
-        screen.blit(head, (draw_x, draw_y))
 
-        # =========================
-        # BODY
-        draw_x = self.rect.x - cam_rect.x
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
-        screen.blit(body, (draw_x, draw_y))
+        dx = target.x - origin.x
+        dy = target.y - origin.y
 
-        # =========================
-        # LEG
-        draw_x = self.rect.x - cam_rect.x + 2
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width * 2
-        screen.blit(leg, (draw_x, draw_y))
+        speed = 30
+        gravity = game_property.GRAVITY
 
-        # =========================
-        # ARM (différent selon orientation)
-        if self.orientation == "left":
-            draw_x = self.rect.x - cam_rect.x + self.rect.width // 2
+        # discriminant
+        discriminant = (
+            speed**4
+            - gravity * (gravity * dx**2 + 2 * dy * speed**2)
+        )
+
+        # impossible de toucher avec cette vitesse
+        if discriminant < 0:
+            # tir direct si trop loin
+            direction = (target - origin).normalize()
+            velocity = direction * speed
+
         else:
-            draw_x = self.rect.x - cam_rect.x
+            # angle de tir (trajectoire basse)
+            angle = math.atan(
+                (
+                    speed**2 - math.sqrt(discriminant)
+                )
+                /
+                (gravity * dx)
+            )
 
-        draw_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height + self.rect.width
-        screen.blit(arm, (draw_x, draw_y))
+            # correction si joueur à gauche
+            if dx < 0:
+                angle += math.pi
 
-        super().render(screen, cam_rect, None)
+            velocity = pygame.Vector2(
+                math.cos(angle) * speed,
+                -math.sin(angle) * speed
+            )
 
-    def set_orientation(self, orientation):
-        if super().set_orientation(orientation):
-            self.update_texture()
 
-    def update_texture(self):
-        self.head_texture = self.texture_manager.get_texture(TextureType.SKELETON_HEAD)
-        self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
+        arrow = Arrow_entity(
+            origin,
+            velocity,
+            self,
+            self.world,
+            can_be_picked=False
+        )
 
-        self.body_texture = self.texture_manager.get_texture(TextureType.SKELETON_BODY)
-        self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
+        self.world.create_entity(arrow)
 
-        self.leg_texture = self.texture_manager.get_texture(TextureType.SKELETON_LEG)
-        self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
+    
+    def has_bow(self):
+        item = self.inventory.get_item(0)
         
-        self.arm_texture = self.texture_manager.get_texture(TextureType.SKELETON_ARM)
-        self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
+        if item:
+            item_property = item.item_property
 
-        if self.orientation == "right":
-            self.head_texture = pygame.transform.flip(self.head_texture, True, False)
-            self.body_texture = pygame.transform.flip(self.body_texture, True, False)
-            self.leg_texture = pygame.transform.flip(self.leg_texture, True, False)
-            self.arm_texture = pygame.transform.flip(self.arm_texture, True, False)
-        
-        self.head_texture_red = tint_surface(self.head_texture, (200, 100, 100))
-        self.body_texture_red = tint_surface(self.body_texture, (200, 100, 100))
-        self.leg_texture_red = tint_surface(self.leg_texture, (200, 100, 100))
-        self.arm_texture_red = tint_surface(self.arm_texture, (200, 100, 100))
+            if isinstance(item_property, game_type.Tool):
+
+                if isinstance(item_property, game_type.Bow_tool):
+                    return True
+        return False
+    
+    def render(self, screen, cam_rect):
+
+        # =========================
+        # BASE POSITION (évite recalculs)
+        base_x = self.rect.x - cam_rect.x
+        base_y = cam_rect.height - (self.rect.y - cam_rect.y) - self.rect.height
+
+        orientation = self.get_orientation()
+
+        # =========================
+        # ITEM / ARME
+        item = self.inventory.get_item(0)
+
+        if item:
+            item_property = item.item_property
+
+            if isinstance(item_property, game_type.Tool):
+
+                if isinstance(item_property, game_type.Bow_tool):
+                    texture = item.get_texture()
+
+                    self.arm_angle = 50
+
+                    if texture:
+                        weapon_size = int(self.rect.width * 1.8)
+                        texture = pygame.transform.scale(texture, (weapon_size, weapon_size))
+
+                        # 🎯 position main
+                        if orientation == "right":
+                            hand_x = base_x + int(self.rect.width * 0.75)
+                        else:
+                            hand_x = base_x + int(self.rect.width * 0.25)
+
+                        hand_y = base_y + int(self.rect.width * 1.2)
+
+                        # 🎯 flip
+                        if orientation == "left":
+                            texture = pygame.transform.flip(texture, True, False)
+
+                        # 🎯 pivot
+                        if orientation == "right":
+                            offset = pygame.Vector2(weapon_size * 0.2, 0)
+                        else:
+                            offset = pygame.Vector2(-weapon_size * 0.2, 0)
+
+                        angle = -30 * self.get_int_direction()
+
+                        pivot = pygame.Vector2(hand_x, hand_y)
+
+                        rotated_image, rotated_rect = rotate_around_pivot(
+                            texture,
+                            angle,
+                            pivot,
+                            offset
+                        )
+
+                        screen.blit(rotated_image, rotated_rect.topleft)
+            else:
+                self.arm_angle = 20
+        else:
+            self.arm_angle = 50
+
+        super().render(screen, cam_rect)
     
     def to_json(self, type_="Skeleton", dict_=None):
         if dict_ is None:
@@ -1896,16 +2272,16 @@ class Alien(Mob):
             self.update_texture()
 
     def update_texture(self):
-        self.head_texture = self.texture_manager.get_texture(TextureType.ALIEN_HEAD)
+        self.head_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_HEAD)
         self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
 
-        self.body_texture = self.texture_manager.get_texture(TextureType.ALIEN_BODY)
+        self.body_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_BODY)
         self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
 
-        self.leg_texture = self.texture_manager.get_texture(TextureType.ALIEN_LEG)
+        self.leg_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_LEG)
         self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
         
-        self.arm_texture = self.texture_manager.get_texture(TextureType.ALIEN_ARM)
+        self.arm_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_ARM)
         self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
 
         if self.orientation == "right":
@@ -2006,16 +2382,16 @@ class Gnome(Mob):
             self.update_texture()
 
     def update_texture(self):
-        self.head_texture = self.texture_manager.get_texture(TextureType.ALIEN_HEAD)
+        self.head_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_HEAD)
         self.head_texture = pygame.transform.scale(self.head_texture, (self.rect.width- 4, self.rect.width - 4))
 
-        self.body_texture = self.texture_manager.get_texture(TextureType.ALIEN_BODY)
+        self.body_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_BODY)
         self.body_texture = pygame.transform.scale(self.body_texture, (self.rect.width, self.rect.width))
 
-        self.leg_texture = self.texture_manager.get_texture(TextureType.ALIEN_LEG)
+        self.leg_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_LEG)
         self.leg_texture = pygame.transform.scale(self.leg_texture, (self.rect.width - 4, self.rect.width))
         
-        self.arm_texture = self.texture_manager.get_texture(TextureType.ALIEN_ARM)
+        self.arm_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ALIEN_ARM)
         self.arm_texture = pygame.transform.scale(self.arm_texture, (self.rect.width // 2, self.rect.width))
 
         if self.orientation == "right":

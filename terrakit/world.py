@@ -5,7 +5,7 @@ from noise import pnoise1, pnoise2
 from terrakit import inventory
 from terrakit import entity as EntityClass, game_property, game_type
 import random
-from terrakit import entity
+from terrakit import entity, context
 from terrakit.struct import StructureManager, StructureType
 from terrakit.game_type import BlockProperty
 import json
@@ -725,7 +725,7 @@ class WorldSolo():
 
         self.mob_spawn_timer = 0
         self.mob_spawn_points = {}
-        self.MAX_MOB_PER_SPAWN_POINT = 1
+        self.MAX_MOB_PER_SPAWN_POINT = 3
 
     def apply_damage_to_entity(self, entity, damage, dx, source):
         if isinstance(entity, EntityClass.Living_entity):
@@ -748,7 +748,8 @@ class WorldSolo():
         for x in range(start_x, end_x):
             for y in range(
                 game_property.CHUNK_MIN_HEIGHT,
-                game_property.WATER_Y
+                game_property.CHUNK_MAX_HEIGHT,
+                2
             ):
                 if self.can_spawn_basic(x, y):
                     self.mob_spawn_points[chunk_key][(x, y)] = 0
@@ -757,8 +758,6 @@ class WorldSolo():
         return self.mob_spawn_points[chunk_key].get(pos, 0) < self.MAX_MOB_PER_SPAWN_POINT
 
     def can_spawn_basic(self, x, y):
-        tile = game_property.TILE_SIZE
-
         block = self.get_block(x, y)
         if not block:
             return False
@@ -809,8 +808,14 @@ class WorldSolo():
         players = self.get_players()
         if not players:
             return
+        
+        r = random.Random().randint(1, 100)
+        class_monster = EntityClass.Zombie
 
-        monsters = self.get_entities(EntityClass.Zombie)
+        if r < 40:
+            class_monster = EntityClass.Skeleton
+
+        monsters = self.get_entities(class_monster)
         if len(monsters) >= 30:
             return
 
@@ -818,10 +823,6 @@ class WorldSolo():
             return
 
         for _ in range(5):
-
-            if random.random() > 0.3:
-                continue
-
             player = random.choice(players)
 
             tile = game_property.TILE_SIZE
@@ -851,7 +852,6 @@ class WorldSolo():
 
             self.create_entity(monster)
 
-            # 🔥 incrémentation du compteur du point
             chunk[(spawn_x, spawn_y)] += 1
 
             break
@@ -1140,14 +1140,21 @@ class WorldSolo():
 
             # si c'est un block item et qu'il touche le joueur
             if isinstance(entity, EntityClass.Item):
-                for player in self.get_players():
-                    if entity.rect.colliderect(player.rect):
+                if not entity.can_be_picked():
+                    continue
 
-                        to_remove.append(entity)
+                for e in self.get_entities():
+                    if hasattr(e, "inventory"):
 
-                        player.inventory.add_item(
-                            inventory.ItemStack(entity.item_type, 1)
-                        )
+                        if e.inventory and entity.rect.colliderect(e.rect):
+                        
+                            item = inventory.ItemStack(entity.item_type, 1)
+
+                            if e.inventory.can_pickup(item):
+                            
+                                to_remove.append(entity)
+
+                                e.inventory.add_item(item)
                 
 
         # suppression des entités ramassées
@@ -1499,7 +1506,7 @@ class WorldSolo():
                 r = random.Random()
                 pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
 
-                block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos)
+                block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos, timer_picked=0)
                 self.create_entity(block_entity)
     
     def try_destroy_block(self, block_pos, player):
@@ -1909,7 +1916,7 @@ class Block:
         screen.blit(overlay, (draw_x, draw_y))
         
     def get_texture(self):
-        return self.texture_manager.get_texture(self.block_property.texture)
+        return context.get_resource_pack().texture_manager().get_texture(self.block_property.texture)
     
     def is_breackable(self) -> bool:
         return self.block_property.breakable

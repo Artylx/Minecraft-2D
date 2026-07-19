@@ -1,8 +1,9 @@
 import os
 from terrakit import game_property
 import pygame
+from terrakit import context, config
+from terrakit.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer, LoadingBar, Slider, TexteReferencable
 from terrakit.texture_manager import TextureType
-from terrakit.pygame_interface import Button, Image, Surface, TextBox, ObjectReferencable, Texte, ObjectInterface, ItemsScrollContainer, LoadingBar
 
 class CreditsItem(ObjectInterface):
     def __init__(self, rect, version, description):
@@ -32,8 +33,8 @@ class CreditsItem(ObjectInterface):
         self.bg.render(screen)
 
         # IMPORTANT: reposition dynamique (scroll safe)
-        self.title.pos = (self.rect.x + 10, self.rect.y + 10)
-        self.desc.pos = (self.rect.x + 10, self.rect.y + 35)
+        self.title.rect.topleft = (self.rect.x + 10, self.rect.y + 10)
+        self.desc.rect.topleft = (self.rect.x + 10, self.rect.y + 35)
 
         self.title.render(screen)
         self.desc.render(screen)
@@ -134,17 +135,17 @@ class MenusCollection:
     CONNECT_MULTIPLAYER = "connect_multiplayer"
     LAUNCH = "launch"
     DIED = "died"
+    SETTINGS = "settings"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
 
 class MainMenu:
-    texture_manager = None
-
     def __init__(self, game):
         self.game = game
 
         self.menu = MenusCollection.MAIN
+        self.old_menu = self.menu
         self.menus = {}
         self.current_value = None
 
@@ -154,10 +155,13 @@ class MainMenu:
 
     def set_menu(self, menu: MenusCollection):
         self.game.press_reset()
+        self.old_menu = self.menu
         self.menu = menu
 
         if self.menu == MenusCollection.SINGLEPLAYER:
             self.worlds_manager.reload()
+            self.reload()
+        elif self.menu == MenusCollection.SETTINGS:
             self.reload()
         
     def is_menu(self, menu: MenusCollection):
@@ -182,6 +186,9 @@ class MainMenu:
         self.TITLE_H = self.screen_size[1] // 9
 
         self.reload()
+
+    def return_menu(self):
+        self.set_menu(self.old_menu)
 
     def open_confirm(self, q, callback):
         self.current_value = (q, callback)
@@ -309,19 +316,19 @@ class MainMenu:
         self.set_menu(MenusCollection.LOADING_WORLD)
 
     def reload(self):
-        if self.texture_manager is None:
+        if context.get_resource_pack().texture_manager() is None:
             return
 
         self.menus[MenusCollection.LAUNCH] = [
             Surface((0, 0, self.screen_size[0], self.screen_size[1]), (10, 10, 10), 255),
 
-            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), context.get_resource_pack().texture_manager().get_texture(TextureType.TITLE)),
         ]
 
         self.menus[MenusCollection.MAIN] = [
-            Image((0, 0, self.screen_size[0], self.screen_size[1]), self.texture_manager.get_texture(TextureType.MAIN_MENU)),
+            Image((0, 0, self.screen_size[0], self.screen_size[1]), context.get_resource_pack().texture_manager().get_texture(TextureType.MAIN_MENU)),
 
-            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), context.get_resource_pack().texture_manager().get_texture(TextureType.TITLE)),
 
             Surface((self.center_x - (320 + MARGIN_UI * 2) // 2, self.center_y - (BUTTON_HEIGHT * 3 + MARGIN_UI * 4) // 2, 320 + MARGIN_UI * 2, (BUTTON_HEIGHT + MARGIN_UI) * 5 + MARGIN_UI), (0, 0, 0), 160, corner_radius=26),
 
@@ -336,10 +343,9 @@ class MainMenu:
                 lambda: self.set_menu(MenusCollection.MULTIPLAYER)
             ),
             Button(
-                "Tutoriel",
+                "Paramètres",
                 (self.center_x - 160, self.center_y + 100 - BUTTON_HEIGHT // 2, 320, BUTTON_HEIGHT),
-                lambda: self.game.select_tuto(),
-                enable=False
+                lambda: self.set_menu(MenusCollection.SETTINGS)
             ),
             Button(
                 "Versions et crédits",
@@ -358,7 +364,7 @@ class MainMenu:
             self.set_menu(MenusCollection.GAME)
 
         self.menus[MenusCollection.DIED] = [
-            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), context.get_resource_pack().texture_manager().get_texture(TextureType.TITLE)),
             
             Button(
                 "Réapparaitre",
@@ -373,8 +379,10 @@ class MainMenu:
         ]
 
         self.menus[MenusCollection.GAME_PAUSED] = [
-            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), self.texture_manager.get_texture(TextureType.TITLE)),
+            Image((self.center_x - self.TITLE_W // 2, BUTTON_HEIGHT + MARGIN_UI, self.TITLE_W, self.TITLE_H), context.get_resource_pack().texture_manager().get_texture(TextureType.TITLE)),
             
+            Surface((0, 0, self.screen_size[0], self.screen_size[1]), (0, 0, 0), alpha=100),
+
             Button(
                 "Reprendre",
                 (self.center_x - 200, self.center_y - 100 - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
@@ -383,13 +391,110 @@ class MainMenu:
             Button(
                 "Paramètres",
                 (self.center_x - 200, self.center_y - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
-                lambda: print("Settings"),
-                enable=False
+                lambda: self.set_menu(MenusCollection.SETTINGS)
             ),
             Button(
                 "Sauvegarder et quitter",
                 (self.center_x - 200, self.center_y + 100 - BUTTON_HEIGHT // 2, 400, BUTTON_HEIGHT),
                 lambda: self.game.stop_game()
+            )
+        ]
+
+        settings_container = ItemsScrollContainer(
+            (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 2 + BUTTON_HEIGHT, min(1200, self.screen_size[0] // 2), self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2),
+            color=(10, 10, 10),
+            spacing_border=40,
+            item_height=30,
+            spacing=20,
+            ref="settings_container",
+        )
+
+        text_global = TexteReferencable(
+            f"Volume général ({config.Config().get("global_volume")}%)",
+            (0, 0),
+            "text_global"
+        )
+
+
+        def modif_global_volume(slider):
+
+            text = settings_container.get_item("text_global")
+
+            if text:
+                text.set_text(
+                    f"Volume général ({slider.get_value()}%)"
+                )
+
+
+        def modif_effect_volume(slider):
+
+            text = settings_container.get_item("text_effect")
+
+            if text:
+                text.set_text(
+                    f"Volume effet sonores ({slider.get_value()})%"
+                )
+
+
+        text_effect = TexteReferencable(
+            f"Volume effet sonores ({config.Config().get("sound_volume")}%)",
+            (0, 0),
+            "text_effect"
+        )
+
+
+        slider_global = Slider(
+            (30, 30, 200, 30),
+            ref="slider_volume_global",
+            value=config.Config().get("global_volume"),
+            callback=lambda slider: modif_global_volume(slider),
+            background_color=(0, 0, 0)
+        )
+
+
+        slider_effect = Slider(
+            (30, 30, 200, 30),
+            ref="slider_volume_effect",
+            value=config.Config().get("sound_volume"),
+            callback=lambda slider: modif_effect_volume(slider),
+            background_color=(0, 0, 0)
+        )
+
+
+        settings_container.set_items([
+            text_global,
+            slider_global,
+
+            text_effect,
+            slider_effect,
+        ])
+
+        self.menus[MenusCollection.SETTINGS] = [
+            Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
+
+            Texte("Paramètres", (self.center_x, BUTTON_HEIGHT + 10, 160, 50), center_pos=True),
+
+            #
+            # SETTINGS CONTAINER
+
+            settings_container,
+
+            #
+            #   
+
+            Button(
+                "Retour",
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.return_menu()
+            ),
+            Button(
+                "Valider",
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.game.valid_settings(),
+                background_color=(32, 69, 30),
+                background_color_hover=(85, 156, 81),
             )
         ]
 
@@ -470,7 +575,8 @@ class MainMenu:
         )
 
         credits_container.set_items([
-            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n- Généralisation des textures et création du package terrakit.\n- Amélioration et rectification de bug sur l'ui.\n"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.15 - 18/07/2026", "- Ajout des paramètres de volume.\n"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n- Généralisation des textures et création du package terrakit.\n- Amélioration et rectification de bug sur l'ui.\n- Passage de texture pack à resource pack et ajout d'annimations.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.10 - 27/04/2026", ""),
@@ -618,12 +724,18 @@ class MainMenu:
 
             Button(
                 "Retour",
-                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, (self.screen_size[0] - MARGIN_UI * 4) // 3, BUTTON_HEIGHT),
                 lambda: self.set_menu(MenusCollection.MAIN)
             ),
             Button(
+                "Tutoriel",
+                ((self.screen_size[0] - MARGIN_UI * 4) // 3 + MARGIN_UI * 2, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, (self.screen_size[0] - MARGIN_UI * 4) // 3, BUTTON_HEIGHT),
+                lambda: None,
+                enable=False
+            ),
+            Button(
                 "Créer un nouveau monde",
-                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                (((self.screen_size[0] - MARGIN_UI * 4) // 3) * 2 + MARGIN_UI * 3, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, (self.screen_size[0] - MARGIN_UI * 4) // 3, BUTTON_HEIGHT),
                 lambda: self.set_menu(MenusCollection.CREATE_WORLD)
             )
         ]

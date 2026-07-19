@@ -2,7 +2,7 @@ from importlib.resources import path
 
 import pygame
 from tomlkit import value
-from terrakit import game_property, entity, interface, world, tchat, game_type, ui
+from terrakit import game_property, interface, world
 import terrakit
 import os
 import shutil
@@ -12,8 +12,9 @@ import datetime
 import platform
 from terrakit import client
 from terrakit import debug
+from terrakit.audio_manager import AudioType
 
-import config
+import terrakit.config as config
 
 class Game:
     def __init__(self):
@@ -38,15 +39,15 @@ class Game:
         icon = pygame.image.load(game_property.get_resource_path("resource_pack/Default/texture/blocks/grass_block.png")).convert_alpha()
         pygame.display.set_icon(icon)
 
+        terrakit.init()
+        self.texture_manager = terrakit.context.get_resource_pack().texture_manager()
+        self.audio_manager = terrakit.context.get_resource_pack().audio_manager()
+
         self.clock = pygame.time.Clock()
         self.running = True
         self.update_rate = game_property.UPDATE_RATE
         self.game_manager = None
         self.game_name = ""
-
-        self.launch_sound = pygame.mixer.Sound(
-            "resource_pack/default/audio/Sweden.mp3"
-        )
 
         self.fps_history = []
 
@@ -54,8 +55,8 @@ class Game:
 
         self.press_reset()
 
-        terrakit.init()
-        self.texture_manager = terrakit.context.texture_manager
+        self.launch_sound = self.audio_manager.get_audio(AudioType.SWEEDEN)
+
         self.menu = interface.MainMenu(self)
 
         if debug.AUTO_START["enable"]:
@@ -85,6 +86,26 @@ class Game:
                     break
 
         self.game_name = game_name
+
+    def valid_settings(self):
+        item_container = self.menu.get_object_by_ref("settings_container", self.menu.menu)
+
+        if not item_container:
+            return
+
+        global_volume_slider = item_container.get_item("slider_volume_global")
+
+        if global_volume_slider:
+            config.Config().set("global_volume", global_volume_slider.get_value())
+            self.launch_sound.set_volume(global_volume_slider.get_value() / 100)
+
+        sound_volume_slider = item_container.get_item("slider_volume_effect")
+
+        if sound_volume_slider:
+            config.Config().set("sound_volume", sound_volume_slider.get_value())
+
+        self.menu.return_menu()
+
 
     def load_game(self, pseudo):
         self.press_reset()
@@ -310,6 +331,8 @@ class Game:
         self.toogle_[key] = not self.toogle_.get(key, False)
 
     def update(self, dt):
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        
         if self.game_is_start() and isinstance(self.game_manager, client.MultiplayerClient):
             if not self.game_manager.is_connected():
                 self.stop_game()
@@ -332,13 +355,6 @@ class Game:
         if self.game_is_start():
             if not self.menu.is_menu(interface.MenusCollection.LOADING_WORLD):
                 self.game_manager.render(self, self.screen)
-
-            #Couche d'opacité
-            if self.menu.menus[self.menu.menu] != [] and not self.menu.is_menu(interface.MenusCollection.LOADING_WORLD):
-                overlay = pygame.Surface((self.WIDTH_SCREEN, self.HEIGHT_SCREEN), pygame.SRCALPHA)
-                overlay.fill((0, 0, 0, 120))
-
-                self.screen.blit(overlay, (0, 0))
 
             self.menu.render(self.screen)
         else:
