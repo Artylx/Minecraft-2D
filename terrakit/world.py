@@ -2,7 +2,7 @@ from turtle import pos
 
 import pygame
 from noise import pnoise1, pnoise2
-from terrakit import inventory
+from terrakit import inventory, config
 from terrakit import entity as EntityClass, game_property, game_type
 import random
 from terrakit import entity, context
@@ -816,7 +816,7 @@ class WorldSolo():
             class_monster = EntityClass.Skeleton
 
         monsters = self.get_entities(class_monster)
-        if len(monsters) >= 30:
+        if len(monsters) >= config.Config().get("preload_distance", 6) * 2 + 1:
             return
 
         if not self.mob_spawn_points:
@@ -998,7 +998,7 @@ class WorldSolo():
             
             self.set_blocks(list_blocks, update_range=0)
             
-            for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
+            for x in range((chunk_x * game_property.CHUNK_WIDTH) - 1, ((chunk_x+1)*game_property.CHUNK_WIDTH) + 1):
                 self.sky_column_queue.append(x)
 
                 for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
@@ -1018,7 +1018,7 @@ class WorldSolo():
             chunk_x = player_.get_pos()[0] // chunk_size
             player_chunks.append(chunk_x)
 
-            for dx in range(-game_property.PRELOAD_DISTANCE, game_property.PRELOAD_DISTANCE + 1):
+            for dx in range(-config.Config().get("preload_distance", 6), config.Config().get("preload_distance", 6) + 1):
                 chunks_to_keep.add(chunk_x + dx)
 
         def distance(cx):
@@ -1071,7 +1071,8 @@ class WorldSolo():
                 to_remove.append(entity)
 
         for entity in to_remove:
-            self.entitys.remove(entity)
+            self.add_offline_entity(entity)
+            self.remove_entity(entity)
 
         # supprimer le chunk
         self.save_chunk_modified_blocks(chunk_cord)
@@ -1189,6 +1190,31 @@ class WorldSolo():
 
                 if block:
                     block.render(screen, cam_rect)
+
+    def render_debug(self, screen, cam_rect):
+        tile = game_property.TILE_SIZE
+        chunk_pixel_width = tile * game_property.CHUNK_WIDTH
+
+        font = pygame.font.Font(None, 24)
+
+        start_chunk = (cam_rect.left // chunk_pixel_width) - 1
+        end_chunk = (cam_rect.right // chunk_pixel_width) + 1
+
+        for chunk_x in range(start_chunk, end_chunk + 1):
+
+            world_x = chunk_x * chunk_pixel_width
+            screen_x = world_x - cam_rect.x
+
+            pygame.draw.line(
+                screen,
+                (255, 255, 0),
+                (screen_x, 0),
+                (screen_x, screen.get_height()),
+                2
+            )
+
+            text = font.render(f"Chunk {chunk_x}", True, (255, 255, 0))
+            screen.blit(text, (screen_x + 5, 5))
 
     def render_entitys(self, screen, cam_rect):
         for entity in self.entitys:

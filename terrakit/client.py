@@ -217,7 +217,7 @@ class GameClient:
                 self.World.create_entity(s)
 
             if game.is_press(pygame.K_o):
-                p = entity.Npc(world=self.World, name="Armurier")
+                p = entity.Npc(world=self.World, name="Armurier", displayed_name="Armurier")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
             
@@ -343,7 +343,7 @@ class GameClient:
             if game.toogle_.get(pygame.K_F3):
                 self.World.hit_box_visible = True
                 self.render_debug(screen)
-                #self.World.render_debug(screen, self.cam_rect)
+                self.World.render_debug(screen, self.cam_rect)
             else:
                 self.World.hit_box_visible = False
 
