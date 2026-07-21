@@ -995,14 +995,15 @@ class WorldSolo():
 
                     list_blocks.append((x, y, block))
                     blc += 1
-            
-            self.set_blocks(list_blocks, update_range=0)
-            
-            for x in range((chunk_x * game_property.CHUNK_WIDTH) - 1, ((chunk_x+1)*game_property.CHUNK_WIDTH) + 1):
-                self.sky_column_queue.append(x)
 
+            for x in range((chunk_x * game_property.CHUNK_WIDTH), ((chunk_x + 1)*game_property.CHUNK_WIDTH)):
+                self.sky_column_queue.append(x)
+            
+            for x in range((chunk_x * game_property.CHUNK_WIDTH) - game_property.CHUNK_WIDTH * 0.5, ((chunk_x + 1) * game_property.CHUNK_WIDTH) + game_property.CHUNK_WIDTH * 0.5):
                 for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
                     self.sky_light_queue.append((x, y))
+
+            self.set_blocks(list_blocks, update_range=0)
 
             end = time.time()
             print(f"Chunk {chunk_x} loaded in {end - start:.2f}s => Modified blocks: {blc}")
@@ -1371,7 +1372,7 @@ class WorldSolo():
                     block.block_light = block.block_property.light_emission
                     self.block_light_queue.append((x, y))
     
-    def compute_sky_column(self, max_steps=10):
+    def compute_sky_column(self, max_steps=game_property.CHUNK_WIDTH * 2):
         for _ in range(max_steps):
             if not self.sky_column_queue:
                 return

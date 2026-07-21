@@ -52,6 +52,8 @@ class GameClient:
         self.update_screen_size(self.width_screen, self.height_screen)
         print(f"Seed {self.World.seed}")
 
+        self.update_debug(0.1)
+
     def spawn_player(self):
         self.player = self.World.player_join(self.player_name)
         self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat, self.texture_manager)
@@ -144,8 +146,10 @@ class GameClient:
 
         if game.toogle_.get(pygame.K_F3):
             self.update_debug(dt)
+            self.UI.info_tooltips = True
         else:
             self.update_debug(0)
+            self.UI.info_tooltips = False
 
         if not self.tchat.oppened and not self.UI.is_open_inv():
             # horizontal movement: adjust velocity directly

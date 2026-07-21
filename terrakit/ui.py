@@ -5,7 +5,82 @@ import pygame
 from terrakit import game_property, game_type
 from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
 from terrakit.texture_manager import TextureType, TextureManager
-    
+
+
+COLORS = {
+    "&0": (0, 0, 0),         # Noir
+    "&1": (0, 0, 170),       # Bleu foncé
+    "&2": (0, 170, 0),       # Vert foncé
+    "&3": (0, 170, 170),     # Cyan foncé
+    "&4": (170, 0, 0),       # Rouge foncé
+    "&5": (170, 0, 170),     # Violet
+    "&6": (255, 170, 0),     # Or
+    "&7": (170, 170, 170),   # Gris clair
+    "&8": (85, 85, 85),      # Gris foncé
+    "&9": (85, 85, 255),     # Bleu
+    "&a": (85, 255, 85),     # Vert
+    "&b": (85, 255, 255),    # Aqua
+    "&c": (255, 85, 85),     # Rouge
+    "&d": (255, 85, 255),    # Rose
+    "&e": (255, 255, 85),    # Jaune
+    "&f": (255, 255, 255),   # Blanc
+}
+
+
+def parse_colored_text(text, font, default_color=(255, 255, 255)):
+    """
+    Retourne une liste de lignes.
+    Chaque ligne contient une liste de (surface, largeur, hauteur).
+    """
+
+    lines = []
+    current_line = []
+
+    current_color = default_color
+    current_text = ""
+
+    i = 0
+    while i < len(text):
+        c = text[i]
+
+        # changement de couleur
+        if c == "&" and i + 1 < len(text):
+            code = text[i:i+2]
+            if code in COLORS:
+
+                if current_text:
+                    surf = font.render(current_text, True, current_color)
+                    current_line.append(surf)
+                    current_text = ""
+
+                current_color = COLORS[code]
+                i += 2
+                continue
+
+        # saut de ligne
+        if c == "\n":
+            if current_text:
+                surf = font.render(current_text, True, current_color)
+                current_line.append(surf)
+                current_text = ""
+
+            lines.append(current_line)
+            current_line = []
+            i += 1
+            continue
+
+        current_text += c
+        i += 1
+
+    if current_text:
+        surf = font.render(current_text, True, current_color)
+        current_line.append(surf)
+
+    lines.append(current_line)
+
+    return lines
+
+
 class DragState:
     def __init__(self):
         self.stack = None
@@ -169,6 +244,8 @@ class UI:
             3: False,
         }
 
+        self.info_tooltips = False
+
     def update_screen_size(self, screen_size):
         self.screen_size = screen_size
         self.cam_rect = pygame.Rect(-self.screen_size[0] // 2 + game_property.CHUNK_WIDTH * game_property.TILE_SIZE // 2, 0, self.screen_size[0], self.screen_size[1])
@@ -276,35 +353,73 @@ class UI:
         font_title = pygame.font.SysFont("Arial", 18, bold=True)
         font_desc = pygame.font.SysFont("Arial", 14)
 
-        name = language.get_language_items(item.item_property.item_name, language.LANGUAGE_TYPE.FRANCE)
+        name = language.get_language_items(
+            item.item_property.item_name,
+            language.LANGUAGE_TYPE.FRANCE
+        )
+
         if not name:
             name = item.item_property.item_name
-        
+
         desc = item.item_property.description
 
-        title_surf = font_title.render(name, True, (255, 255, 255))
-        desc_surf = font_desc.render(desc, True, (200, 200, 200))
+        if self.info_tooltips:
+            desc += "\n&8" + item.item_property.item_name
 
-        width = max(title_surf.get_width(), desc_surf.get_width()) + 10
-        height = title_surf.get_height() + desc_surf.get_height() + 10
+        # Parse les couleurs
+        title = parse_colored_text("&f" + name, font_title)
+        desc = parse_colored_text(desc, font_desc, (200, 200, 200))
+
+        # Taille
+        title_w, title_h = self.get_size(title)
+        desc_w, desc_h = self.get_size(desc)
+
+        width = max(title_w, desc_w) + 10
+        height = title_h + desc_h + 10
 
         x = mouse_x + 15
         y = mouse_y + 15
 
         if x + width > self.screen_size[0]:
             x = mouse_x - width - 15
+
         if y + height > self.screen_size[1]:
             y = mouse_y - height - 15
 
-        # fond
+        # Fond
         bg = pygame.Surface((width, height), pygame.SRCALPHA)
         bg.fill((0, 0, 0, 220))
-
         screen.blit(bg, (x, y))
 
-        # texte
-        screen.blit(title_surf, (x + 5, y + 3))
-        screen.blit(desc_surf, (x + 5, y + 3 + title_surf.get_height()))
+        # Dessin du texte
+        self.draw_colored_text(screen, x + 5, y + 3, title)
+        self.draw_colored_text(screen, x + 5, y + 5 + title_h, desc)
+
+    def get_size(self, lines, line_spacing=2):
+        width = 0
+        height = 0
+
+        for line in lines:
+            w = sum(s.get_width() for s in line)
+            h = max((s.get_height() for s in line), default=0)
+
+            width = max(width, w)
+            height += h + line_spacing
+
+        return width, height
+
+    def draw_colored_text(self, screen, x, y, parsed_lines, line_spacing=2):
+        yy = y
+
+        for line in parsed_lines:
+            xx = x
+            h = max((s.get_height() for s in line), default=0)
+
+            for surf in line:
+                screen.blit(surf, (xx, yy))
+                xx += surf.get_width()
+
+            yy += h + line_spacing
 
     def other_button(self, current):
         if current == 1:

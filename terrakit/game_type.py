@@ -191,7 +191,7 @@ class Attack_tool(Tool):
             power, durability = 19, 1561
         
         if not description:
-            description = "Points de dégats: " + str(power)
+            description = "Points de dégats: &c" + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
     
@@ -204,7 +204,7 @@ class Bow_tool(Tool):
             durability = 10
 
         if not description:
-            description = "Dégats de l'Arc: " + str(power)
+            description = "Dégats de l'Arc: &c" + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
         self.use_texture = use_texture
@@ -238,7 +238,7 @@ class Pickaxe_tool(Tool):
             power, durability = 28, 1561
 
         if not description:
-            description = "Puissance de pioche: " + str(power)
+            description = "Puissance de pioche: &c" + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
     
@@ -257,7 +257,7 @@ class Axe_tool(Tool):
             power, durability = 28, 1561
 
         if not description:
-            description = "Puissance de hache: " + str(power)
+            description = "Puissance de hache: &c" + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
 
@@ -271,7 +271,7 @@ class Hanger_consumable(Consumable):
     def __init__(self, name, texture, max_stack, life_regen, description=None):
 
         if not description:
-            description = "Régénération de vie: " + str(life_regen)
+            description = "Régénération de vie: &a" + str(life_regen)
 
         super().__init__(name, texture, max_stack, description)
         self.life_regen = life_regen
@@ -291,7 +291,7 @@ class Shovel_tool(Tool):
             power, durability = 28, 1561
 
         if not description:
-            description = "Puissance de pelle: " + str(power)
+            description = "Puissance de pelle: &c" + str(power)
         super().__init__(name, texture, durability, description)
         self.power = power
 
@@ -368,13 +368,13 @@ ItemProperty.COOKED_EGG = Hanger_consumable("cooked_egg", TextureType.COOKED_EGG
 
 ItemProperty.STICK = ItemProperty("stick", TextureType.STICK, 100, False, None)
 
-ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "Item non utilisable")
+ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "&cItem non utilisable")
 
 # BLOCKS
 BlockProperty.STONE = BlockProperty("stone", 1, True, TextureType.STONE, True, "STONE", 300, Pickaxe_tool, Pickaxe_tool)
 BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIRT", 60)
 BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None, None)
-BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "GRASS", 60)
+BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "DIRT", 60)
 BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
 
 BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool, Pickaxe_tool)
