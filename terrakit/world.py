@@ -1116,15 +1116,11 @@ class WorldSolo():
             self.mob_spawn_timer = 0
             self.try_spawn_mobs()
 
-        if end_loading:
-            self.compute_sky_column()
-            if not self.is_loaded:
-                self.callback_loading("On s'occupe de poser les blocks...", 30)
+        self.compute_sky_column()
 
-            if not self.sky_column_queue:
-                self.propagate_sky_light()
-                if not self.is_loaded:
-                    self.callback_loading("Calcul de la lumière...", 80)
+        self.propagate_sky_light()
+        if not self.is_loaded:
+            self.callback_loading("Calcul de la lumière...", 80)
 
         to_remove = []
 
@@ -1415,12 +1411,17 @@ class WorldSolo():
 
             current = block.sky_light
 
+            neighbor_more = []
+
             for dx, dy in [(1,0), (-1,0), (0,-1), (0,1)]:
                 nx, ny = x + dx, y + dy
                 neighbor = self.get_block(nx, ny)
 
                 if not neighbor:
                     continue
+
+                if dx < 0:
+                    neighbor_more.append(neighbor.get_light())
 
                 absorb = self.get_propagate_value(neighbor)
 
@@ -1432,6 +1433,9 @@ class WorldSolo():
                 if new_light > neighbor.sky_light:
                     neighbor.sky_light = new_light
                     self.sky_light_queue.append((nx, ny))
+            if x == -209 and y == 10:
+                print(f"block x={x}, y={y}, light={block.get_light()}, N={neighbor_more}")
+
     
     def propagate_block_light(self):
         while self.block_light_queue:
@@ -1442,6 +1446,8 @@ class WorldSolo():
                 continue
 
             current = block.block_light
+            
+            neighbor_more = []
 
             for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
                 nx, ny = x + dx, y + dy
@@ -1449,6 +1455,9 @@ class WorldSolo():
 
                 if not neighbor:
                     continue
+            
+                if dx < 0:
+                    neighbor_more.append(neighbor.get_light())
 
                 absorb = self.get_propagate_value(neighbor)
                 new_light = current - absorb
@@ -1459,6 +1468,8 @@ class WorldSolo():
                 if new_light > neighbor.block_light:
                     neighbor.block_light = new_light
                     self.block_light_queue.append((nx, ny))
+            if x == -209 and y == 10:
+                print(f"block x={x}, y={y}, light={block.get_light()}, N={neighbor_more}")
 
     def get_propagate_value(self, block):
         if block.can_collide():
@@ -1925,7 +1936,7 @@ class Block:
                 )
 
     def render_darkness(self, screen, draw_x, draw_y):
-        light = max(self.sky_light, self.block_light)
+        light = self.get_light()
 
         if not debug.LIGHT:
             light = game_property.MAX_LIGHT
@@ -1941,6 +1952,9 @@ class Block:
         overlay.fill((0, 0, 0, darkness))
 
         screen.blit(overlay, (draw_x, draw_y))
+
+    def get_light(self) -> float:
+        return max(self.sky_light, self.block_light)
         
     def get_texture(self):
         return context.get_resource_pack().texture_manager().get_texture(self.block_property.texture)
