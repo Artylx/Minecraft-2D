@@ -479,7 +479,7 @@ class MainMenu:
             (30, 30, 200, 30),
             ref="slider_preload_distance",
             min_value=1,
-            max_value=16,
+            max_value=32,
             value=config.Config().get("preload_distance", 6),
             callback=lambda slider: modif_preload_distance(slider),
             background_color=(0, 0, 0)

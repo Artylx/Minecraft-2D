@@ -5,6 +5,7 @@ import pygame
 from terrakit import game_property, game_type
 from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
 from terrakit.texture_manager import TextureType, TextureManager
+from terrakit.objective import ObjectiveManager
 
 
 COLORS = {
@@ -245,6 +246,8 @@ class UI:
         }
 
         self.info_tooltips = False
+        self.objective_open = False
+        self.objective_manager = ObjectiveManager("terrakit/objectives.json")
 
     def update_screen_size(self, screen_size):
         self.screen_size = screen_size
@@ -258,18 +261,65 @@ class UI:
     def render(self, screen, player):
         self.update_hovered_item(player.inventory)
 
-        if not self.is_open_inv():
+        if not self.is_open_inv() and not self.objective_open:
             self.tchat.render(screen)
 
             self.render_hotbar(screen, player.inventory, player, True)
-        else:
+        elif self.is_open_inv():
             if self.opened_chest:
                 self.render_chest_ui(screen)
             else:
                 self.render_chest(screen, self.open_inventory)
             self.render_drag(screen)
+        elif self.objective_open:
+            self.render_objectives(screen)
         
         self.render_tooltip(screen)
+
+    def render_objectives(self, screen):
+
+        width = 450
+        height = 400
+
+        x = self.screen_size[0]//2 - width//2
+        y = self.screen_size[1]//2 - height//2
+
+
+        bg = pygame.Surface(
+            (width,height),
+            pygame.SRCALPHA
+        )
+
+        bg.fill((0,0,0,200))
+
+        screen.blit(bg,(x,y))
+
+
+        font = pygame.font.SysFont(
+            "Arial",
+            20
+        )
+
+
+        yy = y + 20
+
+
+        for objective in self.objective_manager.get_objectives():
+
+            lines = parse_colored_text(
+                objective.get_text(),
+                font
+            )
+
+            self.draw_colored_text(
+                screen,
+                x+20,
+                yy,
+                lines
+            )
+
+
+            yy += 80
 
     def render_drag(self, screen):
         if self.controller.drag.stack:
@@ -284,6 +334,7 @@ class UI:
     def key_down(self, event):
         if event.key == pygame.K_ESCAPE:
             self.close_inv()
+            self.objective_open = False
 
     def update(self, dt):
         

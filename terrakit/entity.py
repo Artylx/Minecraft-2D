@@ -1575,15 +1575,30 @@ class Mob(Living_entity):
         return None
 
     def apply_auto_jump(self):
-        if self.auto_jump:
-            self.front_rect = self.rect.copy()
-            self.front_rect.x += self.move_direction * 5  # quelques pixels devant
-            self.front_rect.y += 1  # au niveau du sol
+        if self.auto_jump and self.on_ground and self.can_auto_jump():
+            self.set_velocity(
+                None,
+                game_property.JUMP_VELOCITY // 3 * 2 * self.speed
+            )
+            self.on_ground = False
 
-            if self.world.is_collide_at(self.front_rect) and self.on_ground:
-                # appliquer un saut
-                self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
-                self.on_ground = False
+    def can_auto_jump(self):
+        # bloc devant au niveau des pieds
+        front = self.rect.copy()
+        front.x += self.move_direction * 5
+
+        if not self.world.is_collide_at(front):
+            return False
+
+        # bloc au-dessus de l'obstacle
+        above = front.copy()
+        above.y += game_property.TILE_SIZE
+
+        # si un bloc est au-dessus, c'est trop haut
+        if self.world.is_collide_at(above):
+            return False
+
+        return True
 
     def apply_horizontal_target(self):
         ia_control = self.knockback_timer <= 0
