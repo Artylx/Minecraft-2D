@@ -1110,8 +1110,8 @@ class WorldSolo():
 
             # propagation lumière
             for x in range(
-                chunk_x * game_property.CHUNK_WIDTH - int(game_property.CHUNK_WIDTH * 0.25),
-                (chunk_x + 1) * game_property.CHUNK_WIDTH + int(game_property.CHUNK_WIDTH * 0.25)
+                chunk_x * game_property.CHUNK_WIDTH - int(game_property.CHUNK_WIDTH * 0.5),
+                (chunk_x + 1) * game_property.CHUNK_WIDTH + int(game_property.CHUNK_WIDTH * 0.5)
             ):
                 for y in range(
                     game_property.CHUNK_MIN_HEIGHT,
