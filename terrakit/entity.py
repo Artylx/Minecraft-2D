@@ -63,12 +63,12 @@ ATTACK_RANGE = 30
 class Entity:
     texture_manager = None
 
-    def __init__(self, rect, world=None, name="Unamed entity", texture=None, dif_pos_render=None, display_name=False, gravity=game_property.GRAVITY, collidable=True, live_time=None):
+    def __init__(self, rect, world=None, name="Unamed entity", texture=None, dif_pos_render=None, displayed_name="", display_name=False, gravity=game_property.GRAVITY, collidable=True, live_time=None):
         self.uuid = uuid.uuid4()
         self.rect = rect
-        self.name = name
         self.texture = texture
         self.display_name = display_name
+        self.name = name
         self.world = world
         self.spawn_time = pygame.time.get_ticks()
         self.font = pygame.font.SysFont("Arial", 14)
@@ -87,15 +87,7 @@ class Entity:
 
         self.speed = game_property.ENTITY_SPEED
 
-        self.display_name_text_surface = self.font.render(self.name, True, (255, 255, 255))
-
-        self.display_name_margin_x = 8
-        self.display_name_margin_y = 4
-
-        self.display_name_surface_width = self.display_name_text_surface.get_width() + self.display_name_margin_x * 2
-        self.display_name_surface_height = self.display_name_text_surface.get_height() + self.display_name_margin_y * 2
-
-        self.display_name_surface = pygame.Surface((self.display_name_surface_width, self.display_name_surface_height), pygame.SRCALPHA)
+        self.set_displayed_name(str(displayed_name))
 
         self.temp_rect = None
         self.attached_entities = []
@@ -104,6 +96,10 @@ class Entity:
         self.alpha_texture = 255
         self.removing = False
         self.remove_speed = 100
+
+    def set_displayed_name(self, name: str):
+        self.displayed_name = name
+        self.update_vars()
 
     def is_valid(self): 
         if self.world:
@@ -119,7 +115,7 @@ class Entity:
         self.attached_entities.append(entity)
 
     def update_vars(self):
-        self.display_name_text_surface = self.font.render(self.name, True, (255, 255, 255))
+        self.display_name_text_surface = self.font.render(self.displayed_name, True, (255, 255, 255))
 
         self.display_name_margin_x = 8
         self.display_name_margin_y = 4
@@ -182,7 +178,30 @@ class Entity:
 
                 screen.blit(surface, (draw_x, draw_y))
 
-    def render_display_name(self, screen, cam_rect):        
+    def get_nearest_player(self, distance: int):
+        """
+        Return (TUPLE):
+            -   Player
+            -   Distance
+        """
+        nearest = None
+
+        if not distance:
+            return nearest
+        nearest_distance = distance
+
+        for player in self.world.get_entities(Player):
+            dx = player.rect.centerx - self.rect.centerx
+            dy = player.rect.centery - self.rect.centery
+
+            distance = math.hypot(dx, dy)
+
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest = (player, distance)
+        return nearest
+
+    def render_display_name(self, screen, cam_rect, x_offset=0, y_offset=0):        
         draw_x, draw_y = game_property.world_to_screen(
             self.rect.x, self.rect.y, self.rect.height, cam_rect
         )
@@ -198,8 +217,8 @@ class Entity:
         chat_surface.blit(self.display_name_text_surface, (self.display_name_margin_x, self.display_name_margin_y))
 
         # Centrer au-dessus du joueur
-        name_x = draw_x + self.rect.width / 2 - self.display_name_surface_width / 2
-        name_y = draw_y - self.display_name_surface_height - 5
+        name_x = draw_x + self.rect.width / 2 - self.display_name_surface_width / 2 + x_offset
+        name_y = draw_y - self.display_name_surface_height - 5 + y_offset
 
         screen.blit(chat_surface, (name_x, name_y))
 
@@ -354,6 +373,7 @@ class Entity:
             "gravity": "gravity",
             "speed": "speed",
             "display_name": "display_name",
+            "displayed_name": "displayed_name",
         }
 
         mapping.update(add_map)
@@ -393,6 +413,7 @@ class Entity:
             "gravity": self.gravity,
             "speed": self.speed,
             "display_name": self.display_name,
+            "displayed_name": self.displayed_name,
             "name": self.name,
             "live_time": self.live_time,
         }
@@ -406,8 +427,8 @@ class Annimation:
     NONE = "none"
 
 class Living_entity(Entity):
-    def __init__(self, rect, world=None, name="Unamed entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False, live_time=None):
-        super().__init__(rect, world, name, None, None, False, collidable=collidable, live_time=live_time)
+    def __init__(self, rect, world=None, name="Unamed entity", displayed_name="", health=20, max_health=20, drops=None, collidable=True, invulnerable=False, live_time=None):
+        super().__init__(rect, world, name, None, None, display_name=False, collidable=collidable, live_time=live_time, displayed_name=displayed_name)
         self.max_health = max_health
         self.health = health
         self.drops = drops
@@ -544,9 +565,6 @@ class Living_entity(Entity):
             return 1
         else:
             return -1
-    
-    def render_display_name(self, screen, cam_rect):
-        return super().render_display_name(screen, cam_rect)
 
     def apply_damage(self, damage, dx):
         if not self.is_taking_damage and not self.invulnerable:
@@ -761,14 +779,14 @@ class Arrow_entity(Living_entity):
         self.stucked = True
 
 class Humanoid(Living_entity):
-    def __init__(self, rect, world=None, name="Humanoid entity", health=20, max_health=20, drops=None, collidable=True, invulnerable=False,
+    def __init__(self, rect, world=None, name="Humanoid entity", displayed_name="", health=20, max_health=20, drops=None, collidable=True, invulnerable=False,
                  leg_texture: TextureType = None, 
                  arm_texture: TextureType = None, 
                  body_texture: TextureType = None, 
                  head_texture: TextureType = None
                  ):
         
-        super().__init__(rect, world, name, health, max_health, drops, collidable, invulnerable)
+        super().__init__(rect, world, name, displayed_name, health, max_health, drops, collidable, invulnerable)
 
         self.arm_angle = 0
         self.init_texture(head_texture, body_texture, leg_texture, arm_texture)
@@ -952,7 +970,7 @@ class Humanoid(Living_entity):
         
 
 class Npc(Humanoid):
-    def __init__(self, rect=None, world=None, name="Npc entity", health=20, max_health=20, drops=None, collidable=True, gender="male"):
+    def __init__(self, rect=None, world=None, name="Npc entity", displayed_name="NPC", health=20, max_health=20, drops=None, collidable=True, gender="male"):
         if not rect:
             rect = pygame.Rect(0, game_property.CHUNK_MAX_HEIGHT * game_property.TILE_SIZE, game_property.TILE_SIZE - 5, game_property.TILE_SIZE * 2.5)
 
@@ -972,7 +990,7 @@ class Npc(Humanoid):
         if gender == "female":
             body_texture = TextureType.PLAYER_BODY_FEMALE
 
-        super().__init__(rect, world, name, health, max_health, drops, collidable,
+        super().__init__(rect, world, name, displayed_name=displayed_name, health=health, max_health=max_health, drops=drops, collidable=collidable,
                          leg_texture=leg_texture,
                          arm_texture=arm_texture,
                          body_texture=body_texture,
@@ -993,6 +1011,15 @@ class Npc(Humanoid):
                 True
             )
 
+            # margin_x = self.display_name_margin_x
+            # self.display_name_margin_x = 0
+            # super().render_display_name(screen, cam_rect, x_offset=25)
+            
+            # self.display_name_margin_x = margin_x
+            # self.render_input(screen, cam_rect, x_offset=25)
+
+        # else:
+        #     super().render_display_name(screen, cam_rect)
 
         super().render_display_name(screen, cam_rect)
 
@@ -1003,8 +1030,33 @@ class Npc(Humanoid):
             False
         )
 
-    def update(self, dt):
+    def render_input(self, screen, cam_rect, x_offset=0, y_offset=0):
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
 
+        draw_x += self.dif_pos_render[0]
+        draw_y -= self.dif_pos_render[1]
+
+        surface = pygame.Surface((x_offset, self.display_name_surface_height), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 150))
+
+        text = self.font.render("[E]", True, (255, 255, 255))
+        surface.blit(text, (self.display_name_margin_x, self.display_name_margin_y))
+
+        # Centrer au-dessus du joueur
+        _x = draw_x + self.rect.width / 2 - self.display_name_surface_width / 2
+        _y = draw_y - self.display_name_surface_height - 5 - y_offset
+
+        screen.blit(surface, (_x, _y))
+
+        
+
+    def update(self, dt):
+        
+        if self.highlight:
+            self.set_displayed_name(self.name)
+            
         self.highlight = False
 
         for p in self.world.get_entities(Player):
@@ -1015,6 +1067,8 @@ class Npc(Humanoid):
             )
 
             if distance <= self.highlight_distance:
+                if not self.highlight:
+                    self.set_displayed_name("[E] " + self.name)
                 self.highlight = True
 
 
@@ -1042,7 +1096,7 @@ class Player(Humanoid):
         if gender == "female":
             body_texture = TextureType.PLAYER_BODY_FEMALE
 
-        super().__init__(rect, world, name, max_health=max_health, health=max_health, 
+        super().__init__(rect, world, name, displayed_name=name, max_health=max_health, health=max_health, 
                          leg_texture=leg_texture,
                          arm_texture=arm_texture,
                          body_texture=body_texture,
@@ -1515,33 +1569,36 @@ class Mob(Living_entity):
         super().update(dt)
 
     def get_nearest_player(self):
-        nearest = None
-
-        if not self.DETECTION_DISTANCE:
-            return nearest
-        nearest_distance = self.DETECTION_DISTANCE
-
-        for player in self.world.get_entities(Player):
-            dx = player.rect.centerx - self.rect.centerx
-            dy = player.rect.centery - self.rect.centery
-
-            distance = math.hypot(dx, dy)
-
-            if distance < nearest_distance:
-                nearest_distance = distance
-                nearest = player
-        return nearest
+        near = super().get_nearest_player(self.DETECTION_DISTANCE)
+        if near:
+            return near[0]
+        return None
 
     def apply_auto_jump(self):
-        if self.auto_jump:
-            self.front_rect = self.rect.copy()
-            self.front_rect.x += self.move_direction * 5  # quelques pixels devant
-            self.front_rect.y += 1  # au niveau du sol
+        if self.auto_jump and self.on_ground and self.can_auto_jump():
+            self.set_velocity(
+                None,
+                game_property.JUMP_VELOCITY // 3 * 2 * self.speed
+            )
+            self.on_ground = False
 
-            if self.world.is_collide_at(self.front_rect) and self.on_ground:
-                # appliquer un saut
-                self.set_velocity(None, game_property.JUMP_VELOCITY // 3 * 2 * self.speed)
-                self.on_ground = False
+    def can_auto_jump(self):
+        # bloc devant au niveau des pieds
+        front = self.rect.copy()
+        front.x += self.move_direction * 5
+
+        if not self.world.is_collide_at(front):
+            return False
+
+        # bloc au-dessus de l'obstacle
+        above = front.copy()
+        above.y += game_property.TILE_SIZE
+
+        # si un bloc est au-dessus, c'est trop haut
+        if self.world.is_collide_at(above):
+            return False
+
+        return True
 
     def apply_horizontal_target(self):
         ia_control = self.knockback_timer <= 0

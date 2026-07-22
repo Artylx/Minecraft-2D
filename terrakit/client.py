@@ -52,6 +52,8 @@ class GameClient:
         self.update_screen_size(self.width_screen, self.height_screen)
         print(f"Seed {self.World.seed}")
 
+        self.update_debug(0.1)
+
     def spawn_player(self):
         self.player = self.World.player_join(self.player_name)
         self.UI = ui.UI((self.width_screen, self.height_screen), self.player.inventory, self.tchat, self.texture_manager)
@@ -144,10 +146,12 @@ class GameClient:
 
         if game.toogle_.get(pygame.K_F3):
             self.update_debug(dt)
+            self.UI.info_tooltips = True
         else:
             self.update_debug(0)
+            self.UI.info_tooltips = False
 
-        if not self.tchat.oppened and not self.UI.is_open_inv():
+        if not self.tchat.oppened and not self.UI.is_open_inv() and not self.UI.objective_open:
             # horizontal movement: adjust velocity directly
             if (game.keys_.get(pygame.K_d) and not game.keys_.get(pygame.K_q)) or (game.keys_.get(pygame.K_RIGHT) and not game.keys_.get(pygame.K_LEFT)):
                 self.player.add_velocity(1, 0)
@@ -207,9 +211,7 @@ class GameClient:
                 self.World.create_entity(z)
 
             if game.is_press(pygame.K_l):
-                z = entity.Alien(world=self.World)
-                z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
-                self.World.create_entity(z)
+                self.UI.objective_open = True
                 
             if game.is_press(pygame.K_p):
                 s = entity.Skeleton(world=self.World)
@@ -217,7 +219,7 @@ class GameClient:
                 self.World.create_entity(s)
 
             if game.is_press(pygame.K_o):
-                p = entity.Npc(world=self.World, name="Armurier")
+                p = entity.Npc(world=self.World, name="Armurier", displayed_name="Armurier")
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
             
@@ -247,6 +249,10 @@ class GameClient:
                     self.tchat.offset_msg_index_move(1)
                 else:
                     self.tchat.offset_msg_index_move(-1)
+
+        elif self.UI.objective_open:
+            if game.is_press(pygame.K_ESCAPE):
+                self.UI.objective_open = False
 
         if game.keys_.get(game.event_mouse_get(1)):
             if not game.prev_keys_.get(game.event_mouse_get(1)):
@@ -340,10 +346,15 @@ class GameClient:
         if self.player:
             self.World.render(screen, self.cam_rect)
 
+            # self.World.render_sky(screen)
+
+            # blocs
+            self.World.render(screen, self.cam_rect)
+
             if game.toogle_.get(pygame.K_F3):
                 self.World.hit_box_visible = True
                 self.render_debug(screen)
-                #self.World.render_debug(screen, self.cam_rect)
+                self.World.render_debug(screen, self.cam_rect)
             else:
                 self.World.hit_box_visible = False
 

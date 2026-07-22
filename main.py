@@ -104,6 +104,11 @@ class Game:
         if sound_volume_slider:
             config.Config().set("sound_volume", sound_volume_slider.get_value())
 
+        preload_distance_slider = item_container.get_item("slider_preload_distance")
+
+        if preload_distance_slider:
+            config.Config().set("preload_distance", preload_distance_slider.get_value())
+
         self.menu.return_menu()
 
 

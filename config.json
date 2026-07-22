@@ -1,5 +1,6 @@
 {
     "last_pseudo": "Arthur",
     "global_volume": 20,
-    "sound_volume": 50
+    "sound_volume": 50,
+    "preload_distance": 8
 }

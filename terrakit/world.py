@@ -1,8 +1,8 @@
 from turtle import pos
-
+import math
 import pygame
 from noise import pnoise1, pnoise2
-from terrakit import inventory
+from terrakit import inventory, config
 from terrakit import entity as EntityClass, game_property, game_type
 import random
 from terrakit import entity, context
@@ -666,6 +666,9 @@ class World():
                     return True
 
         return False
+    
+    def render_sky(self, screen):
+        pass
 
             
 
@@ -709,6 +712,7 @@ class WorldSolo():
         self.block_light_queue = deque()
         self.sky_light_queue = deque()
         self.sky_column_queue = deque()
+        self.light_chunk_queue = deque()
 
         self.block_light = {}
         self.light_sources = set()
@@ -726,6 +730,24 @@ class WorldSolo():
         self.mob_spawn_timer = 0
         self.mob_spawn_points = {}
         self.MAX_MOB_PER_SPAWN_POINT = 3
+
+        self.day_time = 0
+        self.day_length = 24000
+        self.day_speed = 30
+
+        self.sun_radius = 30
+        self.moon_radius = 25
+
+        self.stars = []
+
+        for _ in range(150):
+            self.stars.append(
+                (
+                    random.randint(0, 2000),
+                    random.randint(0, 800),
+                    random.randint(1,3)
+                )
+            )
 
     def apply_damage_to_entity(self, entity, damage, dx, source):
         if isinstance(entity, EntityClass.Living_entity):
@@ -816,7 +838,7 @@ class WorldSolo():
             class_monster = EntityClass.Skeleton
 
         monsters = self.get_entities(class_monster)
-        if len(monsters) >= 30:
+        if len(monsters) >= config.Config().get("preload_distance", 6) * 2 + 1:
             return
 
         if not self.mob_spawn_points:
@@ -995,14 +1017,18 @@ class WorldSolo():
 
                     list_blocks.append((x, y, block))
                     blc += 1
-            
-            self.set_blocks(list_blocks, update_range=0)
-            
-            for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
-                self.sky_column_queue.append(x)
 
-                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
-                    self.sky_light_queue.append((x, y))
+            self.light_chunk_queue.append(chunk_x)
+
+            # for x in range((chunk_x * game_property.CHUNK_WIDTH), ((chunk_x + 1)*game_property.CHUNK_WIDTH)):
+            #     self.sky_column_queue.append(x)
+            
+            # for x in range((chunk_x * game_property.CHUNK_WIDTH) - int(game_property.CHUNK_WIDTH * 0.25), 
+            #                ((chunk_x + 1) * game_property.CHUNK_WIDTH) + int(game_property.CHUNK_WIDTH * 0.25)):
+            #     for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+            #         self.sky_light_queue.append((x, y))
+
+            self.set_blocks(list_blocks, update_range=0)
 
             end = time.time()
             print(f"Chunk {chunk_x} loaded in {end - start:.2f}s => Modified blocks: {blc}")
@@ -1010,48 +1036,88 @@ class WorldSolo():
 
     def update_chunks(self):
         chunks_to_keep = set()
+        chunks_to_unload = set()
+
         player_chunks = []
 
         chunk_size = game_property.TILE_SIZE * game_property.CHUNK_WIDTH
+
+        preload_distance = config.Config().get("preload_distance", 6)
+        unload_distance = preload_distance + game_property.UNLOAD_DISTANCE
 
         for player_ in self.get_entities(EntityClass.Player):
             chunk_x = player_.get_pos()[0] // chunk_size
             player_chunks.append(chunk_x)
 
-            for dx in range(-game_property.PRELOAD_DISTANCE, game_property.PRELOAD_DISTANCE + 1):
+            # chunks à charger
+            for dx in range(-preload_distance, preload_distance + 1):
                 chunks_to_keep.add(chunk_x + dx)
+
+            # zone où les chunks restent chargés
+            for dx in range(-unload_distance, unload_distance + 1):
+                chunks_to_unload.add(chunk_x + dx)
+
 
         def distance(cx):
             if not player_chunks:
                 return 0
             return min(abs(cx - px) for px in player_chunks)
 
+
         sorted_chunks = sorted(chunks_to_keep, key=distance)
+
 
         self.total_chunks_to_load = len(chunks_to_keep)
         self.total_columns = self.total_chunks_to_load * game_property.CHUNK_WIDTH
-        self.total_light_steps = self.total_columns * (game_property.CHUNK_MAX_HEIGHT - game_property.CHUNK_MIN_HEIGHT)
+        self.total_light_steps = self.total_columns * (
+            game_property.CHUNK_MAX_HEIGHT - game_property.CHUNK_MIN_HEIGHT
+        )
 
-        chunks_to_unload = set(self.chunks.keys())
 
         end_loading = True
 
+        # chargement
         for chunk_x in sorted_chunks:
-            chunks_to_unload.discard(chunk_x)
-
             if chunk_x not in self.chunks:
                 self.add_chunk(chunk_x)
                 end_loading = False
                 break
 
-        for chunk_coords in chunks_to_unload:
-            self.unload_chunk(chunk_coords)
 
-        if not end_loading:
-            if not self.is_loaded:
-                self.callback_loading("Chargement des chunks...", 20)
+        # unload uniquement hors de la grande zone
+        for chunk_x in list(self.chunks.keys()):
+            if chunk_x not in chunks_to_unload:
+                self.unload_chunk(chunk_x)
+
 
         return end_loading
+
+    def update_chunk_light(self, max_chunks=1):
+        for _ in range(max_chunks):
+
+            if not self.light_chunk_queue:
+                return
+
+            chunk_x = self.light_chunk_queue.popleft()
+
+            # colonnes de ciel
+            for x in range(
+                chunk_x * game_property.CHUNK_WIDTH,
+                (chunk_x + 1) * game_property.CHUNK_WIDTH
+            ):
+                self.sky_column_queue.append(x)
+
+
+            # propagation lumière
+            for x in range(
+                chunk_x * game_property.CHUNK_WIDTH - int(game_property.CHUNK_WIDTH * 0.25),
+                (chunk_x + 1) * game_property.CHUNK_WIDTH + int(game_property.CHUNK_WIDTH * 0.25)
+            ):
+                for y in range(
+                    game_property.CHUNK_MIN_HEIGHT,
+                    game_property.CHUNK_MAX_HEIGHT
+                ):
+                    self.sky_light_queue.append((x, y))
     
     def flush_loaded_chunks(self):
 
@@ -1071,7 +1137,8 @@ class WorldSolo():
                 to_remove.append(entity)
 
         for entity in to_remove:
-            self.entitys.remove(entity)
+            self.add_offline_entity(entity)
+            self.remove_entity(entity)
 
         # supprimer le chunk
         self.save_chunk_modified_blocks(chunk_cord)
@@ -1114,15 +1181,15 @@ class WorldSolo():
             self.mob_spawn_timer = 0
             self.try_spawn_mobs()
 
-        if end_loading:
-            self.compute_sky_column()
-            if not self.is_loaded:
-                self.callback_loading("On s'occupe de poser les blocks...", 30)
+        self.update_chunk_light(max_chunks=1)
 
-            if not self.sky_column_queue:
-                self.propagate_sky_light()
-                if not self.is_loaded:
-                    self.callback_loading("Calcul de la lumière...", 80)
+        self.compute_sky_column()
+
+        self.propagate_sky_light()
+        if not self.is_loaded:
+            self.callback_loading("Calcul de la lumière...", 80)
+
+        self.update_day_cycle(dt)
 
         to_remove = []
 
@@ -1165,6 +1232,35 @@ class WorldSolo():
         if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
             self.callback_loading("C'est fini", 100)
             self.is_loaded = True
+            
+    def get_sky_light_factor(self):
+        time = self.day_time
+
+        # nuit
+        if 13000 <= time <= 23000:
+            return 0.2
+
+        # jour
+        if 5000 <= time <= 9000:
+            return 1
+
+        # transitions
+        if time < 5000:
+            return 0.2 + (time / 5000) * 0.8
+
+        if time > 9000 and time < 13000:
+            return 1 - ((time - 9000) / 4000) * 0.8
+
+        return 0.2
+    
+    def get_day_progress(self):
+        return self.day_time / self.day_length
+
+    def update_day_cycle(self, dt):
+        self.day_time += dt * self.day_speed * 20
+
+        if self.day_time >= self.day_length:
+            self.day_time = 0
 
     def render(self, screen, cam_rect):
         tile = game_property.TILE_SIZE
@@ -1189,6 +1285,116 @@ class WorldSolo():
 
                 if block:
                     block.render(screen, cam_rect)
+
+    def render_sky(self, screen):
+
+        width, height = screen.get_size()
+
+        progress = self.get_day_progress()
+
+        # fond ciel
+        sky = pygame.Surface(screen.get_size())
+        
+        if 0.25 < progress < 0.75:
+            sky.fill((80, 150, 255)) # jour
+        else:
+            sky.fill((10, 15, 40)) # nuit
+
+        screen.blit(sky, (0,0))
+
+
+        # trajectoire
+        angle = progress * math.pi * 2
+
+
+        center_x = width // 2
+        center_y = height + 100
+
+        radius_x = width // 2
+        radius_y = height // 1.5
+
+
+        # soleil
+        sun_x = center_x + math.cos(angle) * radius_x
+        sun_y = center_y - math.sin(angle) * radius_y
+
+
+        pygame.draw.circle(
+            screen,
+            (255,230,80),
+            (int(sun_x), int(sun_y)),
+            self.sun_radius
+        )
+
+
+        # lune opposée
+        moon_angle = angle + math.pi
+
+        moon_x = center_x + math.cos(moon_angle) * radius_x
+        moon_y = center_y - math.sin(moon_angle) * radius_y
+
+
+        pygame.draw.circle(
+            screen,
+            (220,220,240),
+            (int(moon_x), int(moon_y)),
+            self.moon_radius
+        )
+
+
+        self.render_stars(screen, progress)
+
+    def render_stars(self, screen, progress):
+
+        # visible uniquement la nuit
+        if 0.2 < progress < 0.8:
+            return
+
+
+        alpha = 255
+
+        stars_surface = pygame.Surface(
+            screen.get_size(),
+            pygame.SRCALPHA
+        )
+
+
+        for x,y,size in self.stars:
+
+            pygame.draw.circle(
+                stars_surface,
+                (255,255,255,alpha),
+                (x,y),
+                size
+            )
+
+
+        screen.blit(stars_surface,(0,0))
+
+    def render_debug(self, screen, cam_rect):
+        tile = game_property.TILE_SIZE
+        chunk_pixel_width = tile * game_property.CHUNK_WIDTH
+
+        font = pygame.font.Font(None, 24)
+
+        start_chunk = (cam_rect.left // chunk_pixel_width) - 1
+        end_chunk = (cam_rect.right // chunk_pixel_width) + 1
+
+        for chunk_x in range(start_chunk, end_chunk + 1):
+
+            world_x = chunk_x * chunk_pixel_width
+            screen_x = world_x - cam_rect.x
+
+            pygame.draw.line(
+                screen,
+                (255, 255, 0),
+                (screen_x, 0),
+                (screen_x, screen.get_height()),
+                2
+            )
+
+            text = font.render(f"Chunk {chunk_x}, time={self.day_time}", True, (255, 255, 0))
+            screen.blit(text, (screen_x + 5, 5))
 
     def render_entitys(self, screen, cam_rect):
         for entity in self.entitys:
@@ -1345,7 +1551,7 @@ class WorldSolo():
                     block.block_light = block.block_property.light_emission
                     self.block_light_queue.append((x, y))
     
-    def compute_sky_column(self, max_steps=10):
+    def compute_sky_column(self, max_steps=game_property.CHUNK_WIDTH):
         for _ in range(max_steps):
             if not self.sky_column_queue:
                 return
@@ -1373,7 +1579,7 @@ class WorldSolo():
     #             if block:
     #                 block.block_light = 0
     
-    def propagate_sky_light(self, max_steps=1000):
+    def propagate_sky_light(self, max_steps=500):
         for _ in range(max_steps):
             if not self.sky_light_queue:
                 return
@@ -1405,6 +1611,7 @@ class WorldSolo():
                 if new_light > neighbor.sky_light:
                     neighbor.sky_light = new_light
                     self.sky_light_queue.append((nx, ny))
+
     
     def propagate_block_light(self):
         while self.block_light_queue:
@@ -1436,7 +1643,7 @@ class WorldSolo():
     def get_propagate_value(self, block):
         if block.can_collide():
             return 4
-        return 0.8
+        return 0.4
     
     def get_light_absorption(block):
         if block.can_collide():
@@ -1898,7 +2105,7 @@ class Block:
                 )
 
     def render_darkness(self, screen, draw_x, draw_y):
-        light = max(self.sky_light, self.block_light)
+        light = self.get_light()
 
         if not debug.LIGHT:
             light = game_property.MAX_LIGHT
@@ -1914,6 +2121,9 @@ class Block:
         overlay.fill((0, 0, 0, darkness))
 
         screen.blit(overlay, (draw_x, draw_y))
+
+    def get_light(self) -> float:
+        return max(self.sky_light, self.block_light)
         
     def get_texture(self):
         return context.get_resource_pack().texture_manager().get_texture(self.block_property.texture)
