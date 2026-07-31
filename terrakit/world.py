@@ -135,7 +135,7 @@ class World():
             if chunk_key in self.saved_modified_blocks:
                 for data in self.saved_modified_blocks[chunk_key].values():
 
-                    block = Block.load(data)
+                    block = SolidBlock.load(data)
 
                     x = data["x"]
                     y = data["y"]
@@ -439,7 +439,7 @@ class World():
 
 
     def set_block_json(self, block_json):
-        block = Block.load(block_json)
+        block = SolidBlock.load(block_json)
         return self.set_block(block.get_pos()[0], block.get_pos()[1], block)
 
     
@@ -1010,7 +1010,7 @@ class WorldSolo():
             if chunk_key in self.saved_modified_blocks:
                 for data in self.saved_modified_blocks[chunk_key].values():
 
-                    block = Block.load(data)
+                    block = SolidBlock.load(data)
 
                     x = data["x"]
                     y = data["y"]
@@ -1548,7 +1548,7 @@ class WorldSolo():
 
                 # SAFE CHECK
                 if block.block_property.light_emission > 0:
-                    block.block_light = block.block_property.light_emission
+                    block.set_block_light(block.block_property.light_emission)
                     self.block_light_queue.append((x, y))
     
     def compute_sky_column(self, max_steps=game_property.CHUNK_WIDTH):
@@ -1560,14 +1560,14 @@ class WorldSolo():
 
             self.done_columns += 1
 
-            light = 15
+            light = game_property.MAX_LIGHT
 
             for y in reversed(range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT)):
                 block = self.get_block(x, y)
                 if not block:
                     continue
 
-                block.sky_light = light
+                block.set_sky_light(light)
 
                 if block.can_collide():
                     light = max(light - 2, 0)
@@ -1609,7 +1609,7 @@ class WorldSolo():
                     continue
 
                 if new_light > neighbor.sky_light:
-                    neighbor.sky_light = new_light
+                    neighbor.set_sky_light(new_light)
                     self.sky_light_queue.append((nx, ny))
 
     
@@ -1637,7 +1637,7 @@ class WorldSolo():
                     continue
 
                 if new_light > neighbor.block_light:
-                    neighbor.block_light = new_light
+                    neighbor.set_block_light(new_light)
                     self.block_light_queue.append((nx, ny))
 
     def get_propagate_value(self, block):
@@ -1691,7 +1691,7 @@ class WorldSolo():
         self.modif_block(
             block_pos[0],
             block_pos[1],
-            Block(
+            SolidBlock(
                 x,
                 y,
                 block_property=BlockProperty.AIR
@@ -1850,7 +1850,7 @@ class Chunk:
             if not block or block.block_property != BlockProperty.STONE:
                 continue
 
-            self.set_block(x, y, Block(x, y, ore))
+            self.set_block(x, y, SolidBlock(x, y, ore))
             vein_blocks.append((x, y))
 
             for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
@@ -1967,7 +1967,7 @@ class Chunk:
                 if world_y == game_property.CHUNK_MIN_HEIGHT:
                     block_property = BlockProperty.BEDROCK
 
-                block = Block(world_x, world_y, block_property)
+                block = SolidBlock(world_x, world_y, block_property)
                 self.blocks[(world_x, world_y)] = block
 
         for ore, params in ORE_PARAMS.items():
@@ -1991,7 +1991,7 @@ class Chunk:
         block_type = game_type.get_block_property(block_name)
         if block_type is None:
             return False
-        self.set_block(x, y, Block(x, y, block_type))
+        self.set_block(x, y, SolidBlock(x, y, block_type))
     
     def set_block(self, x, y, block):
         """
@@ -2032,27 +2032,27 @@ ORE_PARAMS = {
 }
 
 class Block:
-    texture_manager = None
+    def __init__(self, pos: tuple, w: float, h: float, block_property: game_type.BlockProperty):
+        """
+        w est en float
+        """
+        
+        self.pos = pos
 
-    def __init__(self, x, y, block_property, debug=False):
-
-        rect = pygame.Rect(
-            x * game_property.TILE_SIZE,
-            y * game_property.TILE_SIZE,
-            game_property.TILE_SIZE,
-            game_property.TILE_SIZE
+        self.rect = pygame.Rect(
+            pos[0] * game_property.TILE_SIZE,
+            pos[1] * game_property.TILE_SIZE,
+            w * game_property.TILE_SIZE,
+            h * game_property.TILE_SIZE,
         )
-        self.rect = rect
-        self.block_property = block_property
 
-        self.pos = (x, y)
+        self.block_property = block_property
 
         self.sky_light = 0
         self.block_light = 0
 
         self.components = {}
 
-        self.debug = debug
         if self.block_property.life:
             self.life = self.block_property.life
             self.max_life = self.block_property.life
@@ -2060,70 +2060,60 @@ class Block:
             self.life = 0
             self.max_life = 0
 
-    def get_pos(self):
-        return self.pos
-    
-    def get_rect(self):
-        return self.rect
+        self.old_darkness = 0
+        self.darkness = 0
+        self.light_overlay = None
 
-    def add_component(self, component, key):
-        self.components[key] = component
-
-    def get_component(self, key, default_value=None):
-        return self.components.get(key, default_value)
-
-    def __str__(self):
-        return f"Block(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
-
-    def render(self, screen, cam_rect):
-        
-        # try to draw texture if available
-        if self.debug:
-            print(f"Render block {str(self)}")
-        texture = self.get_texture()
+    def render_debug(self, screen, cam_rect):
         draw_x, draw_y = game_property.world_to_screen(
             self.rect.x, self.rect.y, self.rect.height, cam_rect
         )
-        if texture:
-            screen.blit(texture, (draw_x, draw_y))
 
-        self.render_darkness(screen, draw_x, draw_y)
+        rect = pygame.rect.Rect(draw_x, draw_y, self.rect.width, self.rect.height)
+        pygame.draw.rect(screen, (0, 0, 255), rect, 2)
+        
 
-        if self.max_life > 0:
-            ratio = self.life / self.max_life
+    def get_light(self) -> int:
+        return max(self.sky_light, self.block_light)
 
-            white_height = int(self.rect.height * (1 - ratio))
+    def set_block_light(self, light: int):
+        self.block_light = light
+        self.update_darkness()
 
-            if white_height > 0:
-                overlay = pygame.Surface((self.rect.width, white_height), pygame.SRCALPHA)
+    def set_sky_light(self, light: int):
+        self.sky_light = light
+        self.update_darkness()
 
-                overlay.fill((255, 255, 255, 180))
+    def is_dark(self) -> bool:
+        if self.get_light() == 0:
+            return True
+        return False
 
-                screen.blit(
-                    overlay,
-                    (draw_x, draw_y + self.rect.height - white_height)
-                )
-
-    def render_darkness(self, screen, draw_x, draw_y):
+    def update_darkness(self):
         light = self.get_light()
 
         if not debug.LIGHT:
             light = game_property.MAX_LIGHT
 
         light = light / game_property.MAX_LIGHT
-
+        
         if light == 1:
             return
 
-        darkness = int(255 * (1 - light))
+        self.old_darkness = self.darkness
+        self.darkness = int(255 * (1 - light))
 
-        overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, darkness))
+        if self.darkness == self.old_darkness:
+            return
 
-        screen.blit(overlay, (draw_x, draw_y))
+        self.light_overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.light_overlay.fill((0, 0, 0, self.darkness))
 
-    def get_light(self) -> float:
-        return max(self.sky_light, self.block_light)
+    def render_darkness(self, screen, draw_x, draw_y):
+        if not self.light_overlay:
+            return
+
+        screen.blit(self.light_overlay, (draw_x, draw_y))
         
     def get_texture(self):
         return context.get_resource_pack().texture_manager().get_texture(self.block_property.texture)
@@ -2155,6 +2145,62 @@ class Block:
             "block": self.block_property.block_name,
             "components": self.get_json_component(),
         }
+
+class SolidBlock(Block):
+    def __init__(self, x, y, block_property, debug=False):
+        super().__init__((x, y), 1, 1, block_property)
+
+        self.debug = debug
+
+    def get_pos(self):
+        return self.pos
+    
+    def get_rect(self):
+        return self.rect
+
+    def add_component(self, component, key):
+        self.components[key] = component
+
+    def get_component(self, key, default_value=None):
+        return self.components.get(key, default_value)
+
+    def __str__(self):
+        return f"Block(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
+
+    def render(self, screen, cam_rect):
+        
+        # try to draw texture if available
+        if self.debug:
+            print(f"Render block {str(self)}")
+
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+
+        if not self.is_dark():
+            texture = self.get_texture()
+            if texture:
+                screen.blit(texture, (draw_x, draw_y))
+
+        self.render_darkness(screen, draw_x, draw_y)
+
+        # if self.is_dark():
+        #     self.render_debug(screen, cam_rect)
+
+        if self.max_life > 0:
+            ratio = self.life / self.max_life
+
+            white_height = int(self.rect.height * (1 - ratio))
+
+            if white_height > 0:
+                overlay = pygame.Surface((self.rect.width, white_height), pygame.SRCALPHA)
+
+                overlay.fill((255, 255, 255, 180))
+
+                screen.blit(
+                    overlay,
+                    (draw_x, draw_y + self.rect.height - white_height)
+                )
     
     @classmethod
     def load(cls, data):
