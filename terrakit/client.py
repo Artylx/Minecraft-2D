@@ -330,7 +330,7 @@ class GameClient:
                     if self.World.modif_block(
                         pos_block[0],
                         pos_block[1],
-                        world.Block(
+                        world.SolidBlock(
                             pos_block[0],
                             pos_block[1],
                             block_property,
