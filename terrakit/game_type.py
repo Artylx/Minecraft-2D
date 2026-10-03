@@ -5,12 +5,13 @@ from terrakit import context
 class BlockProperty:
     REGISTRY = {}
 
-    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0, container=(0, 0)):
+    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0, container=(0, 0), liquid=False):
         self.block_name = name
         self.block_id = block_id
         self.texture = texture
         self.collidable = collidable
         self.breakable = breakable
+        self.liquid = liquid
         self.item_type = item_type
         self.life = life
         self.weakness = weakness
@@ -32,7 +33,7 @@ class BlockProperty:
         return False
 
     def __str__(self):
-        return f"BlockProperty(name:{self.block_name}, block_id:{self.block_id}, collidable:{self.collidable}, breakable:{self.breakable}, item_type:{self.item_type})"
+        return f"BlockProperty(name:{self.block_name}, block_id:{self.block_id}, collidable:{self.collidable}, breakable:{self.breakable}, item_type:{self.item_type}, liquid:{self.liquid})"
 
 
 class ItemProperty:
@@ -327,6 +328,7 @@ ItemProperty.SNOW = ItemProperty("snow", TextureType.SNOW, 100, True, "SNOW")
 ItemProperty.BEDROCK = ItemProperty("bedrock", TextureType.BEDROCK, 100, True, "BEDROCK")
 ItemProperty.REDSTONE = ItemProperty("redstone", TextureType.REDSTONE, 100, True, "REDSTONE")
 ItemProperty.REDSTONE_EMERALD = ItemProperty("redstone_emerald", TextureType.REDSTONE_EMERALD, 100, True, "REDSTONE_EMERALD")
+ItemProperty.SAND = ItemProperty("sand", TextureType.SAND, 100, True, "SAND")
 ItemProperty.REDSTONE_SAND = ItemProperty("redstone_sand", TextureType.REDSTONE_SAND, 100, True, "REDSTONE_SAND")
 ItemProperty.OAK_PLANK = ItemProperty("oak_plank", TextureType.OAK_PLANK, 100, True, "OAK_PLANK", fuel_level=4)
 ItemProperty.TNT = ItemProperty("tnt", TextureType.TNT, 100, True, "TNT")
@@ -339,6 +341,8 @@ ItemProperty.GRASS_BROWN = ItemProperty("grass_brown", TextureType.GRASS_BROWN, 
 ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
 ItemProperty.TORCH = ItemProperty("torch", TextureType.TORCH, 100, True, "TORCH", "Produit de la lumière.")
+
+ItemProperty.WATER_BUCKET = ItemProperty("water_bucket", TextureType.WATER_BUCKET, 100, True, "WATER")
 
 # EPE
 ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)
@@ -386,7 +390,7 @@ BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE
 BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool, Pickaxe_tool)
 
 BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
-BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None)
+BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None, liquid=True)
 BlockProperty.CRAFTING_TABLE = BlockProperty("crafting_table", 18, True, TextureType.CRAFTING_TABLE, True, "CRAFTING_TABLE", 200, Axe_tool)
 BlockProperty.FURNACE = BlockProperty("furnace", 30, True, TextureType.FURNACE, True, "FURNACE", 200, Pickaxe_tool, Pickaxe_tool)
 BlockProperty.CHEST = BlockProperty("chest", 31, True, TextureType.CHEST, True, "CHEST", 200, Axe_tool)

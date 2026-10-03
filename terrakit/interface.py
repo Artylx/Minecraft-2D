@@ -603,7 +603,7 @@ class MainMenu:
         )
 
         credits_container.set_items([
-            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.15 - 18/07/2026", "- Ajout des paramètres de volume.\n- Stuff qui drop quand on meurt.\n"),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.15 - 18/07/2026", "- Ajout des paramètres de volume.\n- Stuff qui drop quand on meurt.\n- Finialisation de la lumière et des ses bugs graphiques.\n- Ajout de l'eau et de la capacité à nager.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n- Généralisation des textures et création du package terrakit.\n- Amélioration et rectification de bug sur l'ui.\n- Passage de texture pack à resource pack et ajout d'annimations.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.12 - 13/05/2026", "- Résolution du bug avec le scroll non détecté\n- Résolution du bug des attrubuts entres les singletons qui était\nlié avec le principal bug l'arc.\n- Ajout d'une barre de vie pour les items."),

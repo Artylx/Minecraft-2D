@@ -212,7 +212,7 @@ class Game:
 
     def run(self):
         self.launch_sound.play()
-        self.launch_sound.set_volume(0.1)
+        self.launch_sound.set_volume(config.Config().get("global_volume", 0) / 100)
 
         dt = 1 / self.update_rate
 

@@ -76,6 +76,7 @@ class Entity:
         self.collidable = collidable
         self.is_alive = True
         self.live_time = live_time
+        self.in_liquid = False
         if dif_pos_render is None:
             dif_pos_render = [0, 0]
         self.dif_pos_render = dif_pos_render
@@ -132,6 +133,28 @@ class Entity:
         self.is_alive = False
         for entity in self.attached_entities:
             entity.kill()
+    
+    def is_touching_liquid(self):
+        points = [
+            (self.rect.left // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.left // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+
+            # Milieux des côtés
+            (self.rect.centerx // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.centerx // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+            (self.rect.left // game_property.TILE_SIZE, self.rect.centery // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.centery // game_property.TILE_SIZE),
+        ]
+
+        for x, y in points:
+            block = self.world.get_block(int(x), int(y))
+
+            if block is not None and block.block_property.liquid:
+                return True
+
+        return False
 
     def render(self, screen, cam_rect, color=(255, 255, 255)):
         draw_x, draw_y = game_property.world_to_screen(
@@ -258,6 +281,8 @@ class Entity:
                 return
 
     def update(self, dt, update_live=True):
+        self.in_liquid = self.is_touching_liquid()
+
         if update_live:
             self.update_live_time(dt)
 
@@ -266,8 +291,12 @@ class Entity:
         
         try:
             self.apply_gravity(dt)
-
-            self.velocity.x *= 0.9
+            
+            if self.in_liquid:
+                self.velocity.x *= 0.84
+                self.velocity.y *= 0.84
+            else:
+                self.velocity.x *= 0.9
 
             new_x = self.rect.x + self.velocity.x * dt
             new_y = self.rect.y + self.velocity.y * dt
@@ -1593,14 +1622,21 @@ class Mob(Living_entity):
         return None
 
     def apply_auto_jump(self):
-        if self.auto_jump and self.on_ground and self.can_auto_jump():
-            self.set_velocity(
-                None,
-                game_property.JUMP_VELOCITY // 3 * 2 * self.speed
-            )
-            self.on_ground = False
+        if self.auto_jump:
+            if self.on_ground and not self.in_liquid and self.can_auto_jump():
+                self.set_velocity(
+                    None,
+                    game_property.JUMP_VELOCITY // 3 * 2 * self.speed
+                )
+                self.on_ground = False
+            elif self.in_liquid and self.can_auto_jump(water=True):
+                self.set_velocity(
+                    None,
+                    (game_property.JUMP_VELOCITY // 3 * 2 * self.speed) // 3
+                )
+                self.on_ground = False
 
-    def can_auto_jump(self):
+    def can_auto_jump(self, water=False):
         # bloc devant au niveau des pieds
         front = self.rect.copy()
         front.x += self.move_direction * 5
@@ -1613,7 +1649,7 @@ class Mob(Living_entity):
         above.y += game_property.TILE_SIZE
 
         # si un bloc est au-dessus, c'est trop haut
-        if self.world.is_collide_at(above):
+        if not water and self.world.is_collide_at(above):
             return False
 
         return True

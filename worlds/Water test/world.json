@@ -1,11 +1,195 @@
 {
-    "seed": 289165,
+    "seed": 972957,
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "6f6aa9b7-e3af-462b-950e-9027efb237e3",
-            "x": -60864,
+            "uuid": "31d92036-68bf-42dd-ba53-8be7b3d985ff",
+            "x": -28,
+            "y": -544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "ec24675b-3d29-4da8-8a50-0649a1182445",
+            "x": -28,
+            "y": -544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "d5aad855-0cae-479f-9f51-1f39629a08ae",
+            "x": -28,
+            "y": -544,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "2c20d719-351c-4a6e-81a3-b3eaa77a92ae",
+            "x": -956,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "5ce560f0-86b4-4e29-8bf6-2ec067dfd8c6",
+            "x": -956,
+            "y": -898,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 360.5333333333332,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "e88e48a8-3279-4088-9755-d9bb13d8ce50",
+            "x": -668,
             "y": -1856,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "81250db3-8e44-4aa1-8679-13b072e16ea4",
+            "x": -814,
+            "y": -916,
+            "w": 27,
+            "h": 80,
+            "vx": 108.0,
+            "vy": -83.20000000000019,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "f2bcd79c-76ad-4e6b-9ebd-4b1f06a843dc",
+            "x": -892,
+            "y": -256,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "12b338b4-19c6-4e9e-a016-77c200a9a906",
+            "x": -288,
+            "y": -160,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -26,9 +210,55 @@
         },
         {
             "type": "Zombie",
-            "uuid": "969b48c1-3a51-4b98-8ef3-9efcbc6cfc6d",
-            "x": -60864,
-            "y": -1856,
+            "uuid": "9532d0af-8d18-4ab8-b4d7-82551d55be8d",
+            "x": -1148,
+            "y": 160,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 116.368,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "be5cd272-d8e7-432d-9201-68ee17183465",
+            "x": -1087,
+            "y": -896,
+            "w": 27,
+            "h": 80,
+            "vx": -0.0004784068174812687,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "9718a0e5-47d5-4e92-a77c-4dd29248174e",
+            "x": -1280,
+            "y": 96,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -49,9 +279,101 @@
         },
         {
             "type": "Zombie",
-            "uuid": "6e9f6e3a-1654-4824-ab73-94e0a486c38d",
-            "x": -59196,
-            "y": -1600,
+            "uuid": "0b65b285-178b-4d3b-88fc-5d240b7034d6",
+            "x": -1160,
+            "y": 148,
+            "w": 27,
+            "h": 80,
+            "vx": -100.8,
+            "vy": -188.90201319342077,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "61554efa-3c56-4ec5-b8e0-e14a94e18455",
+            "x": -1120,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "bffe38af-2b56-49a6-a00e-b78e02509e01",
+            "x": -1212,
+            "y": -1248,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "ede1bffc-dee3-497e-9a75-cb4f3d698a74",
+            "x": -1696,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "18d7176a-9e7f-4b5c-83fb-3a6982e519d3",
+            "x": -1948,
+            "y": -1920,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -72,12 +394,12 @@
         },
         {
             "type": "Player",
-            "uuid": "947ae16a-cfd4-4513-8c1f-b2fdd655ec8f",
-            "x": -59427,
-            "y": -64,
+            "uuid": "f984c647-1f7c-4830-bfe6-a548c2654c7f",
+            "x": -436,
+            "y": 512,
             "w": 27,
             "h": 80,
-            "vx": -6.185828844822054e-12,
+            "vx": -19.284478272888496,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -90,15 +412,15 @@
             "orientation": "left",
             "drops": [],
             "inventory": {
-                "uuid": "09f5c69d-ca93-417d-a7aa-5f8cf7d6df75",
+                "uuid": "05ae9717-b11f-4e98-a385-5e5097b6586f",
                 "size": 24,
                 "title": "Inventory of Arthur",
                 "items": [
                     {
                         "slot": 0,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 91,
+                            "item_type_name": "water_bucket",
+                            "count": 6,
                             "durability": null,
                             "components": []
                         }
@@ -106,646 +428,411 @@
                     {
                         "slot": 1,
                         "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 14,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 2,
-                        "itemStack": {
-                            "item_type_name": "oak_trunk",
-                            "count": 12,
+                            "item_type_name": "dirt",
+                            "count": 4,
                             "durability": null,
                             "components": []
                         }
                     }
                 ],
-                "owner_uuid": "947ae16a-cfd4-4513-8c1f-b2fdd655ec8f"
+                "owner_uuid": "f984c647-1f7c-4830-bfe6-a548c2654c7f"
             }
         }
     ],
     "modified_blocks": {
+        "-4": {
+            "-55:8": {
+                "x": -55,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-56:8": {
+                "x": -56,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-56:9": {
+                "x": -56,
+                "y": 9,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-5": {
+            "-73:5": {
+                "x": -73,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "-77:6": {
+                "x": -77,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "-67:3": {
+                "x": -67,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "-67:4": {
+                "x": -67,
+                "y": 4,
+                "block": "air",
+                "components": []
+            },
+            "-78:6": {
+                "x": -78,
+                "y": 6,
+                "block": "water",
+                "components": []
+            },
+            "-79:3": {
+                "x": -79,
+                "y": 3,
+                "block": "water",
+                "components": []
+            },
+            "-80:3": {
+                "x": -80,
+                "y": 3,
+                "block": "water",
+                "components": []
+            }
+        },
+        "-3": {
+            "-38:7": {
+                "x": -38,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-35:8": {
+                "x": -35,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-40:14": {
+                "x": -40,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-33:10": {
+                "x": -33,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-39:14": {
+                "x": -39,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-35:7": {
+                "x": -35,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-34:9": {
+                "x": -34,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-38:12": {
+                "x": -38,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-34:5": {
+                "x": -34,
+                "y": 5,
+                "block": "stone",
+                "components": []
+            },
+            "-33:9": {
+                "x": -33,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-35:9": {
+                "x": -35,
+                "y": 9,
+                "block": "water",
+                "components": []
+            },
+            "-38:9": {
+                "x": -38,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-38:5": {
+                "x": -38,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "-34:8": {
+                "x": -34,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-33:8": {
+                "x": -33,
+                "y": 8,
+                "block": "dirt",
+                "components": []
+            },
+            "-38:8": {
+                "x": -38,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-39:12": {
+                "x": -39,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-40:12": {
+                "x": -40,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-38:11": {
+                "x": -38,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-38:10": {
+                "x": -38,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-34:19": {
+                "x": -34,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-34:15": {
+                "x": -34,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-36:9": {
+                "x": -36,
+                "y": 9,
+                "block": "water",
+                "components": []
+            },
+            "-37:9": {
+                "x": -37,
+                "y": 9,
+                "block": "water",
+                "components": []
+            },
+            "-34:11": {
+                "x": -34,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-35:11": {
+                "x": -35,
+                "y": 11,
+                "block": "water",
+                "components": []
+            },
+            "-33:7": {
+                "x": -33,
+                "y": 7,
+                "block": "dirt",
+                "components": []
+            },
+            "-33:6": {
+                "x": -33,
+                "y": 6,
+                "block": "dirt",
+                "components": []
+            },
+            "-39:9": {
+                "x": -39,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-39:10": {
+                "x": -39,
+                "y": 10,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-2": {
+            "-29:14": {
+                "x": -29,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-32:14": {
+                "x": -32,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-29:13": {
+                "x": -29,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-32:9": {
+                "x": -32,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-32:10": {
+                "x": -32,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-23:14": {
+                "x": -23,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-22:13": {
+                "x": -22,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-21:13": {
+                "x": -21,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-20:13": {
+                "x": -20,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-22:12": {
+                "x": -22,
+                "y": 12,
+                "block": "grass",
+                "components": []
+            },
+            "-24:13": {
+                "x": -24,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-22:15": {
+                "x": -22,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-23:13": {
+                "x": -23,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-24:12": {
+                "x": -24,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-22:14": {
+                "x": -22,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-23:12": {
+                "x": -23,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-21:14": {
+                "x": -21,
+                "y": 14,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-6": {
+            "-86:2": {
+                "x": -86,
+                "y": 2,
+                "block": "water",
+                "components": []
+            },
+            "-84:-2": {
+                "x": -84,
+                "y": -2,
+                "block": "water",
+                "components": []
+            },
+            "-86:4": {
+                "x": -86,
+                "y": 4,
+                "block": "water",
+                "components": []
+            }
+        },
         "0": {
-            "3:30": {
-                "x": 3,
-                "y": 30,
-                "block": "air",
-                "components": []
-            },
-            "3:27": {
-                "x": 3,
-                "y": 27,
-                "block": "air",
-                "components": []
-            },
             "3:29": {
                 "x": 3,
                 "y": 29,
                 "block": "air",
                 "components": []
             },
-            "3:28": {
-                "x": 3,
-                "y": 28,
-                "block": "air",
-                "components": []
-            },
-            "3:31": {
-                "x": 3,
-                "y": 31,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-1": {
-            "-10:23": {
-                "x": -10,
-                "y": 23,
-                "block": "air",
-                "components": []
-            },
-            "-7:24": {
-                "x": -7,
-                "y": 24,
-                "block": "air",
-                "components": []
-            },
-            "-13:23": {
-                "x": -13,
-                "y": 23,
-                "block": "air",
-                "components": []
-            },
-            "-7:23": {
-                "x": -7,
-                "y": 23,
-                "block": "air",
-                "components": []
-            },
-            "-10:22": {
-                "x": -10,
-                "y": 22,
-                "block": "air",
-                "components": []
-            },
-            "-7:25": {
-                "x": -7,
-                "y": 25,
-                "block": "air",
-                "components": []
-            },
-            "-13:22": {
-                "x": -13,
-                "y": 22,
-                "block": "air",
-                "components": []
-            },
-            "-10:24": {
-                "x": -10,
-                "y": 24,
-                "block": "air",
-                "components": []
-            },
-            "-13:21": {
-                "x": -13,
-                "y": 21,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-2": {
-            "-23:21": {
-                "x": -23,
-                "y": 21,
-                "block": "air",
-                "components": []
-            },
-            "-23:19": {
-                "x": -23,
-                "y": 19,
-                "block": "air",
-                "components": []
-            },
-            "-23:20": {
-                "x": -23,
-                "y": 20,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-4": {
-            "-62:18": {
-                "x": -62,
-                "y": 18,
-                "block": "air",
-                "components": []
-            },
-            "-59:15": {
-                "x": -59,
-                "y": 15,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-9": {
-            "-134:20": {
-                "x": -134,
-                "y": 20,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-135:18": {
-                "x": -135,
-                "y": 18,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-18": {
-            "-278:28": {
-                "x": -278,
-                "y": 28,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-19": {
-            "-302:24": {
-                "x": -302,
-                "y": 24,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-21": {
-            "-333:15": {
-                "x": -333,
-                "y": 15,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-23": {
-            "-356:23": {
-                "x": -356,
-                "y": 23,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-24": {
-            "-379:30": {
-                "x": -379,
-                "y": 30,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-25": {
-            "-394:14": {
-                "x": -394,
-                "y": 14,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-395:19": {
-                "x": -395,
-                "y": 19,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-395:20": {
-                "x": -395,
-                "y": 20,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-394:18": {
-                "x": -394,
-                "y": 18,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-27": {
-            "-430:24": {
-                "x": -430,
-                "y": 24,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-28": {
-            "-437:30": {
-                "x": -437,
-                "y": 30,
-                "block": "air",
-                "components": []
-            },
-            "-437:31": {
-                "x": -437,
-                "y": 31,
-                "block": "air",
-                "components": []
-            },
-            "-437:29": {
-                "x": -437,
-                "y": 29,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-29": {
-            "-457:40": {
-                "x": -457,
-                "y": 40,
-                "block": "air",
-                "components": []
-            },
-            "-454:37": {
-                "x": -454,
-                "y": 37,
-                "block": "air",
-                "components": []
-            },
-            "-457:39": {
-                "x": -457,
-                "y": 39,
-                "block": "air",
-                "components": []
-            },
-            "-454:39": {
-                "x": -454,
-                "y": 39,
-                "block": "air",
-                "components": []
-            },
-            "-457:38": {
-                "x": -457,
-                "y": 38,
-                "block": "air",
-                "components": []
-            },
-            "-454:38": {
-                "x": -454,
-                "y": 38,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-30": {
-            "-468:39": {
-                "x": -468,
-                "y": 39,
-                "block": "air",
-                "components": []
-            },
-            "-468:40": {
-                "x": -468,
-                "y": 40,
-                "block": "air",
-                "components": []
-            },
-            "-468:41": {
-                "x": -468,
-                "y": 41,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-31": {
-            "-496:27": {
-                "x": -496,
-                "y": 27,
-                "block": "dirt",
-                "components": []
-            },
-            "-494:29": {
-                "x": -494,
-                "y": 29,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-32": {
-            "-497:27": {
-                "x": -497,
-                "y": 27,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-34": {
-            "-537:8": {
-                "x": -537,
-                "y": 8,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-36": {
-            "-574:16": {
-                "x": -574,
-                "y": 16,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-42": {
-            "-672:36": {
-                "x": -672,
-                "y": 36,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-43": {
-            "-686:34": {
-                "x": -686,
-                "y": 34,
-                "block": "air",
-                "components": []
-            },
-            "-678:35": {
-                "x": -678,
-                "y": 35,
-                "block": "air",
-                "components": []
-            },
-            "-677:35": {
-                "x": -677,
-                "y": 35,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-44": {
-            "-695:31": {
-                "x": -695,
-                "y": 31,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-45": {
-            "-709:25": {
-                "x": -709,
-                "y": 25,
-                "block": "air",
-                "components": []
-            },
-            "-710:25": {
-                "x": -710,
-                "y": 25,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-68": {
-            "-1083:24": {
-                "x": -1083,
-                "y": 24,
-                "block": "air",
-                "components": []
-            },
-            "-1075:21": {
-                "x": -1075,
-                "y": 21,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1075:5": {
-                "x": -1075,
-                "y": 5,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1083:26": {
-                "x": -1083,
+            "2:26": {
+                "x": 2,
                 "y": 26,
                 "block": "air",
                 "components": []
             },
-            "-1075:17": {
-                "x": -1075,
-                "y": 17,
-                "block": "oak_plank",
+            "2:27": {
+                "x": 2,
+                "y": 27,
+                "block": "air",
                 "components": []
             },
-            "-1075:13": {
-                "x": -1075,
-                "y": 13,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1083:25": {
-                "x": -1083,
+            "2:25": {
+                "x": 2,
                 "y": 25,
                 "block": "air",
-                "components": []
-            },
-            "-1075:9": {
-                "x": -1075,
-                "y": 9,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-71": {
-            "-1132:18": {
-                "x": -1132,
-                "y": 18,
-                "block": "air",
-                "components": []
-            },
-            "-1132:17": {
-                "x": -1132,
-                "y": 17,
-                "block": "air",
-                "components": []
-            },
-            "-1126:17": {
-                "x": -1126,
-                "y": 17,
-                "block": "air",
-                "components": []
-            },
-            "-1132:16": {
-                "x": -1132,
-                "y": 16,
-                "block": "air",
-                "components": []
-            },
-            "-1126:16": {
-                "x": -1126,
-                "y": 16,
-                "block": "air",
-                "components": []
-            },
-            "-1126:18": {
-                "x": -1126,
-                "y": 18,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-72": {
-            "-1142:16": {
-                "x": -1142,
-                "y": 16,
-                "block": "air",
-                "components": []
-            },
-            "-1142:17": {
-                "x": -1142,
-                "y": 17,
-                "block": "air",
-                "components": []
-            },
-            "-1142:18": {
-                "x": -1142,
-                "y": 18,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-79": {
-            "-1254:47": {
-                "x": -1254,
-                "y": 47,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-86": {
-            "-1369:18": {
-                "x": -1369,
-                "y": 18,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-117": {
-            "-1867:4": {
-                "x": -1867,
-                "y": 4,
-                "block": "dirt",
-                "components": []
-            },
-            "-1866:2": {
-                "x": -1866,
-                "y": 2,
-                "block": "air",
-                "components": []
-            },
-            "-1868:4": {
-                "x": -1868,
-                "y": 4,
-                "block": "dirt",
-                "components": []
-            },
-            "-1866:1": {
-                "x": -1866,
-                "y": 1,
-                "block": "air",
-                "components": []
-            },
-            "-1867:3": {
-                "x": -1867,
-                "y": 3,
-                "block": "dirt",
-                "components": []
-            },
-            "-1866:0": {
-                "x": -1866,
-                "y": 0,
-                "block": "air",
-                "components": []
-            }
-        },
-        "-119": {
-            "-1894:2": {
-                "x": -1894,
-                "y": 2,
-                "block": "air",
-                "components": []
-            },
-            "-1893:7": {
-                "x": -1893,
-                "y": 7,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1897:2": {
-                "x": -1897,
-                "y": 2,
-                "block": "air",
-                "components": []
-            },
-            "-1896:2": {
-                "x": -1896,
-                "y": 2,
-                "block": "air",
-                "components": []
-            },
-            "-1897:1": {
-                "x": -1897,
-                "y": 1,
-                "block": "air",
-                "components": []
-            },
-            "-1896:-1": {
-                "x": -1896,
-                "y": -1,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1897:0": {
-                "x": -1897,
-                "y": 0,
-                "block": "air",
-                "components": []
-            },
-            "-1897:-4": {
-                "x": -1897,
-                "y": -4,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1895:-13": {
-                "x": -1895,
-                "y": -13,
-                "block": "stone",
-                "components": []
-            },
-            "-1894:3": {
-                "x": -1894,
-                "y": 3,
-                "block": "oak_plank",
-                "components": []
-            },
-            "-1894:-13": {
-                "x": -1894,
-                "y": -13,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-118": {
-            "-1888:15": {
-                "x": -1888,
-                "y": 15,
-                "block": "oak_plank",
-                "components": []
-            }
-        },
-        "-116": {
-            "-1848:-10": {
-                "x": -1848,
-                "y": -10,
-                "block": "oak_plank",
                 "components": []
             }
         }

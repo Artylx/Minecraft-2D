@@ -2,12 +2,12 @@
 - [FAIT] Swap entre item de l'inventaire et result_crafting
 - [FAIT] Chargement des chunks trop long
 - [FAIT] Interface du four pour cuir des items
-- Utiliser des consomables qui redonnnent de la vie (ou système de nourriture)
+- [FAIT] Utiliser des consomables qui redonnnent de la vie (ou système de nourriture)
 - Système de tuto
 - Système de boite à choix défilante
 - Bug quand on split et qu'on swap => suppresion de l'ancien item
 - [FAIT] Scroll plus détecté
-- Proposer un pseudo au lancement d'un monde déjà lancé auparavant
+- [FAIT] Proposer un pseudo au lancement d'un monde déjà lancé auparavant
 
 - Faire un systève avec PythonPlugin
 - Au lancement avoir un register d'event

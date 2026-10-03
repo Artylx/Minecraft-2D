@@ -143,7 +143,7 @@ class World():
                     list_blocks.append((x, y, block))
                     blc += 1
             
-            self.set_blocks(list_blocks, update_range=0)
+            self.set_blocks(list_blocks, update_range=1)
             
             for x in range(chunk_x * game_property.CHUNK_WIDTH, (chunk_x+1)*game_property.CHUNK_WIDTH):
                 self.sky_column_queue.append(x)
@@ -713,6 +713,7 @@ class WorldSolo():
         self.sky_light_queue = deque()
         self.sky_column_queue = deque()
         self.light_chunk_queue = deque()
+        self.sky_dirty = set()
 
         self.block_light = {}
         self.light_sources = set()
@@ -1010,7 +1011,7 @@ class WorldSolo():
             if chunk_key in self.saved_modified_blocks:
                 for data in self.saved_modified_blocks[chunk_key].values():
 
-                    block = SolidBlock.load(data)
+                    block = Block.load(data)
 
                     x = data["x"]
                     y = data["y"]
@@ -1030,8 +1031,12 @@ class WorldSolo():
 
             self.set_blocks(list_blocks, update_range=0)
 
+            for neighbor_x in (chunk_x - 1, chunk_x, chunk_x + 1):
+                if neighbor_x in self.chunks:
+                    self.chunks[neighbor_x].update_liquid_blocks(self)
+
             end = time.time()
-            print(f"Chunk {chunk_x} loaded in {end - start:.2f}s => Modified blocks: {blc}")
+            print(f"Chunk {chunk_x} loaded in {end - start:.4f}s => Modified blocks: {blc}")
             self.loaded_chunks += 1
 
     def update_chunks(self):
@@ -1185,7 +1190,11 @@ class WorldSolo():
 
         self.compute_sky_column()
 
+        self.update_liquids()
+
         self.propagate_sky_light()
+        if self.sky_dirty and not self.sky_column_queue and not self.sky_light_queue:
+            self.commit_sky_light()
         if not self.is_loaded:
             self.callback_loading("Calcul de la lumière...", 80)
 
@@ -1232,6 +1241,10 @@ class WorldSolo():
         if not self.is_loaded and end_loading and not self.sky_column_queue and not self.sky_light_queue:
             self.callback_loading("C'est fini", 100)
             self.is_loaded = True
+
+    def update_liquids(self):
+        for chunk in self.chunks.values():
+            chunk.update_liquid_blocks(self)
             
     def get_sky_light_factor(self):
         time = self.day_time
@@ -1412,18 +1425,25 @@ class WorldSolo():
 
         return chunk.blocks.get((X, Y))
     
-    def update_light_area(self):
+    def update_light_area(self, cx, cy, radius=40):
         self.block_light_queue.clear()
 
-        for chunk in self.chunks.values():
-            for block in chunk.blocks.values():
-                block.block_light = 0
+        for x in range(cx - radius, cx + radius + 1):
+            for y in range(cy - radius, cy + radius + 1):
+                b = self.get_block(x, y)
+                if b:
+                    b.block_light = 0
+                    b.update_darkness()
 
-        for x, y in self.light_sources:
-            block = self.get_block(x, y)
-            if block:
-                block.block_light = block.block_property.light_emission
-                self.block_light_queue.append((x, y))
+        # sources dans la zone élargie (elles peuvent éclairer dans la zone)
+        r2 = radius * 2
+        for sx, sy in self.light_sources:
+            if abs(sx - cx) <= r2 and abs(sy - cy) <= r2:
+                b = self.get_block(sx, sy)
+                if b:
+                    b.block_light = b.block_property.light_emission
+                    b.update_darkness()
+                    self.block_light_queue.append((sx, sy))
 
         self.propagate_block_light()
     
@@ -1452,17 +1472,28 @@ class WorldSolo():
         # placement du bloc si pas de collision
         chunk = self.chunks[chunk_x]
 
+        old = self.get_block(X, Y)
+        if old:
+            block.inherit_visual(old)
+            if old.block_property.light_emission > 0:
+                self.light_sources.discard((X, Y))
         chunk.set_block(X, Y, block)
 
         if block.block_property.light_emission > 0:
             self.light_sources.add((X, Y))
 
-        self.update_light_area()
-        for dx in range(-10, 10):
+        self.update_light_area(X, Y)
+        for dx in range(-update_range, update_range + 1):
             self.sky_column_queue.append(X + dx)
 
-        for x in range(X - update_range, X + update_range):
+        for x in range(X - update_range - 1, X + update_range + 2):   # +1 de bordure
+            inside = abs(x - X) <= update_range
             for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                if inside:
+                    b = self.get_block(x, y)
+                    if b:
+                        b.pending_sky_light = 0
+                        self.sky_dirty.add((x, y))
                 self.sky_light_queue.append((x, y))
 
         return True
@@ -1518,25 +1549,22 @@ class WorldSolo():
         :param list_block: liste de tuples (x, y, block)
         """
 
-        for x, y, block in list_block:
-            
-            chunk_x = x // game_property.CHUNK_WIDTH
-            if chunk_x not in self.chunks:
-                return False
-
-            chunk = self.chunks[chunk_x]
-
-            chunk.set_block(x, y, block)
-
+        for bx, by, block in list_block:
+            chunk_x = bx // game_property.CHUNK_WIDTH
+            chunk = self.chunks.get(chunk_x)
+            if chunk is None:
+                continue
+            chunk.set_block(bx, by, block)
             if block.block_property.light_emission > 0:
-                self.light_sources.add((x, y))
-        
-            self.sky_column_queue.append(x)
-            for x in range(x - update_range, x + update_range):
-                for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
-                    self.sky_light_queue.append((x, y))
+                self.light_sources.add((bx, by))
+            self.sky_column_queue.append(bx)
+            for sx in range(bx - update_range, bx + update_range + 1):
+                for sy in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
+                    self.sky_light_queue.append((sx, sy))
 
-        self.update_light_area()
+        if list_block:
+            mid_x = list_block[0][0]
+            self.update_light_area(mid_x, 0, radius=game_property.CHUNK_WIDTH + 40)
         return True
     
     def seed_block_light(self, cx, cy, radius):
@@ -1567,7 +1595,8 @@ class WorldSolo():
                 if not block:
                     continue
 
-                block.set_sky_light(light)
+                block.pending_sky_light = light
+                self.sky_dirty.add((x, y))
 
                 if block.can_collide():
                     light = max(light - 2, 0)
@@ -1592,7 +1621,7 @@ class WorldSolo():
             if not block:
                 continue
 
-            current = block.sky_light
+            current = block.pending_sky_light
 
             for dx, dy in [(1,0), (-1,0), (0,-1), (0,1)]:
                 nx, ny = x + dx, y + dy
@@ -1608,9 +1637,17 @@ class WorldSolo():
                 if new_light <= 0:
                     continue
 
-                if new_light > neighbor.sky_light:
-                    neighbor.set_sky_light(new_light)
+                if new_light > neighbor.pending_sky_light:
+                    neighbor.pending_sky_light = new_light
+                    self.sky_dirty.add((nx, ny))
                     self.sky_light_queue.append((nx, ny))
+
+    def commit_sky_light(self):
+        for x, y in self.sky_dirty:
+            b = self.get_block(x, y)
+            if b:
+                b.commit_sky_light()
+        self.sky_dirty.clear()
 
     
     def propagate_block_light(self):
@@ -1967,7 +2004,7 @@ class Chunk:
                 if world_y == game_property.CHUNK_MIN_HEIGHT:
                     block_property = BlockProperty.BEDROCK
 
-                block = SolidBlock(world_x, world_y, block_property)
+                block = Block.load(Block((world_x, world_y), 1, 1, block_property).to_json())
                 self.blocks[(world_x, world_y)] = block
 
         for ore, params in ORE_PARAMS.items():
@@ -1983,6 +2020,55 @@ class Chunk:
                 self.generate_vein(x, y, ore, params["max_size"])
 
         self.generate_structures()
+
+    def update_liquid_blocks(self, world):
+        min_x = self.x * game_property.CHUNK_WIDTH
+        max_x = (self.x + 1) * game_property.CHUNK_WIDTH - 1
+
+        neighbor_positions = [
+            (-1, 0),
+            (1, 0),
+            (0, -1),
+            (0, 1),
+
+            (-1, -1),
+            (-1, 1),
+            (1, -1),
+            (1, 1)
+        ]
+
+        for block in self.blocks.values():
+
+            if not isinstance(block, LiquidBlock):
+                continue
+
+            x = block.pos[0]
+            y = block.pos[1]
+
+            for dx, dy in neighbor_positions:
+
+                nx = x + dx
+                ny = y + dy
+
+                # Si on sort du chunk horizontalement
+                if nx < min_x or nx > max_x:
+                    neighbor_block = world.get_block(nx, ny)
+
+                # Sinon, le bloc est dans le chunk actuel
+                else:
+                    neighbor_block = self.blocks.get((nx, ny))
+
+                if neighbor_block and isinstance(neighbor_block, LiquidBlock):
+                    block.neighbor_blocks[(dx, dy)] = neighbor_block.block_property
+                elif neighbor_block is not None and neighbor_block.block_property == BlockProperty.AIR:
+                    block.neighbor_blocks[(dx, dy)] = neighbor_block.block_property
+
+                    if ny < y:
+                        world.set_block(nx, ny, LiquidBlock(nx, ny, block.block_property))
+                else:
+                    block.neighbor_blocks[(dx, dy)] = None
+
+                
     
     def get_block(self, x, y):
         return self.blocks.get((x, y))
@@ -2032,6 +2118,9 @@ ORE_PARAMS = {
 }
 
 class Block:
+    FADE_STEP = 10            # variation max par frame (0-255), baisse pour un fondu plus lent
+    _overlay_cache = {}
+
     def __init__(self, pos: tuple, w: float, h: float, block_property: game_type.BlockProperty):
         """
         w est en float
@@ -2047,10 +2136,6 @@ class Block:
         )
 
         self.block_property = block_property
-
-        self.sky_light = 0
-        self.block_light = 0
-
         self.components = {}
 
         if self.block_property.life:
@@ -2060,9 +2145,14 @@ class Block:
             self.life = 0
             self.max_life = 0
 
-        self.old_darkness = 0
-        self.darkness = 0
+        self.sky_light = 0
+        self.block_light = 0
+        self.darkness = 255
+        self.target_darkness = 255
         self.light_overlay = None
+        self._shown = False
+        self.sky_light = 0
+        self.pending_sky_light = 0
 
     def render_debug(self, screen, cam_rect):
         draw_x, draw_y = game_property.world_to_screen(
@@ -2089,32 +2179,6 @@ class Block:
             return True
         return False
 
-    def update_darkness(self):
-        light = self.get_light()
-
-        if not debug.LIGHT:
-            light = game_property.MAX_LIGHT
-
-        light = light / game_property.MAX_LIGHT
-        
-        if light == 1:
-            return
-
-        self.old_darkness = self.darkness
-        self.darkness = int(255 * (1 - light))
-
-        if self.darkness == self.old_darkness:
-            return
-
-        self.light_overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        self.light_overlay.fill((0, 0, 0, self.darkness))
-
-    def render_darkness(self, screen, draw_x, draw_y):
-        if not self.light_overlay:
-            return
-
-        screen.blit(self.light_overlay, (draw_x, draw_y))
-        
     def get_texture(self):
         return context.get_resource_pack().texture_manager().get_texture(self.block_property.texture)
     
@@ -2137,6 +2201,9 @@ class Block:
             component = {"key": k, "component": v.to_json()}
             component_list.append(component)
         return component_list
+
+    def render():
+        pass
     
     def to_json(self):
         return {
@@ -2145,6 +2212,223 @@ class Block:
             "block": self.block_property.block_name,
             "components": self.get_json_component(),
         }
+
+    @classmethod
+    def load(cls, data):
+
+        x = data["x"]
+        y = data["y"]
+
+        block_name = data["block"].upper()
+
+        if block_name not in BlockProperty.REGISTRY:
+            raise ValueError(f"Block inconnu: {block_name}")
+
+        block_property = BlockProperty.REGISTRY[block_name]
+
+        if block_property.liquid:
+            return LiquidBlock(x, y, block_property)
+        
+        block = SolidBlock(x, y, block_property)
+
+        # charger les components
+        for comp_data in data.get("components", []):
+
+            key = comp_data["key"]
+            component_json = comp_data["component"]
+
+            component = inventory.json_to_block_component(component_json)
+
+            if component:
+                block.add_component(component, key)
+
+        return block
+
+    @classmethod
+    def _get_overlay(cls, w, h, darkness):
+        key = (w, h, darkness)
+        surf = cls._overlay_cache.get(key)
+        if surf is None:
+            surf = pygame.Surface((w, h), pygame.SRCALPHA)
+            surf.fill((0, 0, 0, darkness))
+            cls._overlay_cache[key] = surf
+        return surf
+
+    def inherit_visual(self, old):
+        self.darkness = old.darkness
+        self.target_darkness = old.target_darkness
+        self._shown = old._shown
+        # le nouveau bloc garde la lumière de l'ancien jusqu'au recalcul
+        self.sky_light = old.sky_light
+        self.pending_sky_light = old.pending_sky_light
+        self.block_light = old.block_light
+
+    def commit_sky_light(self):
+        """Applique la valeur calculée seulement si elle diffère de l'ancienne."""
+        if abs(self.pending_sky_light - self.sky_light) < 0.01:
+            return False
+        self.sky_light = self.pending_sky_light
+        self.update_darkness()
+        return True
+
+    def update_darkness(self):
+        light = self.get_light() if debug.LIGHT else game_property.MAX_LIGHT
+        ratio = max(0.0, min(1.0, light / game_property.MAX_LIGHT))
+        self.target_darkness = int(255 * (1 - ratio))
+        # un bloc jamais affiché prend directement sa valeur finale (pas de fondu invisible)
+        if not self._shown:
+            self.darkness = self.target_darkness
+
+    def is_dark(self) -> bool:
+        return self.darkness >= 255
+
+    def step_fade(self):
+        self._shown = True
+        if self.darkness != self.target_darkness:
+            diff = self.target_darkness - self.darkness
+            self.darkness += max(-self.FADE_STEP, min(self.FADE_STEP, diff))
+
+    def render_darkness(self, screen, draw_x, draw_y):
+        self.step_fade()
+        if self.darkness > 0:
+            screen.blit(Block._get_overlay(self.rect.width, self.rect.height, self.darkness),
+                        (draw_x, draw_y))
+
+class LiquidBlock(Block):
+    def __init__(self, x, y, block_property):
+        super().__init__((x, y), 1, 1, block_property)
+
+        self.neighbor_blocks = {(0, 1): None, (0, -1): None, (-1, 0): None, (1, 0): None, (1, 1): None, (-1, 1): None, (1, -1): None, (-1, -1): None}
+
+    def get_pos(self):
+        return self.pos
+    
+    def get_rect(self):
+        return self.rect
+
+    def add_component(self, component, key):
+        self.components[key] = component
+
+    def get_component(self, key, default_value=None):
+        return self.components.get(key, default_value)
+
+    def render(self, screen, cam_rect):
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+
+        if not self.is_dark():
+
+            side_color = (50, 130, 220)      # bords
+            center_color = (70, 170, 240)     # centre
+
+            side_width = 4
+            
+            # Centre du bloc
+            pygame.draw.rect(
+                screen,
+                center_color,
+                (
+                    draw_x,
+                    draw_y,
+                    self.rect.width,
+                    self.rect.height
+                )
+            )
+
+            # Gauche
+            if self.neighbor_blocks[(-1, 0)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (draw_x, draw_y, side_width, self.rect.height)
+                )
+
+            # Droite
+            if self.neighbor_blocks[(1, 0)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (
+                        draw_x + self.rect.width - side_width,
+                        draw_y,
+                        side_width,
+                        self.rect.height
+                    )
+                )
+
+            # Haut
+            if self.neighbor_blocks[(0, 1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (draw_x, draw_y, self.rect.width, side_width)
+                )
+
+            # Bas
+            if self.neighbor_blocks[(0, -1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (
+                        draw_x,
+                        draw_y + self.rect.height - side_width,
+                        self.rect.width,
+                        side_width
+                    )
+                )
+
+            # Coin haut-gauche
+            if self.neighbor_blocks[(-1, 1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (draw_x, draw_y, side_width, side_width)
+                )
+
+            # Coin haut-droit
+            if self.neighbor_blocks[(1, 1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (
+                        draw_x + self.rect.width - side_width,
+                        draw_y,
+                        side_width,
+                        side_width
+                    )
+                )
+
+            # Coin bas-gauche
+            if self.neighbor_blocks[(-1, -1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (
+                        draw_x,
+                        draw_y + self.rect.height - side_width,
+                        side_width,
+                        side_width
+                    )
+                )
+
+            # Coin bas-droit
+            if self.neighbor_blocks[(1, -1)] == BlockProperty.AIR:
+                pygame.draw.rect(
+                    screen,
+                    side_color,
+                    (
+                        draw_x + self.rect.width - side_width,
+                        draw_y + self.rect.height - side_width,
+                        side_width,
+                        side_width
+                    )
+                )
+
+        self.render_darkness(screen, draw_x, draw_y)
+                
+    def __str__(self):
+        return f"LiquidBlock(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
 
 class SolidBlock(Block):
     def __init__(self, x, y, block_property, debug=False):
@@ -2201,31 +2485,6 @@ class SolidBlock(Block):
                     overlay,
                     (draw_x, draw_y + self.rect.height - white_height)
                 )
-    
-    @classmethod
-    def load(cls, data):
 
-        x = data["x"]
-        y = data["y"]
-
-        block_name = data["block"].upper()
-
-        if block_name not in BlockProperty.REGISTRY:
-            raise ValueError(f"Block inconnu: {block_name}")
-
-        block_type = BlockProperty.REGISTRY[block_name]
-
-        block = cls(x, y, block_type)
-
-        # charger les components
-        for comp_data in data.get("components", []):
-
-            key = comp_data["key"]
-            component_json = comp_data["component"]
-
-            component = inventory.json_to_block_component(component_json)
-
-            if component:
-                block.add_component(component, key)
-
-        return block
+    def __str__(self):
+            return f"SolidBlock(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"

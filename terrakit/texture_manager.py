@@ -60,6 +60,8 @@ class TextureType:
     CHEST = "chest"
     IRON_CHEST = "iron_chest"
 
+    WATER_BUCKET = "water_bucket"
+
     # TOOLS
     WOODEN_SWORD = "wooden_sword"
     WOODEN_PICKAXE = "wooden_pickaxe"
@@ -173,6 +175,8 @@ class TextureManager:
             self.load_texture(TextureType.MUSHROOM, BLOCKS_PATH + "mushroom_red.png")
 
             # ITEMS
+            self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + "water_bucket.png")
+
             self.load_texture(TextureType.DIAMOND_SWORD, ITEMS_PATH + TOOLS_PATH + "diamond_sword.png")
             self.load_texture(TextureType.WOODEN_SWORD, ITEMS_PATH + TOOLS_PATH + "wooden_sword.png")
             self.load_texture(TextureType.STONE_SWORD, ITEMS_PATH + TOOLS_PATH + "stone_sword.png")

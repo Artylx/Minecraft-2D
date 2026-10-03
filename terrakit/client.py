@@ -158,8 +158,15 @@ class GameClient:
             elif game.keys_.get(pygame.K_q) and not game.keys_.get(pygame.K_d) or (game.keys_.get(pygame.K_LEFT) and not game.keys_.get(pygame.K_RIGHT)):
                 self.player.add_velocity(-1, 0)
 
-            if (game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP)) and self.player.on_ground:
-                self.player.jump(game_property.JUMP_VELOCITY)
+            if (game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP)):
+                if self.player.on_ground and not self.player.in_liquid:
+                    self.player.jump(game_property.JUMP_VELOCITY)
+                elif self.player.in_liquid:
+                    self.player.add_velocity(0, 1.8)
+
+            if (game.keys_.get(pygame.K_DOWN) or game.keys_.get(pygame.K_LCTRL)):
+                if self.player.in_liquid:
+                    self.player.add_velocity(0, -1)
 
             # Breaking
             selected_item = self.player.inventory.ui.get_selected_item()
@@ -181,7 +188,7 @@ class GameClient:
                         
             # Pos or other
             if game.is_press(self.event_mouse_get(3)):
-                self.click_on_block(self.current_block_pos, self.player)
+                self.click_on_block(self.current_block_pos, self.player, game)
                 self.player.use_selected_item(self.cam_rect)    
             else:
                 if game.is_release(self.event_mouse_get(3)):
@@ -275,7 +282,7 @@ class GameClient:
         self.UI.update_pos_cam_rect(self.player.get_pos())
         self.UI.update(dt)
 
-    def click_on_block(self, pos_block, player):
+    def click_on_block(self, pos_block, player, game):
         # centre du bloc
         block_center_x = pos_block[0] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
         block_center_y = pos_block[1] * game_property.TILE_SIZE + game_property.TILE_SIZE / 2
@@ -291,9 +298,17 @@ class GameClient:
             return False
         
         old_block = self.World.get_block(pos_block[0], pos_block[1])
+        if game.toogle_.get(pygame.K_F3):
+            print(f"Block: {old_block}")
+            print(f"Block property: {old_block.block_property}")
+            print(f"Block life: {old_block.life}")
+            print(f"Block collidable: {old_block.block_property.collidable}")
+            print(f"Block breakable: {old_block.block_property.breakable}")
+            print(f"Block item_type: {old_block.block_property.item_type}")
+            print(f"Block liquid: {old_block.block_property.liquid}")
 
         if old_block:
-            if old_block.block_property == game_type.BlockProperty.AIR:
+            if old_block.block_property == game_type.BlockProperty.AIR or old_block.block_property.liquid:
                 self.pos_block(pos_block, player)
             else:
                 self.World.add_modified_block(old_block.get_pos()[0], old_block.get_pos()[1])
@@ -322,22 +337,17 @@ class GameClient:
                 self.tchat.send_message("", f"&4Couche maximal {game_property.CHUNK_MAX_HEIGHT}")
                 return
 
-            if old_block and old_block.block_property == world.BlockProperty.AIR:
+            block_property = game_type.get_block_property(current_item.item_property.block_type)
+            block = world.Block.load(world.Block((pos_block[0],pos_block[1]), 1, 1, block_property).to_json())
 
-                block_property = game_type.get_block_property(current_item.item_property.item_name)
+            if block_property:
+                if self.World.modif_block(
+                    pos_block[0],
+                    pos_block[1],
+                    block
+                ):
 
-                if block_property:
-                    if self.World.modif_block(
-                        pos_block[0],
-                        pos_block[1],
-                        world.SolidBlock(
-                            pos_block[0],
-                            pos_block[1],
-                            block_property,
-                        )
-                    ):
-
-                        player.inventory.delete_item(player.inventory.ui.selected_index)
+                    player.inventory.delete_item(player.inventory.ui.selected_index)
 
     # RENDER
     def render(self, game, screen):
@@ -392,6 +402,8 @@ class GameClient:
                 f"Seed: {self.World.seed}\n"
                 f"World: {self.World.name}\n"
                 f"Player: {self.player.name}\n"
+                f"Grounded: {self.player.on_ground}\n"
+                f"In Liquid: {self.player.in_liquid}\n"
             )
 
             lines = debug_text.split("\n")
