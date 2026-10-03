@@ -1215,7 +1215,7 @@ class WorldSolo():
 
                         if e.inventory and entity.rect.colliderect(e.rect):
                         
-                            item = inventory.ItemStack(entity.item_type, 1)
+                            item = entity.get_item()
 
                             if e.inventory.can_pickup(item):
                             
@@ -1713,7 +1713,7 @@ class WorldSolo():
                 r = random.Random()
                 pos = (x + r.randint(0, game_property.SIZE_ITEM - 1), y + r.randint(0, game_property.SIZE_ITEM))
 
-                block_entity = EntityClass.Item(self, game_type.get_item_type_by_name(current_block.block_property.item_type), pos, timer_picked=0)
+                block_entity = EntityClass.Item(self, inventory.ItemStack(game_type.get_item_type_by_name(current_block.block_property.item_type), 1), pos, timer_picked=0)
                 self.create_entity(block_entity)
     
     def try_destroy_block(self, block_pos, player):

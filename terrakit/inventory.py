@@ -937,6 +937,10 @@ class Inventory():
             if index <= len(self.items) - 1:
                 return self.items[index]
         return None 
+
+    def get_all_items(self):
+        self.update()
+        return self.items.values()
     
     def delete_item(self, index):
         itemStack = self.items[index]

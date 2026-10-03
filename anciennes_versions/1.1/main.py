@@ -1,13 +1,13 @@
 import pygame
 from tomlkit import value
-from terrakit import game_property, entity, interface, world, tchat, game_type, ui
-from terrakit.texture_manager import TextureManager
-from terrakit.inventory import Crafting_types
+from classes import game_property, entity, interface, world, tchat, game_type, ui
+from classes.texture_manager import TextureManager
+from classes.inventory import Crafting_types
 import random
 import os
 import shutil
 
-from terrakit import debug
+from classes import debug
 
 class Game:
     def __init__(self):
@@ -101,19 +101,19 @@ class Game:
         self.texture_manager = TextureManager()
         self.texture_manager.load_default_textures()
 
-        from terrakit.world import Block
+        from classes.world import Block
         Block.texture_manager = self.texture_manager
 
-        from terrakit.inventory import ItemStack
+        from classes.inventory import ItemStack
         ItemStack.texture_manager = self.texture_manager
 
-        from terrakit.entity import Entity
+        from classes.entity import Entity
         Entity.texture_manager = self.texture_manager
 
-        from terrakit.game_type import ItemProperty
+        from classes.game_type import ItemProperty
         ItemProperty.texture_manager = self.texture_manager
 
-        from terrakit.interface import MainMenu
+        from classes.interface import MainMenu
         MainMenu.texture_manager = self.texture_manager
         self.menu.reload()
 

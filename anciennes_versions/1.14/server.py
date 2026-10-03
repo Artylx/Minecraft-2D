@@ -2,6 +2,7 @@ import time
 import threading
 import pygame
 from terrakit import world, game_property
+import terrakit
 from terrakit.texture_manager import TextureManager
 import socket
 import json
@@ -23,10 +24,10 @@ class Server:
 
         pygame.init()
 
-        load_texture()
-
         self.screen = pygame.display.set_mode((1280, 720))
         self.font = pygame.font.SysFont("consolas", 22)
+
+        terrakit.init()
 
         self.logs = []
         self.terminal_lines = []
@@ -556,7 +557,7 @@ class ServerConnection:
             return None
 
 def load_texture():
-    texture_manager = TextureManager()
+    texture_manager = TextureManager("./resource_pack/Default/")
 
     from terrakit.world import Block
     Block.texture_manager = texture_manager

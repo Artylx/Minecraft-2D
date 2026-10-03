@@ -431,6 +431,8 @@ class Living_entity(Entity):
         super().__init__(rect, world, name, None, None, display_name=False, collidable=collidable, live_time=live_time, displayed_name=displayed_name)
         self.max_health = max_health
         self.health = health
+        if not drops:
+            drops = []
         self.drops = drops
         self.invulnerable = invulnerable
 
@@ -589,6 +591,26 @@ class Living_entity(Entity):
 
     def update_texture(self):
         pass
+
+    def drop_item(self, itemStack, direction=None):
+        if not itemStack:
+            return
+
+        mid_x = self.rect.x + self.rect.width // 2
+        quart_y = self.rect.y + self.rect.height // 4
+        
+        entity = Item(self.world, itemStack, (mid_x + self.get_int_direction() * self.rect.width, quart_y))
+
+        if direction is None:
+            direction = self.get_int_direction()
+        entity.add_velocity(self.get_int_direction() * 5, 5)
+        self.world.create_entity(entity)
+
+    def kill(self):
+        super().kill()
+        if self.drops:
+            for item in self.drops:
+                self.drop_item(item, random.choice([-1, -0.7, -0.4, 0.4, 0.7, 1]))
 
     def load(self, data, add_map=None):
 
@@ -1291,15 +1313,6 @@ class Player(Humanoid):
         if super().set_orientation(orientation):
             self.update_texture()
 
-    def drop_item(self, itemStack):
-        mid_x = self.rect.x + self.rect.width // 2
-        quart_y = self.rect.y + self.rect.height // 4
-        
-        entity = Item(self.world, itemStack.item_property, (mid_x + self.get_int_direction() * self.rect.width, quart_y))
-
-        entity.add_velocity(self.get_int_direction() * 5, 5)
-        self.world.create_entity(entity)
-
     def drop_item_index(self, itemIndex=None):
         if not itemIndex:
             item = self.inventory.ui.get_selected_item()
@@ -1381,7 +1394,9 @@ class Player(Humanoid):
                 if self.inventory.has_item(game_type.ItemProperty.ARROW):
                     selected_item.used = True
 
-                    
+    def kill(self):
+        self.drops.extend(self.inventory.get_all_items())
+        super().kill()
 
     def get_force_selected_item(self, block_property):
         item = self.get_selected_item()
@@ -1454,28 +1469,31 @@ class Player(Humanoid):
         return self
 
 class Item(Entity):
-    def __init__(self, world=None, item_type=None, pos=(0, 0), size=(game_property.SIZE_ITEM, game_property.SIZE_ITEM), timer_picked=1):
+    def __init__(self, world=None, _item=None, pos=(0, 0), size=(game_property.SIZE_ITEM, game_property.SIZE_ITEM), timer_picked=1):
         rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
         super().__init__(rect, world, "Item", live_time=240)
         self.phase = random.random() * math.pi * 2
-        self.item_type = item_type
+        self._item = _item
         self.t = 0
 
         self.update_texture()
         self._can_be_picked = False
         self.timer_picked = timer_picked
 
+    def get_item(self):
+        return self._item
+
     def can_be_picked(self):
         return self._can_be_picked
 
     def update_texture(self):
-        if self.item_type is None:
+        if self._item is None:
             return
 
-        texture = self.item_type.get_texture()
+        texture = self.get_item().item_property.get_texture()
 
         if texture is None:
-            print(f"Texture introuvable pour {self.item_type.texture}")
+            print(f"Texture introuvable pour {self.get_item().item_property.texture}")
             return
 
         self.texture = pygame.transform.scale(
@@ -1514,7 +1532,7 @@ class Item(Entity):
         if data.get("item_type", None) is None:
             return None
         
-        self.item_type = game_type.ItemProperty.from_dict(data["item_type"])
+        self._item = game_type.ItemProperty.from_dict(data["item_type"])
 
         self.t = random.Random().randint(0, 100) / 500
         self.update_texture()
@@ -1525,7 +1543,7 @@ class Item(Entity):
             dict_ = {}
 
         data = {
-            "item_type": self.item_type.to_json(),
+            "item_type": self.get_item().to_json(),
         }
 
         data.update(dict_)

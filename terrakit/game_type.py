@@ -117,7 +117,11 @@ class ItemProperty:
     
     @staticmethod
     def from_dict(data):
-        name = data["name"].upper()
+        name = data.get("name", None)
+        if not name:
+            return None
+
+        name = name.upper()
         item = ItemProperty.REGISTRY.get(name)
 
         if not item:
