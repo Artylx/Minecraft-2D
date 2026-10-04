@@ -1,0 +1,1480 @@
+{
+    "seed": 804924,
+    "entitys": [
+        {
+            "type": "Zombie",
+            "uuid": "151f0040-f600-4c09-87d0-5847a2f5df56",
+            "x": 2295,
+            "y": -1216,
+            "w": 27,
+            "h": 80,
+            "vx": 8.466094930386443e-08,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "842b0d5f-9728-49f5-b9ca-1abd5804db9f",
+            "x": 1280,
+            "y": -576,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "30c4b2ac-c877-4bdb-943a-06bb3cb63635",
+            "x": -1216,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "e50d4525-3dc5-418f-abb2-4fb49913b95e",
+            "x": -1468,
+            "y": -672,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "cb0bd0ed-0492-4574-a6e2-e743e76b74e5",
+            "x": -1536,
+            "y": -672,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "b9cd0330-f64c-4718-bcae-92abb9092048",
+            "x": -1468,
+            "y": -672,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "e4a0fddb-5619-41d5-858c-2d191c5542f3",
+            "x": -1216,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "2c0fa64d-404f-4fd8-a19a-3030de399f86",
+            "x": -1116,
+            "y": -64,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "7bb0bc72-3a04-4416-9520-47a8117394e4",
+            "x": -1216,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "208c68ad-b52a-45ae-ad30-9aa3d5038c90",
+            "x": -892,
+            "y": -896,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "08b16cf7-56af-477c-9e4d-ee87fd0d5b56",
+            "x": -924,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "f46436e2-ca2c-4a9b-b2bc-36a1702dc3a3",
+            "x": -892,
+            "y": -896,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "41a63dec-3b91-403f-89fe-5b8b0a8637e8",
+            "x": -576,
+            "y": -1024,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "be40a690-576c-4cdd-b9b3-fd15ecd1cb58",
+            "x": -924,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "5a14b59a-9bb2-41ed-83b8-c1bfeed59f8a",
+            "x": -700,
+            "y": -1824,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "9372cd09-756b-41b7-8ab6-a7aa6a75118f",
+            "x": -418,
+            "y": -416,
+            "w": 27,
+            "h": 80,
+            "vx": -108.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "08b3d3a0-d4b9-47d6-94b8-678a620c675f",
+            "x": -260,
+            "y": -448,
+            "w": 27,
+            "h": 80,
+            "vx": 108.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "e56c6ae6-8a4f-4ae4-a612-9d0528e013cb",
+            "x": -220,
+            "y": -448,
+            "w": 27,
+            "h": 80,
+            "vx": 108.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "dc44b9e6-4e1a-442b-afc3-1e2a6495cede",
+            "x": -32,
+            "y": -1536,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "3fb6c6a4-4807-4580-a642-69d731f18990",
+            "x": 260,
+            "y": -480,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "594ff261-723f-40da-a989-3377dd00e329",
+            "x": 1412,
+            "y": -648,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 415.9999999999999,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Player",
+            "uuid": "88064bb5-0e76-4606-8f62-7837c23ccc65",
+            "x": 1637,
+            "y": 800,
+            "w": 27,
+            "h": 80,
+            "vx": 34.70463865143589,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "fefe",
+            "name": "fefe",
+            "live_time": null,
+            "health": 40,
+            "max_health": 40,
+            "orientation": "right",
+            "drops": [],
+            "inventory": {
+                "uuid": "f2bca494-672c-4dbe-b61c-793f641ade00",
+                "size": 24,
+                "title": "Inventory of fefe",
+                "items": [
+                    {
+                        "slot": 0,
+                        "itemStack": {
+                            "item_type_name": "oak_trunk",
+                            "count": 8,
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 1,
+                        "itemStack": {
+                            "item_type_name": "diamond_sword",
+                            "count": 1,
+                            "durability": 1561,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 2,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 1,
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 3,
+                        "itemStack": {
+                            "item_type_name": "chips",
+                            "count": 9,
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 4,
+                        "itemStack": {
+                            "item_type_name": "chips",
+                            "count": 10,
+                            "durability": null,
+                            "components": []
+                        }
+                    }
+                ],
+                "owner_uuid": "88064bb5-0e76-4606-8f62-7837c23ccc65"
+            }
+        }
+    ],
+    "modified_blocks": {
+        "-2": {
+            "-24:24": {
+                "x": -24,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-24:14": {
+                "x": -24,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-24:27": {
+                "x": -24,
+                "y": 27,
+                "block": "air",
+                "components": []
+            },
+            "-24:17": {
+                "x": -24,
+                "y": 17,
+                "block": "dirt",
+                "components": []
+            },
+            "-24:23": {
+                "x": -24,
+                "y": 23,
+                "block": "dirt",
+                "components": []
+            },
+            "-24:20": {
+                "x": -24,
+                "y": 20,
+                "block": "dirt",
+                "components": []
+            },
+            "-24:26": {
+                "x": -24,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "-24:13": {
+                "x": -24,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-24:12": {
+                "x": -24,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-24:25": {
+                "x": -24,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "-24:15": {
+                "x": -24,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-22:30": {
+                "x": -22,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "-28:28": {
+                "x": -28,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "-22:28": {
+                "x": -22,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "-22:29": {
+                "x": -22,
+                "y": 29,
+                "block": "air",
+                "components": []
+            }
+        },
+        "4": {
+            "69:24": {
+                "x": 69,
+                "y": 24,
+                "block": "crafting_table",
+                "components": []
+            },
+            "66:25": {
+                "x": 66,
+                "y": 25,
+                "block": "chest",
+                "components": [
+                    {
+                        "key": "chest",
+                        "component": {
+                            "type": "chestManager",
+                            "inventory": {
+                                "uuid": "608ae5e9-7c1f-4a7c-a3ba-a685da1e8bc5",
+                                "size": 24,
+                                "title": "Inventory uuid:608ae5e9-7c1f-4a7c-a3ba-a685da1e8bc5",
+                                "items": [
+                                    {
+                                        "slot": 21,
+                                        "itemStack": {
+                                            "item_type_name": "wooden_pickaxe",
+                                            "count": 1,
+                                            "durability": 110,
+                                            "components": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "69:25": {
+                "x": 69,
+                "y": 25,
+                "block": "furnace",
+                "components": [
+                    {
+                        "key": "furnace",
+                        "component": {
+                            "type": "furnaceComponent",
+                            "input": null,
+                            "fuel": null,
+                            "output": null
+                        }
+                    }
+                ]
+            }
+        },
+        "3": {
+            "49:20": {
+                "x": 49,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "60:27": {
+                "x": 60,
+                "y": 27,
+                "block": "air",
+                "components": []
+            },
+            "49:19": {
+                "x": 49,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "49:18": {
+                "x": 49,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "60:26": {
+                "x": 60,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "49:21": {
+                "x": 49,
+                "y": 21,
+                "block": "grass",
+                "components": []
+            },
+            "60:25": {
+                "x": 60,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "48:18": {
+                "x": 48,
+                "y": 18,
+                "block": "air",
+                "components": []
+            }
+        },
+        "2": {
+            "44:17": {
+                "x": 44,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "45:17": {
+                "x": 45,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "44:20": {
+                "x": 44,
+                "y": 20,
+                "block": "stone",
+                "components": []
+            },
+            "42:19": {
+                "x": 42,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "46:17": {
+                "x": 46,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "47:17": {
+                "x": 47,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "45:20": {
+                "x": 45,
+                "y": 20,
+                "block": "stone",
+                "components": []
+            },
+            "45:16": {
+                "x": 45,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "43:17": {
+                "x": 43,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "46:16": {
+                "x": 46,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "47:16": {
+                "x": 47,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "42:18": {
+                "x": 42,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "42:17": {
+                "x": 42,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "47:15": {
+                "x": 47,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "43:18": {
+                "x": 43,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "46:15": {
+                "x": 46,
+                "y": 15,
+                "block": "air",
+                "components": []
+            }
+        },
+        "0": {
+            "6:18": {
+                "x": 6,
+                "y": 18,
+                "block": "stone",
+                "components": []
+            },
+            "7:17": {
+                "x": 7,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "6:15": {
+                "x": 6,
+                "y": 15,
+                "block": "stone",
+                "components": []
+            },
+            "3:16": {
+                "x": 3,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "5:16": {
+                "x": 5,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "4:18": {
+                "x": 4,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "5:19": {
+                "x": 5,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "7:16": {
+                "x": 7,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "6:20": {
+                "x": 6,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "7:19": {
+                "x": 7,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "6:17": {
+                "x": 6,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "3:18": {
+                "x": 3,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "4:17": {
+                "x": 4,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "5:18": {
+                "x": 5,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "6:16": {
+                "x": 6,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "6:19": {
+                "x": 6,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "7:18": {
+                "x": 7,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "4:16": {
+                "x": 4,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "3:17": {
+                "x": 3,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "5:17": {
+                "x": 5,
+                "y": 17,
+                "block": "air",
+                "components": []
+            }
+        },
+        "1": {
+            "19:24": {
+                "x": 19,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "23:26": {
+                "x": 23,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "19:26": {
+                "x": 19,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "19:25": {
+                "x": 19,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "23:25": {
+                "x": 23,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "23:24": {
+                "x": 23,
+                "y": 24,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-5": {
+            "-77:8": {
+                "x": -77,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-70:-5": {
+                "x": -70,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-76:13": {
+                "x": -76,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-77:11": {
+                "x": -77,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-70:-8": {
+                "x": -70,
+                "y": -8,
+                "block": "air",
+                "components": []
+            },
+            "-70:-1": {
+                "x": -70,
+                "y": -1,
+                "block": "air",
+                "components": []
+            },
+            "-70:-2": {
+                "x": -70,
+                "y": -2,
+                "block": "air",
+                "components": []
+            },
+            "-70:1": {
+                "x": -70,
+                "y": 1,
+                "block": "air",
+                "components": []
+            },
+            "-68:-29": {
+                "x": -68,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-68:-17": {
+                "x": -68,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-68:-20": {
+                "x": -68,
+                "y": -20,
+                "block": "air",
+                "components": []
+            },
+            "-68:-14": {
+                "x": -68,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "-77:7": {
+                "x": -77,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-68:-45": {
+                "x": -68,
+                "y": -45,
+                "block": "torch",
+                "components": []
+            },
+            "-76:12": {
+                "x": -76,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-77:10": {
+                "x": -77,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-77:16": {
+                "x": -77,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-76:9": {
+                "x": -76,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-70:-3": {
+                "x": -70,
+                "y": -3,
+                "block": "air",
+                "components": []
+            },
+            "-77:13": {
+                "x": -77,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-70:-6": {
+                "x": -70,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-70:0": {
+                "x": -70,
+                "y": 0,
+                "block": "air",
+                "components": []
+            },
+            "-70:-9": {
+                "x": -70,
+                "y": -9,
+                "block": "air",
+                "components": []
+            },
+            "-70:3": {
+                "x": -70,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "-68:-24": {
+                "x": -68,
+                "y": -24,
+                "block": "torch",
+                "components": []
+            },
+            "-68:-18": {
+                "x": -68,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-68:-15": {
+                "x": -68,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-77:9": {
+                "x": -77,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-70:-10": {
+                "x": -70,
+                "y": -10,
+                "block": "air",
+                "components": []
+            },
+            "-76:8": {
+                "x": -76,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-77:12": {
+                "x": -77,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-70:-7": {
+                "x": -70,
+                "y": -7,
+                "block": "torch",
+                "components": []
+            },
+            "-76:11": {
+                "x": -76,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-70:-4": {
+                "x": -70,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-76:14": {
+                "x": -76,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-70:2": {
+                "x": -70,
+                "y": 2,
+                "block": "air",
+                "components": []
+            },
+            "-68:-28": {
+                "x": -68,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-68:-19": {
+                "x": -68,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-68:-16": {
+                "x": -68,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-75:9": {
+                "x": -75,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-72:-20": {
+                "x": -72,
+                "y": -20,
+                "block": "stone",
+                "components": []
+            },
+            "-68:-26": {
+                "x": -68,
+                "y": -26,
+                "block": "stone",
+                "components": []
+            },
+            "-67:-27": {
+                "x": -67,
+                "y": -27,
+                "block": "air",
+                "components": []
+            },
+            "-66:-26": {
+                "x": -66,
+                "y": -26,
+                "block": "air",
+                "components": []
+            },
+            "-67:-24": {
+                "x": -67,
+                "y": -24,
+                "block": "air",
+                "components": []
+            },
+            "-69:-28": {
+                "x": -69,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-71:-19": {
+                "x": -71,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-67:-46": {
+                "x": -67,
+                "y": -46,
+                "block": "stone",
+                "components": []
+            },
+            "-68:-42": {
+                "x": -68,
+                "y": -42,
+                "block": "stone",
+                "components": []
+            },
+            "-67:-28": {
+                "x": -67,
+                "y": -28,
+                "block": "air",
+                "components": []
+            },
+            "-67:-25": {
+                "x": -67,
+                "y": -25,
+                "block": "air",
+                "components": []
+            },
+            "-66:-27": {
+                "x": -66,
+                "y": -27,
+                "block": "air",
+                "components": []
+            },
+            "-69:-29": {
+                "x": -69,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-75:-33": {
+                "x": -75,
+                "y": -33,
+                "block": "torch",
+                "components": []
+            },
+            "-67:-38": {
+                "x": -67,
+                "y": -38,
+                "block": "stone",
+                "components": []
+            },
+            "-68:-34": {
+                "x": -68,
+                "y": -34,
+                "block": "stone",
+                "components": []
+            },
+            "-67:-26": {
+                "x": -67,
+                "y": -26,
+                "block": "air",
+                "components": []
+            },
+            "-72:-19": {
+                "x": -72,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-67:-29": {
+                "x": -67,
+                "y": -29,
+                "block": "air",
+                "components": []
+            },
+            "-67:-23": {
+                "x": -67,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "-66:-25": {
+                "x": -66,
+                "y": -25,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-4": {
+            "-64:-43": {
+                "x": -64,
+                "y": -43,
+                "block": "torch",
+                "components": []
+            },
+            "-54:-59": {
+                "x": -54,
+                "y": -59,
+                "block": "torch",
+                "components": []
+            },
+            "-56:-60": {
+                "x": -56,
+                "y": -60,
+                "block": "stone",
+                "components": []
+            },
+            "-57:-51": {
+                "x": -57,
+                "y": -51,
+                "block": "stone",
+                "components": []
+            },
+            "-58:-55": {
+                "x": -58,
+                "y": -55,
+                "block": "stone",
+                "components": []
+            }
+        },
+        "-3": {
+            "-37:30": {
+                "x": -37,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "-39:30": {
+                "x": -39,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "-39:33": {
+                "x": -39,
+                "y": 33,
+                "block": "air",
+                "components": []
+            },
+            "-37:29": {
+                "x": -37,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "-40:29": {
+                "x": -40,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "-39:29": {
+                "x": -39,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "-46:21": {
+                "x": -46,
+                "y": 21,
+                "block": "stone",
+                "components": []
+            },
+            "-39:32": {
+                "x": -39,
+                "y": 32,
+                "block": "air",
+                "components": []
+            },
+            "-39:31": {
+                "x": -39,
+                "y": 31,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-1": {
+            "-15:26": {
+                "x": -15,
+                "y": 26,
+                "block": "dirt",
+                "components": []
+            }
+        }
+    }
+}

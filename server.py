@@ -4,6 +4,7 @@ import pygame
 from terrakit import world, game_property
 from terrakit.texture_manager import TextureManager
 import socket
+import terrakit
 import json
 import queue
 import traceback
@@ -22,8 +23,7 @@ class Server:
         self.running = False
 
         pygame.init()
-
-        load_texture()
+        terrakit.init()
 
         self.screen = pygame.display.set_mode((1280, 720))
         self.font = pygame.font.SysFont("consolas", 22)
@@ -554,24 +554,6 @@ class ServerConnection:
 
         except Exception as e:
             return None
-
-def load_texture():
-    texture_manager = TextureManager()
-
-    from terrakit.world import Block
-    Block.texture_manager = texture_manager
-
-    from terrakit.inventory import ItemStack
-    ItemStack.texture_manager = texture_manager
-
-    from terrakit.entity import Entity
-    Entity.texture_manager = texture_manager
-
-    from terrakit.game_type import ItemProperty
-    ItemProperty.texture_manager = texture_manager
-
-    from terrakit.interface import MainMenu
-    MainMenu.texture_manager = texture_manager
 
 if __name__ == "__main__":
 

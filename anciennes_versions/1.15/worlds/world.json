@@ -1,0 +1,31 @@
+{
+    "seed": 987726,
+    "entitys": [
+        {
+            "type": "Player",
+            "uuid": "2cd977a8-6d75-4a20-8fd8-7d74f416d52e",
+            "x": 0,
+            "y": 4096,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "CosmosYT",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "e001e508-367e-439f-a123-3980c878d2b8",
+                "size": 24,
+                "title": "Inventory of CosmosYT",
+                "items": [],
+                "owner_uuid": "2cd977a8-6d75-4a20-8fd8-7d74f416d52e"
+            }
+        }
+    ],
+    "modified_blocks": {}
+}
