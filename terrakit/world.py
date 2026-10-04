@@ -718,6 +718,7 @@ class WorldSolo():
         self.block_light = {}
         self.light_sources = set()
         self.dirty_chunks = set()
+        self.water_update_timer = 0
 
         self.total_chunks_to_load = 0
         self.loaded_chunks = 0
@@ -812,8 +813,8 @@ class WorldSolo():
         if not center_block: 
             return False 
         
-        light = max(center_block.sky_light, center_block.block_light) 
-        if light > 4: 
+        light = max(center_block.pending_sky_light, center_block.block_light)
+        if light > 4:
             return False 
         
         # 3) distance joueur 
@@ -1190,7 +1191,7 @@ class WorldSolo():
 
         self.compute_sky_column()
 
-        self.update_liquids()
+        self.update_liquids(dt)
 
         self.propagate_sky_light()
         if self.sky_dirty and not self.sky_column_queue and not self.sky_light_queue:
@@ -1242,9 +1243,13 @@ class WorldSolo():
             self.callback_loading("C'est fini", 100)
             self.is_loaded = True
 
-    def update_liquids(self):
-        for chunk in self.chunks.values():
-            chunk.update_liquid_blocks(self)
+    def update_liquids(self, dt):
+        self.water_update_timer += dt
+
+        if self.water_update_timer >= 0.3:
+            self.water_update_timer = 0
+            for chunk in self.chunks.values():
+                chunk.update_liquid_blocks(self)
             
     def get_sky_light_factor(self):
         time = self.day_time
@@ -1599,7 +1604,7 @@ class WorldSolo():
                 self.sky_dirty.add((x, y))
 
                 if block.can_collide():
-                    light = max(light - 2, 0)
+                    light = max(light - self.get_light_absorption(block), 0)
 
     # def reset_light_area(self, cx, cy, radius):
     #     for x in range(cx-radius, cx+radius+1):
@@ -1682,9 +1687,9 @@ class WorldSolo():
             return 4
         return 0.4
     
-    def get_light_absorption(block):
+    def get_light_absorption(self, block):
         if block.can_collide():
-            return 4
+            return 3
         return 0
 
     def is_collide(self, entity):
@@ -2025,48 +2030,38 @@ class Chunk:
         min_x = self.x * game_property.CHUNK_WIDTH
         max_x = (self.x + 1) * game_property.CHUNK_WIDTH - 1
 
-        neighbor_positions = [
-            (-1, 0),
-            (1, 0),
-            (0, -1),
-            (0, 1),
+        neighbor_positions = [(-1, 0), (1, 0), (0, -1), (0, 1),
+                            (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-            (-1, -1),
-            (-1, 1),
-            (1, -1),
-            (1, 1)
-        ]
+        to_place = {}   # (nx, ny) -> block_property (dict pour éviter les doublons)
 
-        for block in self.blocks.values():
-
+        for block in list(self.blocks.values()):    # snapshot
             if not isinstance(block, LiquidBlock):
                 continue
 
-            x = block.pos[0]
-            y = block.pos[1]
+            x, y = block.pos
 
             for dx, dy in neighbor_positions:
+                nx, ny = x + dx, y + dy
 
-                nx = x + dx
-                ny = y + dy
-
-                # Si on sort du chunk horizontalement
                 if nx < min_x or nx > max_x:
                     neighbor_block = world.get_block(nx, ny)
-
-                # Sinon, le bloc est dans le chunk actuel
                 else:
                     neighbor_block = self.blocks.get((nx, ny))
 
                 if neighbor_block and isinstance(neighbor_block, LiquidBlock):
                     block.neighbor_blocks[(dx, dy)] = neighbor_block.block_property
                 elif neighbor_block is not None and neighbor_block.block_property == BlockProperty.AIR:
-                    block.neighbor_blocks[(dx, dy)] = neighbor_block.block_property
-
                     if ny < y:
-                        world.set_block(nx, ny, LiquidBlock(nx, ny, block.block_property))
+                        to_place.setdefault((nx, ny), block.block_property)
+                        block.neighbor_blocks[(dx, dy)] = block.block_property
+                    else:
+                        block.neighbor_blocks[(dx, dy)] = neighbor_block.block_property
                 else:
                     block.neighbor_blocks[(dx, dy)] = None
+
+        for (nx, ny), prop in to_place.items():
+            world.modif_block(nx, ny, LiquidBlock(nx, ny, prop))
 
                 
     
@@ -2145,7 +2140,6 @@ class Block:
             self.life = 0
             self.max_life = 0
 
-        self.sky_light = 0
         self.block_light = 0
         self.darkness = 255
         self.target_darkness = 255
@@ -2318,114 +2312,110 @@ class LiquidBlock(Block):
         )
 
         if not self.is_dark():
+            texture = self.get_texture()
+            if texture:
+                screen.blit(texture, (draw_x, draw_y))
 
-            side_color = (50, 130, 220)      # bords
-            center_color = (70, 170, 240)     # centre
+            self.render_borders(screen, cam_rect)
 
-            side_width = 4
-            
-            # Centre du bloc
+        self.render_darkness(screen, draw_x, draw_y)
+
+    def render_borders(self, screen, cam_rect):
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+
+        side_color = (50, 130, 220)      # bords
+        side_width = 4
+
+        # Gauche
+        if self.neighbor_blocks[(-1, 0)] == BlockProperty.AIR:
             pygame.draw.rect(
                 screen,
-                center_color,
+                side_color,
+                (draw_x, draw_y, side_width, self.rect.height)
+            )
+
+        # Droite
+        if self.neighbor_blocks[(1, 0)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
                 (
-                    draw_x,
+                    draw_x + self.rect.width - side_width,
                     draw_y,
-                    self.rect.width,
+                    side_width,
                     self.rect.height
                 )
             )
 
-            # Gauche
-            if self.neighbor_blocks[(-1, 0)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (draw_x, draw_y, side_width, self.rect.height)
-                )
+        # Haut
+        if self.neighbor_blocks[(0, 1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (draw_x, draw_y, self.rect.width, side_width)
+            )
 
-            # Droite
-            if self.neighbor_blocks[(1, 0)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (
-                        draw_x + self.rect.width - side_width,
-                        draw_y,
-                        side_width,
-                        self.rect.height
-                    )
+        # Bas
+        if self.neighbor_blocks[(0, -1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (
+                    draw_x,
+                    draw_y + self.rect.height - side_width,
+                    self.rect.width,
+                    side_width
                 )
+            )
 
-            # Haut
-            if self.neighbor_blocks[(0, 1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (draw_x, draw_y, self.rect.width, side_width)
+        # Coin haut-gauche
+        if self.neighbor_blocks[(-1, 1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (draw_x, draw_y, side_width, side_width)
+            )
+
+        # Coin haut-droit
+        if self.neighbor_blocks[(1, 1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (
+                    draw_x + self.rect.width - side_width,
+                    draw_y,
+                    side_width,
+                    side_width
                 )
+            )
 
-            # Bas
-            if self.neighbor_blocks[(0, -1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (
-                        draw_x,
-                        draw_y + self.rect.height - side_width,
-                        self.rect.width,
-                        side_width
-                    )
+        # Coin bas-gauche
+        if self.neighbor_blocks[(-1, -1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (
+                    draw_x,
+                    draw_y + self.rect.height - side_width,
+                    side_width,
+                    side_width
                 )
+            )
 
-            # Coin haut-gauche
-            if self.neighbor_blocks[(-1, 1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (draw_x, draw_y, side_width, side_width)
+        # Coin bas-droit
+        if self.neighbor_blocks[(1, -1)] == BlockProperty.AIR:
+            pygame.draw.rect(
+                screen,
+                side_color,
+                (
+                    draw_x + self.rect.width - side_width,
+                    draw_y + self.rect.height - side_width,
+                    side_width,
+                    side_width
                 )
-
-            # Coin haut-droit
-            if self.neighbor_blocks[(1, 1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (
-                        draw_x + self.rect.width - side_width,
-                        draw_y,
-                        side_width,
-                        side_width
-                    )
-                )
-
-            # Coin bas-gauche
-            if self.neighbor_blocks[(-1, -1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (
-                        draw_x,
-                        draw_y + self.rect.height - side_width,
-                        side_width,
-                        side_width
-                    )
-                )
-
-            # Coin bas-droit
-            if self.neighbor_blocks[(1, -1)] == BlockProperty.AIR:
-                pygame.draw.rect(
-                    screen,
-                    side_color,
-                    (
-                        draw_x + self.rect.width - side_width,
-                        draw_y + self.rect.height - side_width,
-                        side_width,
-                        side_width
-                    )
-                )
-
-        self.render_darkness(screen, draw_x, draw_y)
+            )
                 
     def __str__(self):
         return f"LiquidBlock(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"

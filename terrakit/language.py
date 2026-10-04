@@ -29,6 +29,7 @@ ITEMS_FR = {
     "gold_ingot": "Lingot d'or",
     "iron_chest": "Coffre en fer",
     "chest": "Coffre en bois",
+    "water_bucket": "Seau d'eau",
 }
 
 ITEMS_EN = {
@@ -36,7 +37,7 @@ ITEMS_EN = {
     "mushroom": "Mushroom",
     "coal_ingot": "Coal ingot",
     "tnt": "Tnt",
-
+    "water_bucket": "Water bucket",
 }
 
 class LANGUAGE_TYPE:

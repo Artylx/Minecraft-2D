@@ -175,7 +175,7 @@ class TextureManager:
             self.load_texture(TextureType.MUSHROOM, BLOCKS_PATH + "mushroom_red.png")
 
             # ITEMS
-            self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + "water_bucket.png")
+            self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + TOOLS_PATH + "water_bucket.png")
 
             self.load_texture(TextureType.DIAMOND_SWORD, ITEMS_PATH + TOOLS_PATH + "diamond_sword.png")
             self.load_texture(TextureType.WOODEN_SWORD, ITEMS_PATH + TOOLS_PATH + "wooden_sword.png")
