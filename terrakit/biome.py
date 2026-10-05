@@ -1,7 +1,7 @@
 from enum import Enum
 from terrakit.struct import StructureType
 from noise import pnoise1
-import math
+import bisect
 
 class BiomeType(Enum):
     PLAINS = "plains"
@@ -46,9 +46,15 @@ class BiomeManager:
             self.ranges.append((start, end, biome))
             start = end
 
+        samples = [pnoise1(x * self.biome_scale, octaves=2)
+                   for x in range(0, 400000, 11)]
+        samples.sort()
+        self._noise_sorted = samples
+
     def get_t(self, world_x, seed):
-        noise = pnoise1(world_x * self.biome_scale, base=seed, octaves=1)
-        return max(0.0, min(1.0, 0.5 + noise * self.noise_gain))
+        noise = pnoise1(world_x * self.biome_scale, base=seed, octaves=2)
+        rank = bisect.bisect_left(self._noise_sorted, noise)
+        return rank / len(self._noise_sorted)
 
     def get_biome_generate_values(self, world_x, seed):
         t = self.get_t(world_x, seed)
