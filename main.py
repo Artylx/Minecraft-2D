@@ -2,7 +2,8 @@ from importlib.resources import path
 
 import pygame
 from tomlkit import value
-from terrakit import game_property, interface, world
+from terrakit import game_property, interface, world, keymanager
+from terrakit.interface import MenusCollection
 import terrakit
 import os
 import shutil
@@ -75,6 +76,7 @@ class Game:
         self.full_screen = False
 
         self.press_reset()
+        self.key_manager = keymanager.KeyManager()
 
         self.menu = interface.MainMenu(self)
 
@@ -107,26 +109,27 @@ class Game:
         self.game_name = game_name
 
     def valid_settings(self):
-        item_container = self.menu.get_object_by_ref("settings_container", self.menu.menu)
+        sound_container = self.menu.get_object_by_ref("sound_settings_container", MenusCollection.SETTINGS_SOUND)
 
-        if not item_container:
-            return
+        if sound_container:
+            global_volume_slider = sound_container.get_item("slider_volume_global")
 
-        global_volume_slider = item_container.get_item("slider_volume_global")
+            if global_volume_slider:
+                config.Config().set("global_volume", global_volume_slider.get_value())
+                self.audio_manager.set_music_volume(config.Config().get("global_volume", 0) / 100)
 
-        if global_volume_slider:
-            config.Config().set("global_volume", global_volume_slider.get_value())
-            self.audio_manager.set_music_volume(config.Config().get("global_volume", 0) / 100)
+            sound_volume_slider = sound_container.get_item("slider_volume_effect")
 
-        sound_volume_slider = item_container.get_item("slider_volume_effect")
+            if sound_volume_slider:
+                config.Config().set("sound_volume", sound_volume_slider.get_value())
 
-        if sound_volume_slider:
-            config.Config().set("sound_volume", sound_volume_slider.get_value())
+        video_container = self.menu.get_object_by_ref("video_settings_container", MenusCollection.SETTINGS_VIDEO)
 
-        preload_distance_slider = item_container.get_item("slider_preload_distance")
+        if video_container:
+            preload_distance_slider = video_container.get_item("slider_preload_distance")
 
-        if preload_distance_slider:
-            config.Config().set("preload_distance", preload_distance_slider.get_value())
+            if preload_distance_slider:
+                config.Config().set("preload_distance", preload_distance_slider.get_value())
 
         self.menu.return_menu()
 

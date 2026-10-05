@@ -1,6 +1,7 @@
 import pygame
 import random, json
 from terrakit import tchat, world, game_property, game_type, entity, ui, interface
+from terrakit.keymanager import KeyCollection
 from server import ServerConnection
 
 class GameClient:
@@ -33,6 +34,7 @@ class GameClient:
         self.world_name = world_name
         self.world_path = world_path
         self.game = game
+        self.key_manager = self.game.key_manager
 
         json = None
         if self.world_path:
@@ -153,62 +155,62 @@ class GameClient:
 
         if not self.tchat.oppened and not self.UI.is_open_inv() and not self.UI.objective_open:
             # horizontal movement: adjust velocity directly
-            if (game.keys_.get(pygame.K_d) and not game.keys_.get(pygame.K_q)) or (game.keys_.get(pygame.K_RIGHT) and not game.keys_.get(pygame.K_LEFT)):
+            if game.keys_.get(self.key_manager.get(KeyCollection.RIGHT)) and not game.keys_.get(self.key_manager.get(KeyCollection.LEFT)):
                 self.player.add_velocity(1, 0)
-            elif game.keys_.get(pygame.K_q) and not game.keys_.get(pygame.K_d) or (game.keys_.get(pygame.K_LEFT) and not game.keys_.get(pygame.K_RIGHT)):
+            elif game.keys_.get(self.key_manager.get(KeyCollection.LEFT)) and not game.keys_.get(self.key_manager.get(KeyCollection.RIGHT)):
                 self.player.add_velocity(-1, 0)
 
-            if (game.keys_.get(pygame.K_SPACE) or game.keys_.get(pygame.K_UP)):
+            if game.keys_.get(self.key_manager.get(KeyCollection.JUMP)):
                 if self.player.on_ground and not self.player.in_liquid:
                     self.player.jump(game_property.JUMP_VELOCITY)
                 elif self.player.in_liquid:
                     self.player.add_velocity(0, 1.8)
 
-            if (game.keys_.get(pygame.K_DOWN) or game.keys_.get(pygame.K_LCTRL)):
+            if game.keys_.get(self.key_manager.get(KeyCollection.SNEAK)):
                 if self.player.in_liquid:
                     self.player.add_velocity(0, -1)
 
             # Breaking
             selected_item = self.player.inventory.ui.get_selected_item()
             if selected_item is None or not isinstance(selected_item.item_property, game_type.Attack_tool):
-                if game.is_holding(self.event_mouse_get(1)):
+                if game.is_holding(self.key_manager.get(KeyCollection.ATTACK_BREAK)):
                     # Try break
                     if self.old_current_bock_pos == self.current_block_pos:
                         self.World.try_destroy_block(self.current_block_pos, self.player)
                     else:
                         self.World.reset_block(self.old_current_bock_pos)
                 else:
-                    if game.prev_keys_.get(self.event_mouse_get(1)):
+                    if game.prev_keys_.get(self.key_manager.get(KeyCollection.ATTACK_BREAK)):
                         self.World.reset_block(self.current_block_pos)
             
             # Attacking
-            if game.is_press(self.event_mouse_get(1)):
+            if game.is_press(self.key_manager.get(KeyCollection.ATTACK_BREAK)):
 
                 self.player.try_attack(self.cam_rect)
                         
             # Pos or other
-            if game.is_press(self.event_mouse_get(3)):
+            if game.is_press(self.key_manager.get(KeyCollection.PLACE_USE)):
                 self.click_on_block(self.current_block_pos, self.player, game)
                 self.player.use_selected_item(self.cam_rect)    
             else:
-                if game.is_release(self.event_mouse_get(3)):
+                if game.is_release(self.key_manager.get(KeyCollection.PLACE_USE)):
                     self.player.stop_use_selected_item(self.cam_rect)
 
-            if game.is_press(pygame.K_t):
+            if game.is_press(self.key_manager.get(KeyCollection.TCHAT)):
                 self.tchat.oppened = True
 
             # Index selected hotbar
-            if game.is_press(pygame.K_1):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_1)):
                 self.player.inventory.ui.set_selected_index(0)
-            if game.is_press(pygame.K_2):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_2)):
                 self.player.inventory.ui.set_selected_index(1)
-            if game.is_press(pygame.K_3):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_3)):
                 self.player.inventory.ui.set_selected_index(2)
-            if game.is_press(pygame.K_4):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_4)):
                 self.player.inventory.ui.set_selected_index(3)
-            if game.is_press(pygame.K_5):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_5)):
                 self.player.inventory.ui.set_selected_index(4)
-            if game.is_press(pygame.K_6):
+            if game.is_press(self.key_manager.get(KeyCollection.SLOT_6)):
                 self.player.inventory.ui.set_selected_index(5)
 
             # Spawning for debug
@@ -230,10 +232,10 @@ class GameClient:
                 p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(p)
             
-            if game.is_press(pygame.K_e):
+            if game.is_press(self.key_manager.get(KeyCollection.INVENTORY)):
                 self.UI.open_crafting(self.player.inventory)
             
-            if game.is_press(pygame.K_a):
+            if game.is_press(self.key_manager.get(KeyCollection.DROP_ITEM)):
                 self.player.drop_item_index()
 
             if game.is_press(pygame.K_ESCAPE):

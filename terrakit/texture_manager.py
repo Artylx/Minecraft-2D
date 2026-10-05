@@ -21,6 +21,7 @@ class TextureType:
     COAL_ORE = "coal_ore"
     IRON_ORE = "iron_ore"
     GOLD_ORE = "gold_ore"
+    EMERALD_ORE = "emerald_old"
 
     COAL = "coal"
     IRON = "iron"
@@ -147,6 +148,7 @@ class TextureManager:
             self.load_texture(TextureType.COAL_ORE, BLOCKS_PATH + "coal_ore.png")
             self.load_texture(TextureType.IRON_ORE, BLOCKS_PATH + "iron_ore.png")
             self.load_texture(TextureType.GOLD_ORE, BLOCKS_PATH + "gold_ore.png")
+            self.load_texture(TextureType.EMERALD_ORE, ITEMS_PATH + OTHERS_PATH + "emerald_ore.png")
             self.load_texture(TextureType.SAND, BLOCKS_PATH + "sand.png")
             self.load_texture(TextureType.WATER, BLOCKS_PATH + "water.png")
             self.load_texture(TextureType.OAK_TRUNK, BLOCKS_PATH + "oak_trunk.png")

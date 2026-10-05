@@ -42,6 +42,11 @@ VERSION = "1.16"
 #     y = (cam_rect.height - sy - h) + cam_rect.y
 #     return int(x), int(y)
 
+import zlib
+
+def stable_hash(text: str) -> int:
+    return zlib.crc32(text.encode("utf-8"))
+
 def world_to_screen(x, y, h, cam_rect):
     sx = x - cam_rect.x
     sy = cam_rect.height - (y - cam_rect.y) - h

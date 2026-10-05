@@ -136,6 +136,9 @@ class MenusCollection:
     LAUNCH = "launch"
     DIED = "died"
     SETTINGS = "settings"
+    SETTINGS_SOUND = "settings_sound"
+    SETTINGS_VIDEO = "settings_video"
+    SETTINGS_KEYBINDING = "settings_keybinding"
 
 BUTTON_HEIGHT = 60
 MARGIN_UI = 40
@@ -145,7 +148,7 @@ class MainMenu:
         self.game = game
 
         self.menu = MenusCollection.MAIN
-        self.old_menu = self.menu
+        self.menu_history = []
         self.menus = {}
         self.current_value = None
 
@@ -153,16 +156,40 @@ class MainMenu:
 
         self.update_screen_size(self.game.WIDTH_SCREEN, self.game.HEIGHT_SCREEN)
 
-    def set_menu(self, menu: MenusCollection):
-        self.game.press_reset()
-        self.old_menu = self.menu
-        self.menu = menu
+    @property
+    def old_menu(self):
+        """Compatibilité : dernier menu de la pile (ou MAIN si vide)."""
+        return self.menu_history[-1] if self.menu_history else MenusCollection.MAIN
 
+    def set_menu(self, menu: MenusCollection, push=True):
+        self.game.press_reset()
+
+        if menu not in self.menus:
+            menu = MenusCollection.MAIN
+
+        if push and menu != self.menu:
+            self.menu_history.append(self.menu)
+
+        self.menu = menu
+        self._on_menu_changed()
+
+    def _on_menu_changed(self):
         if self.menu == MenusCollection.SINGLEPLAYER:
             self.worlds_manager.reload()
             self.reload()
         elif self.menu == MenusCollection.SETTINGS:
             self.reload()
+
+    def return_menu(self):
+        if self.menu_history:
+            previous = self.menu_history.pop()
+        else:
+            previous = MenusCollection.MAIN
+        self.set_menu(previous, push=False)   # on ne ré-empile pas en revenant
+
+    def reset_history(self):
+        """À appeler pour repartir de zéro (ex. retour au menu principal)."""
+        self.menu_history.clear()
         
     def is_menu(self, menu: MenusCollection):
         return menu == self.menu
@@ -186,10 +213,6 @@ class MainMenu:
         self.TITLE_H = self.screen_size[1] // 9
 
         self.reload()
-
-    def return_menu(self):
-        self.set_menu(self.old_menu)
-
     def open_confirm(self, q, callback):
         self.current_value = (q, callback)
 
@@ -400,13 +423,13 @@ class MainMenu:
             )
         ]
 
-        settings_container = ItemsScrollContainer(
+        sound_settings_container = ItemsScrollContainer(
             (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 2 + BUTTON_HEIGHT, min(1200, self.screen_size[0] // 2), self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2),
             color=(10, 10, 10),
             spacing_border=40,
             item_height=30,
             spacing=20,
-            ref="settings_container",
+            ref="sound_settings_container",
         )
 
         text_global = TexteReferencable(
@@ -418,7 +441,7 @@ class MainMenu:
 
         def modif_global_volume(slider):
 
-            text = settings_container.get_item("text_global")
+            text = sound_settings_container.get_item("text_global")
 
             if text:
                 text.set_text(
@@ -428,7 +451,7 @@ class MainMenu:
 
         def modif_effect_volume(slider):
 
-            text = settings_container.get_item("text_effect")
+            text = sound_settings_container.get_item("text_effect")
 
             if text:
                 text.set_text(
@@ -460,9 +483,49 @@ class MainMenu:
             background_color=(0, 0, 0)
         )
 
-        def modif_preload_distance(slider):
+        sound_settings_container.set_items([
+            text_global,
+            slider_global,
 
-            text = settings_container.get_item("text_preload")
+            text_effect,
+            slider_effect,
+        ])
+
+        self.menus[MenusCollection.SETTINGS_SOUND] = [
+            Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+            Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
+
+            Texte("Paramètres de musiques & sons", (self.center_x, BUTTON_HEIGHT + 10, 160, 50), center_pos=True),
+
+            sound_settings_container,
+
+            Button(
+                "Retour",
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.return_menu()
+            ),
+            Button(
+                "Valider",
+                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.game.valid_settings(),
+                background_color=(32, 69, 30),
+                background_color_hover=(85, 156, 81),
+            )
+        ]
+
+        video_settings_container = ItemsScrollContainer(
+                (self.center_x - min(1200, self.screen_size[0] // 2) // 2, MARGIN_UI * 2 + BUTTON_HEIGHT, min(1200, self.screen_size[0] // 2), self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2),
+                color=(10, 10, 10),
+                spacing_border=40,
+                item_height=30,
+                spacing=20,
+                ref="video_settings_container",
+            )
+
+        def modif_preload_distance(slider):
+        
+            text = video_settings_container.get_item("text_preload")
 
             if text:
                 text.set_text(
@@ -485,17 +548,34 @@ class MainMenu:
             background_color=(0, 0, 0)
         )
 
-
-        settings_container.set_items([
-            text_global,
-            slider_global,
-
-            text_effect,
-            slider_effect,
-
+        video_settings_container.set_items([
             text_preload_distance,
             slider_preload_distance,
         ])
+
+        self.menus[MenusCollection.SETTINGS_VIDEO] = [
+                    Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+                    Surface((0, 0, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
+                    Surface((0, MARGIN_UI * 2 + BUTTON_HEIGHT, self.screen_size[0], self.screen_size[1] - (MARGIN_UI * 2 + BUTTON_HEIGHT) * 2), (10, 10, 10), 255),
+        
+                    Texte("Paramètres graphiques", (self.center_x, BUTTON_HEIGHT + 10, 160, 50), center_pos=True),
+        
+                    video_settings_container,
+        
+                    Button(
+                        "Retour",
+                        (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                        lambda: self.return_menu()
+                    ),
+                    Button(
+                        "Valider",
+                        (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                        lambda: self.game.valid_settings(),
+                        background_color=(32, 69, 30),
+                        background_color_hover=(85, 156, 81),
+                    )
+                ]
+        
 
         self.menus[MenusCollection.SETTINGS] = [
             Surface((0, self.screen_size[1] - MARGIN_UI * 2 - BUTTON_HEIGHT, self.screen_size[0], MARGIN_UI * 2 + BUTTON_HEIGHT), (30, 30, 30), 255),
@@ -506,23 +586,37 @@ class MainMenu:
 
             #
             # SETTINGS CONTAINER
+            Button(
+                "Musique & sons",
+                (self.screen_size[0] // 2 - (self.screen_size[0] // 3 - MARGIN_UI * 2) - MARGIN_UI, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, self.screen_size[0] // 3 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.SETTINGS_SOUND)
+            ),
 
-            settings_container,
+            Button(
+                "Options graphiques",
+                (self.screen_size[0] // 2 + MARGIN_UI, MARGIN_UI * 2 + BUTTON_HEIGHT * 2, self.screen_size[0] // 3 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.SETTINGS_VIDEO)
+            ),
+
+            Button(
+                "Contrôles",
+                (self.screen_size[0] // 2 - (self.screen_size[0] // 3 - MARGIN_UI * 2) - MARGIN_UI, MARGIN_UI * 3 + BUTTON_HEIGHT * 3, self.screen_size[0] // 3 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: self.set_menu(MenusCollection.SETTINGS_KEYBINDING), enable=False
+            ),
+
+            Button(
+                "Pack de ressources",
+                (self.screen_size[0] // 2 + MARGIN_UI, MARGIN_UI * 3 + BUTTON_HEIGHT * 3, self.screen_size[0] // 3 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                lambda: print("Pack de ressource"), enable=False
+            ),
 
             #
             #   
 
             Button(
                 "Retour",
-                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
+                (MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] - MARGIN_UI * 2, BUTTON_HEIGHT),
                 lambda: self.return_menu()
-            ),
-            Button(
-                "Valider",
-                (self.screen_size[0] // 2 + MARGIN_UI, self.screen_size[1] - MARGIN_UI - BUTTON_HEIGHT, self.screen_size[0] // 2 - MARGIN_UI * 2, BUTTON_HEIGHT),
-                lambda: self.game.valid_settings(),
-                background_color=(32, 69, 30),
-                background_color_hover=(85, 156, 81),
             )
         ]
 
@@ -603,7 +697,7 @@ class MainMenu:
         )
 
         credits_container.set_items([
-            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.16 - 04/10/2026", ""),
+            CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.16 - 04/10/2026", "- Résolution bug des minerais aléatoires.\n- Refonte du menu des paramètres.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.15 - 18/07/2026", "- Ajout des paramètres de volume.\n- Stuff qui drop quand on meurt.\n- Finialisation de la lumière et des ses bugs graphiques.\n- Ajout de l'eau et de la capacité à nager.\n- Ajout de nouvelles structures et de nouveaux biomes.\n- Ajout d'une playlist de musique au lieu d'une seule en boucle.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.14 - 16/06/2026", "- Ajout d'une bar de scroll dans les ItemsScrollContainer.\n- Introdution au multi joueur malgré la création de nombreux bugs.\n- Correctif du bug de l'arc qui crashait.\n- Généralisation des textures et création du package terrakit.\n- Amélioration et rectification de bug sur l'ui.\n- Passage de texture pack à resource pack et ajout d'annimations.\n"),
             CreditsItem(pygame.Rect(0, 0, 0, 0), "V1.13 - 17/05/2026", "- Ajout d'un système de composant pour les blocks (ChestComponent, ...)\n- Ajout du système de four de coffre et de sauvegarde du monde avec un \nruntime plus rapide et moins gourmant pour le processeur.\n- Ajout du système de crash reporter avec une interface et un dossier\navec la liste des crash du jeu.\n- Ajout de l'interface des versions"),

@@ -1886,7 +1886,7 @@ class Chunk:
         for struct_type, base_x, base_y in self.structures:
             self.structure_manager.place_structure(self, struct_type, base_x, base_y)
 
-    def generate_vein(self, start_x, start_y, ore, max_size):
+    def generate_vein(self, start_x, start_y, ore, max_size, biome_type: BiomeType):
         vein_blocks = []
         to_process = [(start_x, start_y)]
         visited = set()
@@ -1902,7 +1902,18 @@ class Chunk:
 
             block = self.get_block(x, y)
 
-            if not block or block.block_property != BlockProperty.STONE:
+            if not block:
+                continue
+
+            if block.block_property == BlockProperty.REDSTONE:
+
+                if ore != BlockProperty.REDSTONE_EMERALD:
+                    continue
+            elif block.block_property == BlockProperty.STONE:
+
+                if ore == BlockProperty.REDSTONE_EMERALD:
+                    continue
+            else:
                 continue
 
             self.set_block(x, y, SolidBlock(x, y, ore))
@@ -1994,7 +2005,13 @@ class Chunk:
 
                 # PROFOND
                 else:
-                    block_property = BlockProperty.STONE
+                    if biome == BiomeType.REDSTONE_DESERT:
+                        if world_y >= surface_height - 20:
+                            block_property = BlockProperty.REDSTONE
+                        else:
+                            block_property = BlockProperty.STONE
+                    else:
+                        block_property = BlockProperty.STONE
 
                 # GROTTE (carving)
                 cave_noise = pnoise2(
@@ -2046,7 +2063,7 @@ class Chunk:
                 self.blocks[(world_x, world_y)] = block
 
         for ore, params in ORE_PARAMS.items():
-            rng = random.Random(self.seed + hash(ore) + self.x)
+            rng = random.Random(self.seed + game_property.stable_hash(ore.block_name) + self.x)
 
             for _ in range(params["max_chunks"]):  # nombre de filons par chunk
                 x = rng.randint(
@@ -2055,7 +2072,7 @@ class Chunk:
                 )
                 y = rng.randint(game_property.CHUNK_MIN_HEIGHT, params["min_y"])
 
-                self.generate_vein(x, y, ore, params["max_size"])
+                self.generate_vein(x, y, ore, params["max_size"], biome)
 
         self.generate_structures()
 
@@ -2140,10 +2157,17 @@ ORE_PARAMS = {
         "max_size": 6,
         "max_chunks": 4
     },
+    BlockProperty.REDSTONE_EMERALD: {
+        "scale": 0.1,
+        "threshold": 0.55,
+        "min_y": 100,
+        "max_size": 6,
+        "max_chunks": 8
+    }
 }
 
 class Block:
-    FADE_STEP = 10            # variation max par frame (0-255), baisse pour un fondu plus lent
+    FADE_STEP = 10
     _overlay_cache = {}
 
     def __init__(self, pos: tuple, w: float, h: float, block_property: game_type.BlockProperty):

@@ -82,16 +82,16 @@ class BiomeManager:
         return self.get_biome_generate_values(world_x, seed)[0]
 
     STRUCTURES = {
-        BiomeType.FOREST: [(0.10, StructureType.BIG_TREE), (0.15, StructureType.ROCK),
+        BiomeType.FOREST: [(0.10, StructureType.BIG_TREE), (0.13, StructureType.ROCK_MOSS), 
+                           (0.15, StructureType.ROCK),
                         (0.20, StructureType.GRASS_2), (0.25, StructureType.MUSHROOM),
-                        (0.30, StructureType.SMALL_TREE), (0.13, StructureType.ROCK_MOSS)],
+                        (0.30, StructureType.SMALL_TREE)],
         BiomeType.PLAINS: [(0.15, StructureType.SMALL_TREE), (0.20, StructureType.ROCK),
                         (0.25, StructureType.MUSHROOM), (0.30, StructureType.GRASS_3),
                         (0.35, StructureType.GRASS_4)],
         BiomeType.HILLS: [(0.10, StructureType.ROCK), (0.13, StructureType.SMALL_TREE), (0.15, StructureType.MUSHROOM), 
-                        (0.30, StructureType.GRASS_TAN),
-                        (0.25, StructureType.GRASS_3), (0.35, StructureType.GRASS_4)],
-        BiomeType.ROCK_MONS: [(0.20, StructureType.ROCK), (0.10, StructureType.ROCK_MOSS)],
+                        (0.25, StructureType.GRASS_3), (0.30, StructureType.GRASS_TAN), (0.35, StructureType.GRASS_4)],
+        BiomeType.ROCK_MONS: [(0.10, StructureType.ROCK_MOSS), (0.20, StructureType.ROCK)],
         BiomeType.DEEP_OCEAN: [(0.15, StructureType.SMALL_TREE), (0.20, StructureType.ROCK),
                         (0.25, StructureType.MUSHROOM), (0.30, StructureType.GRASS_3),
                         (0.35, StructureType.GRASS_4)],

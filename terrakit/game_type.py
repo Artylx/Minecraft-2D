@@ -358,9 +358,10 @@ ItemProperty.IRON_ORE = ItemProperty("iron_ore", TextureType.IRON_ORE, 100, True
 ItemProperty.GOLD_ORE = ItemProperty("gold_ore", TextureType.GOLD_ORE, 100, True, "GOLD_ORE", heatable=True, warmer_item="GOLD_INGOT")
 
 
-ItemProperty.COAL = ItemProperty("coal_ingot", TextureType.COAL, 100, False, None, fuel_level=10)
-ItemProperty.IRON = ItemProperty("iron_ingot", TextureType.IRON, 100, False, None)
-ItemProperty.GOLD = ItemProperty("gold_ingot", TextureType.GOLD, 100, False, None)
+ItemProperty.COAL = ItemProperty("coal_ingot", TextureType.COAL, 100, False, fuel_level=10)
+ItemProperty.IRON = ItemProperty("iron_ingot", TextureType.IRON, 100, False)
+ItemProperty.GOLD = ItemProperty("gold_ingot", TextureType.GOLD, 100, False)
+ItemProperty.EMERALD = ItemProperty("emerald_ingot", TextureType.EMERALD_ORE, 100, False)
 
 
 ItemProperty.OAK_TRUNK = ItemProperty("oak_trunk", TextureType.OAK_TRUNK, 100, True, "OAK_TRUNK", heatable=True, warmer_item="COAL_INGOT", fuel_level=5)
@@ -446,7 +447,7 @@ BlockProperty.IRON_CHEST = BlockProperty("iron_chest", 32, True, TextureType.IRO
 BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300, Pickaxe_tool)
 BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
 BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50, Pickaxe_tool)
-BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "REDSTONE_EMERALD", 50, Pickaxe_tool)
+BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "EMERALD_INGOT", 1200, Pickaxe_tool)
 BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 70)    
 BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20)
 
