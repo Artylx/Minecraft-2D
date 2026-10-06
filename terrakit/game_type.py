@@ -40,9 +40,6 @@ class BlocksConditions:
             )
             cls.REGISTRY[block_name] = block_property
 
-            print(f"Loaded block condition for {block_name}: {block_property.__dict__}")
-
-
 class BlockProperty:
     REGISTRY = {}
 
@@ -446,9 +443,9 @@ BlockProperty.CHEST = BlockProperty("chest", 31, True, TextureType.CHEST, True, 
 BlockProperty.IRON_CHEST = BlockProperty("iron_chest", 32, True, TextureType.IRON_CHEST, True, "IRON_CHEST", 300, Pickaxe_tool)
 BlockProperty.STONE_SNOW = BlockProperty("stone_snow", 19, True, TextureType.STONE_SNOW, True, "STONE", 300, Pickaxe_tool)
 BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SNOW", 30)
-BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 50, Pickaxe_tool)
+BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 500, Pickaxe_tool)
 BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "EMERALD_INGOT", 1200, Pickaxe_tool)
-BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 70)    
+BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 550, Pickaxe_tool)    
 BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20)
 
 BlockProperty.OAK_TRUNK = BlockProperty("oak_trunk", 11, True, TextureType.OAK_TRUNK, True, "OAK_TRUNK", 100, Axe_tool)
@@ -462,11 +459,10 @@ BlockProperty.GRASS_2 = BlockProperty("grass_2", 15, False, TextureType.GRASS_2,
 BlockProperty.GRASS_3 = BlockProperty("grass_3", 16, False, TextureType.GRASS_3, True, None, 30, block_name_conditions="grass")
 BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4, True, None, 30, block_name_conditions="grass")
 BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30, block_name_conditions="brown_grass")
-BlockProperty.GRASS_TAN = BlockProperty("grass_tan", 34, False, TextureType.GRASS_TAN, True, None, 30, block_name_conditions="brown_grass")
-BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool)
-BlockProperty.ROCK_MOSS = BlockProperty("rock_moss", 35, False, TextureType.ROCK_MOSS, True, "STONE", 130, Pickaxe_tool)
+BlockProperty.GRASS_TAN = BlockProperty("grass_tan", 33, False, TextureType.GRASS_TAN, True, None, 30, block_name_conditions="brown_grass")
+BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool, block_name_conditions="rock")
+BlockProperty.ROCK_MOSS = BlockProperty("rock_moss", 34, False, TextureType.ROCK_MOSS, True, "STONE", 130, Pickaxe_tool, block_name_conditions="rock")
 BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20, block_name_conditions="mushroom")
-BlockProperty.BROWN_GRASS = BlockProperty("brown_moss", 33, False, TextureType.GRASS_BROWN, True, None, 30, )
 
 BlockProperty.TORCH = BlockProperty("torch", 29, False, TextureType.TORCH, True, "TORCH", 1, light_emission=15)
 

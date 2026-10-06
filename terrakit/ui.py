@@ -3,8 +3,8 @@ import math
 from terrakit import language
 import pygame
 from terrakit import game_property, game_type
-from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager, FurnaceManager, ChestManager
-from terrakit.texture_manager import TextureType, TextureManager
+from terrakit.world import FurnaceManager, ChestManager
+from terrakit.inventory import Crafting_types, ItemStack, SlotWrapper, CraftManager
 from terrakit.objective import ObjectiveManager
 
 

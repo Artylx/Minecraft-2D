@@ -17,7 +17,15 @@
     },
     "rock": {
         "required": {
-            "block_property": ["GRASS", "DIRT", "STONE"],
+            "block_property": ["GRASS", "DIRT", "STONE", "REDSTONE", "REDSTONE_SAND"],
+            "x": 0,
+            "y": -1
+        },
+        "fluid_break": true
+    },
+    "brown_grass": {
+        "required": {
+            "block_property": ["GRASS", "DIRT", "REDSTONE", "REDSTONE_SAND"],
             "x": 0,
             "y": -1
         },

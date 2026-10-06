@@ -2,13 +2,178 @@
     "seed": 441685,
     "entitys": [
         {
-            "type": "Player",
-            "uuid": "fe650ca8-3cbe-4d02-abab-865b97f1684a",
-            "x": 104855,
-            "y": 576,
+            "type": "Zombie",
+            "uuid": "eaff985a-0142-402e-ae88-3a6c23be8f92",
+            "x": 104036,
+            "y": -960,
             "w": 27,
             "h": 80,
-            "vx": 8.709842431758254,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "cd4cc8ce-76d3-45b8-b314-8cc753678af9",
+            "x": 103776,
+            "y": -896,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "d6849115-5662-4846-9128-09799fbdeccc",
+            "x": 103851,
+            "y": -928,
+            "w": 27,
+            "h": 80,
+            "vx": -1.6904066433286452e-10,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "9f68c57d-f75b-4f8d-9023-3296be7715d1",
+            "x": 104064,
+            "y": -1440,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "81ca9b12-5c46-400c-b2de-d112a8a9203a",
+            "x": 103776,
+            "y": -896,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "a14c06f0-6e31-4de9-92f7-76b68e698144",
+            "x": 104260,
+            "y": -992,
+            "w": 27,
+            "h": 80,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Player",
+            "uuid": "a9576586-06e5-490b-a671-bcfbed816820",
+            "x": 1299,
+            "y": 800,
+            "w": 27,
+            "h": 80,
+            "vx": -9.972693066199752e-34,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "soso",
+            "name": "soso",
+            "live_time": null,
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "cf48e226-91a3-477e-b121-102c88b67fdf",
+                "size": 24,
+                "title": "Inventory of soso",
+                "items": [],
+                "owner_uuid": "a9576586-06e5-490b-a671-bcfbed816820"
+            }
+        },
+        {
+            "type": "Player",
+            "uuid": "fe650ca8-3cbe-4d02-abab-865b97f1684a",
+            "x": 104291,
+            "y": 608,
+            "w": 27,
+            "h": 80,
+            "vx": 7.370253590388471e-33,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -62,15 +227,6 @@
                         }
                     },
                     {
-                        "slot": 4,
-                        "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 30,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "chips",
@@ -91,23 +247,14 @@
                     {
                         "slot": 7,
                         "itemStack": {
-                            "item_type_name": "sand",
-                            "count": 1,
+                            "item_type_name": "redstone",
+                            "count": 62,
                             "durability": null,
                             "components": []
                         }
                     },
                     {
                         "slot": 8,
-                        "itemStack": {
-                            "item_type_name": "iron_chest",
-                            "count": 1,
-                            "durability": null,
-                            "components": []
-                        }
-                    },
-                    {
-                        "slot": 9,
                         "itemStack": {
                             "item_type_name": "redstone_sand",
                             "count": 2,
@@ -118,8 +265,8 @@
                     {
                         "slot": 10,
                         "itemStack": {
-                            "item_type_name": "redstone",
-                            "count": 62,
+                            "item_type_name": "stone",
+                            "count": 31,
                             "durability": null,
                             "components": []
                         }
@@ -144,33 +291,6 @@
                     }
                 ],
                 "owner_uuid": "fe650ca8-3cbe-4d02-abab-865b97f1684a"
-            }
-        },
-        {
-            "type": "Player",
-            "uuid": "a9576586-06e5-490b-a671-bcfbed816820",
-            "x": 1299,
-            "y": 800,
-            "w": 27,
-            "h": 80,
-            "vx": -9.972693066199752e-34,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "soso",
-            "name": "soso",
-            "live_time": null,
-            "health": 40,
-            "max_health": 40,
-            "orientation": "left",
-            "drops": [],
-            "inventory": {
-                "uuid": "cf48e226-91a3-477e-b121-102c88b67fdf",
-                "size": 24,
-                "title": "Inventory of soso",
-                "items": [],
-                "owner_uuid": "a9576586-06e5-490b-a671-bcfbed816820"
             }
         }
     ],
@@ -6657,7 +6777,7 @@
             "3253:16": {
                 "x": 3253,
                 "y": 16,
-                "block": "stone",
+                "block": "air",
                 "components": []
             },
             "3249:11": {
@@ -6737,6 +6857,53 @@
                 "y": 9,
                 "block": "air",
                 "components": []
+            },
+            "3258:18": {
+                "x": 3258,
+                "y": 18,
+                "block": "redstone_sand",
+                "components": []
+            },
+            "3258:16": {
+                "x": 3258,
+                "y": 16,
+                "block": "redstone",
+                "components": []
+            },
+            "3258:17": {
+                "x": 3258,
+                "y": 17,
+                "block": "redstone",
+                "components": []
+            },
+            "3260:19": {
+                "x": 3260,
+                "y": 19,
+                "block": "iron_chest",
+                "components": [
+                    {
+                        "key": "chest",
+                        "component": {
+                            "type": "chestManager",
+                            "inventory": {
+                                "uuid": "4cc2e6db-97d7-43f0-b573-9cb47e011c87",
+                                "size": 36,
+                                "title": "Inventory uuid:4cc2e6db-97d7-43f0-b573-9cb47e011c87",
+                                "items": [
+                                    {
+                                        "slot": 34,
+                                        "itemStack": {
+                                            "item_type_name": "sand",
+                                            "count": 1,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
             }
         },
         "193": {

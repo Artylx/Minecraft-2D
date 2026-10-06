@@ -332,9 +332,6 @@ class GameClient:
     def pos_block(self, pos_block, player):
         current_item = player.inventory.ui.get_selected_item()
         if current_item and current_item.is_posable():
-
-            old_block = self.World.get_block(pos_block[0], pos_block[1])
-
             if pos_block[1] > game_property.CHUNK_MAX_HEIGHT:
                 self.tchat.send_message("", f"&4Couche maximal {game_property.CHUNK_MAX_HEIGHT}")
                 return
