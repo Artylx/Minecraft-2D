@@ -219,6 +219,14 @@ class GameClient:
                 z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
                 self.World.create_entity(z)
 
+            if game.is_press(pygame.K_h):
+                z = entity.Pig(self.player.get_pos()[0], self.player.get_pos()[1] + 1000, world=self.World)
+                self.World.create_entity(z)
+
+            if game.is_press(pygame.K_u):
+                z = entity.Fox(self.player.get_pos()[0], self.player.get_pos()[1] + 1000, world=self.World)
+                self.World.create_entity(z)
+
             if game.is_press(pygame.K_l):
                 self.UI.objective_open = True
                 
