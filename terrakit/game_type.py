@@ -389,6 +389,7 @@ ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True
 ItemProperty.TORCH = ItemProperty("torch", TextureType.TORCH, 100, True, "TORCH", "Produit de la lumière.")
 
 ItemProperty.WATER_BUCKET = ItemProperty("water_bucket", TextureType.WATER_BUCKET, 1, True, "WATER", "Outils")
+ItemProperty.FLINT_AND_STEEL = Tool("flint_and_steel", TextureType.FLINT_AND_STEEL, 100)
 
 # EPE
 ItemProperty.DIAMOND_SWORD = Attack_tool("diamond_sword", TextureType.DIAMOND_SWORD, MaterialTool.DIAMOND)

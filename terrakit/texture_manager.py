@@ -66,6 +66,8 @@ class TextureType:
     WATER_BUCKET = "water_bucket"
 
     # TOOLS
+    FLINT_AND_STEEL = "flint_and_steel"
+
     WOODEN_SWORD = "wooden_sword"
     WOODEN_PICKAXE = "wooden_pickaxe"
     WOODEN_AXE = "wooden_axe"
@@ -115,6 +117,11 @@ class TextureType:
     ALIEN_BODY = "alien_body"
     ALIEN_ARM = "alien_arm"
     ALIEN_LEG = "alien_leg"
+
+    FOX_BODY = "fox_body"
+    FOX_EAR = "fox_ear"
+    FOX_LEG = "fox_leg"
+    FOX_TAIL = "fox_tail"
     
     CHIPS = "chips"
     EGG = "egg"
@@ -182,6 +189,7 @@ class TextureManager:
 
             # ITEMS
             self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + TOOLS_PATH + "water_bucket.png")
+            self.load_texture(TextureType.FLINT_AND_STEEL, ITEMS_PATH + TOOLS_PATH + "flint_and_steel.png")
 
             self.load_texture(TextureType.DIAMOND_SWORD, ITEMS_PATH + TOOLS_PATH + "diamond_sword.png")
             self.load_texture(TextureType.WOODEN_SWORD, ITEMS_PATH + TOOLS_PATH + "wooden_sword.png")
@@ -243,6 +251,12 @@ class TextureManager:
             self.load_texture(TextureType.ALIEN_ARM, ENTITIES_PATH + MOBS_PATH + "alien/alien_arm.png")
             self.load_texture(TextureType.ALIEN_BODY, ENTITIES_PATH + MOBS_PATH + "alien/alien_body.png")
             self.load_texture(TextureType.ALIEN_LEG, ENTITIES_PATH + MOBS_PATH + "alien/alien_leg.png")
+
+            # FOX
+            self.load_texture(TextureType.FOX_BODY, ENTITIES_PATH + MOBS_PATH + "fox/fox_body.png")
+            self.load_texture(TextureType.FOX_EAR, ENTITIES_PATH + MOBS_PATH + "fox/fox_ear.png")
+            self.load_texture(TextureType.FOX_LEG, ENTITIES_PATH + MOBS_PATH + "fox/fox_leg.png")
+            self.load_texture(TextureType.FOX_TAIL, ENTITIES_PATH + MOBS_PATH + "fox/fox_tail.png")
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")

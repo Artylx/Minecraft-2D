@@ -2529,6 +2529,771 @@ class Gnome(Mob):
         
     def __str__(self):
         return f"Gnome(pos:{self.get_pos_tile()})"
+ 
+ 
+# =====================================================================
+#  ENTITÉ EN PARTIES (indépendante, n'hérite pas de Entity)
+# =====================================================================
+class PartEntity:
+    """Base d'une partie : position relative + taille."""
+ 
+    kind = "part"
+ 
+    def __init__(self, offset=(0, 0), size=(16, 16), name="part", visible=True):
+        self.offset = pygame.Vector2(offset)
+        self.size = (int(size[0]), int(size[1]))
+        self.name = name
+        self.visible = visible
+        self.parent = None  # renseigné par EntityParted.add_part
+ 
+    def get_world_rect(self) -> pygame.Rect:
+        base_x = self.parent.rect.x if self.parent else 0
+        base_y = self.parent.rect.y if self.parent else 0
+        return pygame.Rect(
+            base_x + int(self.offset.x),
+            base_y + int(self.offset.y),
+            self.size[0],
+            self.size[1],
+        )
+ 
+    def to_json(self):
+        return {
+            "kind": self.kind,
+            "name": self.name,
+            "ox": self.offset.x,
+            "oy": self.offset.y,
+            "w": self.size[0],
+            "h": self.size[1],
+            "visible": self.visible,
+        }
+ 
+ 
+class TexturePart(PartEntity):
+    """Partie uniquement visuelle (aucune collision)."""
+ 
+    kind = "texture"
+ 
+    def __init__(self, texture=None, offset=(0, 0), size=None, name="texture_part",
+                 color=(255, 255, 255), z_index=0, alpha=255, flip_x=False,
+                 texture_name=None, visible=True):
+        if size is None:
+            size = texture.get_size() if texture else (16, 16)
+        super().__init__(offset, size, name, visible)
+        self.texture = texture
+        self.visible_texture = pygame.transform.scale(texture, size)
+        self.texture_name = texture_name  # pour la sauvegarde
+        self.color = color                # utilisé si pas de texture
+        self.z_index = z_index            # ordre de dessin (petit = derrière)
+        self.alpha = alpha
+        self.flip_x = flip_x
+ 
+    def render(self, screen, cam_rect, brightness=1.0, entity_alpha=255, offset=(0, 0)):
+        if not self.visible:
+            return
+ 
+        rect = self.get_world_rect()
+        draw_x, draw_y = game_property.world_to_screen(rect.x, rect.y, rect.height, cam_rect)
+ 
+        draw_x += offset[0]
+        draw_y -= offset[1]
+ 
+        alpha = int(self.alpha * entity_alpha / 255)
+        shade = int(255 * brightness)
+ 
+        if self.visible_texture:
+            tex = self.visible_texture.copy()
+            if self.flip_x:
+                tex = pygame.transform.flip(tex, True, False)
+ 
+            tex.fill((shade, shade, shade, 255), special_flags=pygame.BLEND_RGB_MULT)
+            tex.set_alpha(alpha)
+            screen.blit(tex, (draw_x, draw_y))
+        elif self.color:
+            c = tuple(int(v * brightness) for v in self.color[:3])
+            surface = pygame.Surface(self.size, pygame.SRCALPHA)
+            surface.fill((*c, alpha))
+            screen.blit(surface, (draw_x, draw_y))
+ 
+    def to_json(self):
+        data = super().to_json()
+        data.update({
+            "texture_name": self.texture_name,
+            "color": self.color,
+            "z_index": self.z_index,
+            "alpha": self.alpha,
+            "flip_x": self.flip_x,
+        })
+        return data
+ 
+ 
+class CollisionPart(PartEntity):
+    """Partie uniquement physique (hitbox), invisible sauf en debug."""
+ 
+    kind = "collision"
+ 
+    def __init__(self, offset=(0, 0), size=(16, 16), name="collision_part",
+                 solid=True, tag=None, visible=True):
+        super().__init__(offset, size, name, visible)
+        self.solid = solid  # False = ignorée par la physique (zone de détection, etc.)
+        self.tag = tag      # ex: "head", "feet", "weak_point"
+ 
+    def render_hit_box(self, screen, cam_rect, color=(255, 0, 0), width=1):
+        rect = self.get_world_rect()
+        draw_x, draw_y = game_property.world_to_screen(rect.x, rect.y, rect.height, cam_rect)
+        pygame.draw.rect(screen, color, (draw_x, draw_y, rect.width, rect.height), width)
+ 
+    def to_json(self):
+        data = super().to_json()
+        data.update({"solid": self.solid, "tag": self.tag})
+        return data
+ 
+ 
+# =====================================================================
+#  ENTITÉ EN PARTIES (indépendante, n'hérite pas de Entity)
+# =====================================================================
+class EntityParted:
+    """
+    Entité dont le rendu est fait par des TexturePart et les collisions
+    avec le terrain par des CollisionPart.
+ 
+    self.rect reste le "corps principal" (position/ancre, détection de
+    liquide, distance au joueur...). Les parties sont placées par rapport
+    à rect.x / rect.y.
+    Si aucune CollisionPart n'est donnée, une partie couvrant tout le rect
+    est créée automatiquement.
+    """
+ 
+    texture_manager = None
+ 
+    def __init__(self, rect, world=None, name="Unamed entity", parts=None, dif_pos_render=None,
+                 displayed_name="", display_name=False, gravity=game_property.GRAVITY,
+                 collidable=True, live_time=None):
+        self.uuid = uuid.uuid4()
+        self.rect = rect
+        self.display_name = display_name
+        self.name = name
+        self.world = world
+        self.spawn_time = pygame.time.get_ticks()
+        self.font = pygame.font.SysFont("Arial", 14)
+        self.gravity = gravity
+        self.collidable = collidable
+        self.is_alive = True
+        self.live_time = live_time
+        self.in_liquid = False
+ 
+        if dif_pos_render is None:
+            dif_pos_render = [0, 0]
+        self.dif_pos_render = dif_pos_render
+ 
+        self.on_ground = False
+        self.auto_jump = False
+ 
+        self.velocity = pygame.Vector2(0, 0)
+        self.speed = game_property.ENTITY_SPEED
+ 
+        self.set_displayed_name(str(displayed_name))
+ 
+        self.temp_rect = None
+        self.attached_entities = []
+        self.attached_to = None
+ 
+        self.alpha_texture = 255
+        self.removing = False
+        self.remove_speed = 100
+ 
+        # ---- Parties ----
+        self.texture_parts = []
+        self.collision_parts = []
+ 
+        for part in (parts or []):
+            self.add_part(part)
+ 
+        if not self.collision_parts:
+            self.add_part(CollisionPart((0, 0), (self.rect.width, self.rect.height), name="body"))
+ 
+    # ------------------------------------------------------------ parties
+    def add_part(self, part: PartEntity):
+        part.parent = self
+        if isinstance(part, TexturePart):
+            self.texture_parts.append(part)
+            self.texture_parts.sort(key=lambda p: p.z_index)
+        elif isinstance(part, CollisionPart):
+            self.collision_parts.append(part)
+        else:
+            raise TypeError(f"Type de partie inconnu : {type(part)}")
+        return part
+ 
+    def remove_part(self, part: PartEntity):
+        if part in self.texture_parts:
+            self.texture_parts.remove(part)
+        if part in self.collision_parts:
+            self.collision_parts.remove(part)
+        part.parent = None
+ 
+    def get_part(self, name: str):
+        for part in self.texture_parts + self.collision_parts:
+            if part.name == name:
+                return part
+        return None
+ 
+    def get_collision_parts_by_tag(self, tag):
+        return [p for p in self.collision_parts if p.tag == tag]
+ 
+    def get_collision_bounds(self) -> pygame.Rect:
+        """Rect englobant toutes les parties de collision solides."""
+        rects = [p.get_world_rect() for p in self.collision_parts if p.solid]
+        if not rects:
+            return self.rect.copy()
+        return rects[0].unionall(rects[1:])
+ 
+    # ------------------------------------------------------- infos / état
+    def set_displayed_name(self, name: str):
+        self.displayed_name = name
+        self.update_vars()
+ 
+    def is_valid(self):
+        if self.world:
+            if self.world.contains_entity(self):
+                return True
+        return False
+ 
+    def attach_self(self, entity):
+        self.attached_to = entity
+        entity.add_attached_entity(self)
+ 
+    def add_attached_entity(self, entity):
+        self.attached_entities.append(entity)
+ 
+    def update_vars(self):
+        self.display_name_text_surface = self.font.render(self.displayed_name, True, (255, 255, 255))
+ 
+        self.display_name_margin_x = 8
+        self.display_name_margin_y = 4
+ 
+        self.display_name_surface_width = self.display_name_text_surface.get_width() + self.display_name_margin_x * 2
+        self.display_name_surface_height = self.display_name_text_surface.get_height() + self.display_name_margin_y * 2
+ 
+        self.display_name_surface = pygame.Surface(
+            (self.display_name_surface_width, self.display_name_surface_height), pygame.SRCALPHA
+        )
+ 
+    def get_uuid(self):
+        return self.uuid
+ 
+    def kill(self):
+        self.is_alive = False
+        for entity in self.attached_entities:
+            entity.kill()
+ 
+    def get_name(self):
+        return self.name
+ 
+    def get_rect(self) -> pygame.Rect:
+        return self.rect
+ 
+    def get_pos(self) -> tuple:
+        return (self.rect.x, self.rect.y)
+ 
+    def get_pos_tile(self) -> tuple:
+        return (
+            round(self.rect.x / game_property.TILE_SIZE, 2),
+            round(self.rect.y / game_property.TILE_SIZE, 2),
+        )
+ 
+    # ------------------------------------------------------------- liquide
+    def is_touching_liquid(self):
+        points = [
+            (self.rect.left // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.left // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+ 
+            # Milieux des côtés
+            (self.rect.centerx // game_property.TILE_SIZE, self.rect.top // game_property.TILE_SIZE),
+            (self.rect.centerx // game_property.TILE_SIZE, self.rect.bottom // game_property.TILE_SIZE),
+            (self.rect.left // game_property.TILE_SIZE, self.rect.centery // game_property.TILE_SIZE),
+            (self.rect.right // game_property.TILE_SIZE, self.rect.centery // game_property.TILE_SIZE),
+        ]
+ 
+        for x, y in points:
+            block = self.world.get_block(int(x), int(y))
+ 
+            if block is not None and block.block_property.liquid:
+                return True
+ 
+        return False
+ 
+    # -------------------------------------------------------------- joueur
+    def get_nearest_player(self, distance: int):
+        """
+        Return (TUPLE):
+            -   Player
+            -   Distance
+        """
+        from player import Player  # <- adapte le chemin ; import local pour éviter un import circulaire
+ 
+        nearest = None
+ 
+        if not distance:
+            return nearest
+        nearest_distance = distance
+ 
+        for player in self.world.get_entities(Player):
+            dx = player.rect.centerx - self.rect.centerx
+            dy = player.rect.centery - self.rect.centery
+ 
+            distance = math.hypot(dx, dy)
+ 
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest = (player, distance)
+        return nearest
+ 
+    # ---------------------------------------------------------------- rendu
+    def render(self, screen, cam_rect, color=(255, 255, 255)):
+        light = self.world.get_entity_light(self)
+ 
+        # normaliser (0–15 → 0.2–1.0)
+        brightness = max(0.2, light / 15)
+ 
+        for part in self.texture_parts:  # déjà triées par z_index
+            part.render(screen, cam_rect, brightness, self.alpha_texture, self.dif_pos_render)
+ 
+    def render_display_name(self, screen, cam_rect, x_offset=0, y_offset=0):
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+ 
+        draw_x += self.dif_pos_render[0]
+        draw_y -= self.dif_pos_render[1]
+ 
+        # Surface fond semi-transparent
+        chat_surface = pygame.Surface(
+            (self.display_name_surface_width, self.display_name_surface_height), pygame.SRCALPHA
+        )
+        chat_surface.fill((0, 0, 0, 150))
+ 
+        # Ajouter texte dans la surface
+        chat_surface.blit(self.display_name_text_surface, (self.display_name_margin_x, self.display_name_margin_y))
+ 
+        # Centrer au-dessus de l'entité
+        name_x = draw_x + self.rect.width / 2 - self.display_name_surface_width / 2 + x_offset
+        name_y = draw_y - self.display_name_surface_height - 5 + y_offset
+ 
+        screen.blit(chat_surface, (name_x, name_y))
+ 
+    def render_hit_box(self, screen, cam_rect, color=(255, 255, 255), width=1):
+        """Dessine la hitbox de chaque partie de collision."""
+        for part in self.collision_parts:
+            part.render_hit_box(screen, cam_rect, color, width)
+ 
+    def render_hit_box_with_rect(self, screen, cam_rect, rect=None, color=(255, 255, 255), width=1):
+        draw_x, draw_y = game_property.world_to_screen(rect.x, rect.y, rect.height, cam_rect)
+        pygame.draw.rect(screen, color, (draw_x, draw_y, rect.width, rect.height), width)
+ 
+    def render_highlight(self, screen, cam_rect, color=(255, 255, 255)):
+        self.render_hit_box_with_rect(screen, cam_rect, rect=self.get_collision_bounds(), color=color, width=2)
+ 
+    # ------------------------------------------------------- téléportation
+    def tp(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+ 
+    def tp_tile(self, x, y):
+        self.rect.x = x * game_property.TILE_SIZE
+        self.rect.y = y * game_property.TILE_SIZE
+ 
+    # ------------------------------------------------------------ durée de vie
+    def update_live_time(self, dt):
+        if self.live_time is not None:
+            self.live_time -= dt
+ 
+            if self.live_time <= 0:
+                self.removing = True
+ 
+        if self.removing:
+            self.alpha_texture -= self.remove_speed * dt
+ 
+            if self.alpha_texture <= 0:
+                self.alpha_texture = 0
+ 
+                self.kill()
+ 
+                return
+ 
+    # ---------------------------------------------------------- collisions
+    def collides_at(self, dx=0, dy=0) -> bool:
+        """True si une partie de collision solide touche le terrain après un décalage (dx, dy)."""
+        for part in self.collision_parts:
+            if part.solid and self.world.is_collide_at(part.get_world_rect().move(dx, dy)):
+                return True
+        return False
+ 
+    def update(self, dt, update_live=True):
+        self.in_liquid = self.is_touching_liquid()
+ 
+        if update_live:
+            self.update_live_time(dt)
+ 
+        max_steps = 100
+ 
+        try:
+            self.apply_gravity(dt)
+ 
+            if self.in_liquid:
+                self.velocity.x *= 0.84
+                self.velocity.y *= 0.84
+            else:
+                self.velocity.x *= 0.9
+ 
+            dx = int(self.rect.x + self.velocity.x * dt) - self.rect.x
+            dy = int(self.rect.y + self.velocity.y * dt) - self.rect.y
+ 
+            # ----- HORIZONTAL -----
+            if not self.collides_at(dx, 0):
+                self.move(dx, 0)
+            elif self.velocity.x != 0:
+                step = 1 if self.velocity.x > 0 else -1
+                steps = 0
+                while not self.collides_at(step, 0) and steps < max_steps:
+                    self.move(step, 0)
+                    steps += 1
+                self.velocity.x = 0
+ 
+            # ----- VERTICAL -----
+            if not self.collides_at(0, dy):
+                self.move(0, dy)
+                self.on_ground = False
+            else:
+                step = 1 if self.velocity.y > 0 else -1
+                steps = 0
+                while not self.collides_at(0, step) and steps < max_steps:
+                    self.move(0, step)
+                    steps += 1
+ 
+                self.velocity.y = 0
+ 
+                if step < 0:
+                    self.on_ground = True
+        except Exception as e:
+            print("Exception: ", e)
+ 
+    # ------------------------------------------------------------- physique
+    def move(self, dx, dy):
+        self.rect.x += dx
+        self.rect.y += dy
+ 
+        for entity in self.attached_entities:
+            entity.move(dx, dy)
+ 
+    def apply_gravity(self, dt):
+        if not self.on_ground:
+            # gravity is an acceleration; scale by dt
+            self.add_velocity(0, -self.gravity * dt)
+        else:
+            self.velocity.y = 0
+ 
+    def jump(self, force):
+        self.add_velocity(0, force)
+        self.on_ground = False
+ 
+    def add_velocity(self, vx, vy):
+        self.velocity.x += (vx * self.speed)
+        self.velocity.y += (vy * self.speed)
+ 
+    def set_velocity(self, vx, vy):
+        if vx:
+            self.velocity.x = vx
+        if vy:
+            self.velocity.y = vy
+ 
+    # ---------------------------------------------------------- sauvegarde
+    def resolve_texture(self, name):
+        """Retrouve une texture à partir de son nom (adapte à ton texture_manager)."""
+        if name and EntityParted.texture_manager:
+            return EntityParted.texture_manager.get(name)  # <- adapte à ton API
+        return None
+ 
+    def load(self, data, add_map=None):
+        if add_map is None:
+            add_map = {}
+ 
+        mapping = {
+            "uuid": "uuid",
+            "x": ("rect", "x"),
+            "y": ("rect", "y"),
+            "w": ("rect", "width"),
+            "h": ("rect", "height"),
+            "vx": ("velocity", "x"),
+            "vy": ("velocity", "y"),
+            "name": "name",
+            "gravity": "gravity",
+            "speed": "speed",
+            "display_name": "display_name",
+            "displayed_name": "displayed_name",
+        }
+ 
+        mapping.update(add_map)
+ 
+        # Vérification
+        missing = [k for k in mapping if k not in data]
+        if missing:
+            print(f"Champs manquants: {missing}")
+            return None
+ 
+        # Assignation complexe
+        for key, target in mapping.items():
+            if isinstance(target, tuple):
+                obj, attr = target
+                setattr(getattr(self, obj), attr, data[key])
+            else:
+                setattr(self, target, data[key])
+ 
+        self.uuid = uuid.UUID(str(self.uuid))
+        self.update_vars()
+ 
+        # ---- Parties ----
+        self.texture_parts.clear()
+        self.collision_parts.clear()
+ 
+        for pd in data.get("parts", []):
+            offset = (pd["ox"], pd["oy"])
+            size = (pd["w"], pd["h"])
+ 
+            if pd["kind"] == "texture":
+                part = TexturePart(
+                    texture=self.resolve_texture(pd.get("texture_name")),
+                    offset=offset, size=size, name=pd["name"],
+                    color=tuple(pd["color"]) if pd.get("color") else None,
+                    z_index=pd.get("z_index", 0), alpha=pd.get("alpha", 255),
+                    flip_x=pd.get("flip_x", False),
+                    texture_name=pd.get("texture_name"), visible=pd.get("visible", True),
+                )
+            else:
+                part = CollisionPart(
+                    offset=offset, size=size, name=pd["name"],
+                    solid=pd.get("solid", True), tag=pd.get("tag"),
+                    visible=pd.get("visible", True),
+                )
+            self.add_part(part)
+ 
+        if not self.collision_parts:
+            self.add_part(CollisionPart((0, 0), (self.rect.width, self.rect.height), name="body"))
+ 
+        return self
+ 
+    def to_json(self, type_="EntityParted", dict_=None):
+        if dict_ is None:
+            dict_ = {}
+ 
+        data = {
+            "type": type_,
+            "uuid": str(self.uuid),
+            "x": self.rect.x,
+            "y": self.rect.y,
+            "w": self.rect.width,
+            "h": self.rect.height,
+            "vx": self.velocity.x,
+            "vy": self.velocity.y,
+            "gravity": self.gravity,
+            "speed": self.speed,
+            "display_name": self.display_name,
+            "displayed_name": self.displayed_name,
+            "name": self.name,
+            "live_time": self.live_time,
+            "parts": [p.to_json() for p in self.texture_parts + self.collision_parts],
+        }
+ 
+        data.update(dict_)  # ajoute les champs supplémentaires
+ 
+        return data
+
+class Golem(EntityParted):
+    def __init__(self, x, y, world):
+        super().__init__(pygame.Rect(x, y, 32, 48), world=world, name="Golem")
+
+        texture_body = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_BODY)
+        texture_head = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_HEAD)
+        texture_arm = context.get_resource_pack().texture_manager().get_texture(TextureType.ZOMBIE_ARM)
+
+        # Visuel
+        self.add_part(TexturePart(texture_body, offset=(0, 0),  size=(32, 32), name="body", z_index=0))
+        self.add_part(TexturePart(texture_head, offset=(4, 32), size=(24, 16), name="head", z_index=1))
+        self.add_part(TexturePart(texture_arm,  offset=(-8, 8), size=(12, 20), name="arm",  z_index=2))
+
+        # Physique
+        self.add_part(CollisionPart((0, 0),  (32, 32), name="body_hitbox", tag="body"))
+        self.add_part(CollisionPart((4, 32), (24, 16), name="head_hitbox", tag="head"))
+
+
+def darken(surface, factor=0.7):
+    """Copie assombrie d'une texture (pour les pattes du fond)."""
+    dark = surface.copy()
+    v = int(255 * factor)
+    dark.fill((v, v, v, 255), special_flags=pygame.BLEND_RGB_MULT)
+    return dark
+ 
+ 
+class Pig(EntityParted):
+    """
+    Cochon construit avec 3 textures (corps, tête, pied) récupérées via le
+    texture_manager du resource pack : Pig(x, y, world) suffit.
+    La texture du pied est réutilisée pour les 4 pattes (celles du fond sont assombries).
+    Le cochon regarde vers la droite par défaut ; la taille de chaque partie
+    vient de la taille de sa texture.
+    Si une texture est introuvable, un rectangle rose de taille par défaut est utilisé.
+    """
+ 
+    DEFAULT_SIZES = {"body": (29, 14), "head": (14, 12), "foot": (4, 7)}
+ 
+    WALK_SPEED = 60      # px/s -> à ajuster selon ton échelle de vitesse
+    JUMP_FORCE = 8       # à ajuster (add_velocity est multiplié par self.speed)
+    FLEE_DISTANCE = 150
+    FLEE_SPEED_MULT = 1.8
+ 
+    @staticmethod
+    def load_textures():
+        texture_manager = context.get_resource_pack().texture_manager()
+        return {
+            # <- adapte les noms à ton enum TextureType
+            "body": texture_manager.get_texture(TextureType.ZOMBIE_BODY),
+            "head": texture_manager.get_texture(TextureType.ZOMBIE_HEAD),
+            "foot": texture_manager.get_texture(TextureType.ZOMBIE_LEG),
+        }
+ 
+    def __init__(self, x, y, world, **kwargs):
+        textures = self.load_textures()
+ 
+        # ---- Tailles issues des textures ----
+        def size_of(name):
+            tex = textures.get(name)
+            return self.DEFAULT_SIZES[name]
+ 
+        bw, bh = size_of("body")
+        hw, hh = size_of("head")
+        fw, fh = size_of("foot")
+ 
+        # ---- Placement (y vers le haut) ----
+        body_pos = (0, fh)
+        head_pos = (bw - hw // 3, fh + bh - hh)      # dépasse un peu devant le corps
+        feet_x = {
+            "leg_back_1": int(bw * 0.08),
+            "leg_back_2": int(bw * 0.30),
+            "leg_front_1": int(bw * 0.58),
+            "leg_front_2": int(bw * 0.80) - fw,
+        }
+ 
+        width = max(bw, head_pos[0] + hw)
+        height = max(fh + bh, head_pos[1] + hh)
+ 
+        super().__init__(
+            pygame.Rect(x, y, width, height),
+            world=world,
+            name="Pig",
+            **kwargs,
+        )
+ 
+        foot_tex = textures.get("foot")
+        foot_dark = darken(foot_tex) if foot_tex else None
+ 
+        def part(name, texture, offset, size, color, z):
+            return TexturePart(texture=texture, offset=offset, size=size,
+                               name=name, color=color, z_index=z)
+ 
+        pink, dark_pink = (240, 160, 170), (214, 120, 135)
+ 
+        # ---- Visuel ----
+        visuals = [
+            part("leg_back_1",  foot_dark, (feet_x["leg_back_1"], 0),  (fw, fh), dark_pink, 0),
+            part("leg_front_1", foot_dark, (feet_x["leg_front_1"], 0), (fw, fh), dark_pink, 0),
+            part("body",        textures.get("body"), body_pos, (bw, bh), pink, 1),
+            part("leg_back_2",  foot_tex,  (feet_x["leg_back_2"], 0),  (fw, fh), pink, 2),
+            part("leg_front_2", foot_tex,  (feet_x["leg_front_2"], 0), (fw, fh), pink, 2),
+            part("head",        textures.get("head"), head_pos, (hw, hh), pink, 3),
+        ]
+ 
+        # ---- Physique : corps (pattes comprises) + tête ----
+        hitboxes = [
+            CollisionPart((0, 0), (bw, fh + bh), name="body_hitbox", tag="body"),
+            CollisionPart(head_pos, (hw, hh), name="head_hitbox", tag="head"),
+        ]
+ 
+        # Retire la partie "body" automatique : on fournit les nôtres
+        self.collision_parts.clear()
+        for p in visuals + hitboxes:
+            self.add_part(p)
+ 
+        # Offsets d'origine (tourné vers la droite) pour pouvoir miroiter
+        self._base_offsets = [(p, p.offset.x, p.offset.y) for p in self.texture_parts + self.collision_parts]
+        self.facing = 1
+ 
+        # ---- IA ----
+        self.direction = 0
+        self.ai_timer = 0.0
+ 
+    # ----------------------------------------------------------- orientation
+    def set_facing(self, facing):
+        if facing == self.facing or facing == 0:
+            return
+        self.facing = facing
+        for p, ox, oy in self._base_offsets:
+            p.offset.x = ox if facing == 1 else self.rect.width - ox - p.size[0]
+            if isinstance(p, TexturePart):
+                p.flip_x = (facing == -1)
+ 
+    # -------------------------------------------------------------------- IA
+    def update_ai(self, dt):
+        speed = self.WALK_SPEED
+        threat = self.get_nearest_player(self.FLEE_DISTANCE)  # (player, distance) ou None
+ 
+        if threat:
+            player, _ = threat
+            self.direction = 1 if self.rect.centerx > player.rect.centerx else -1
+            speed *= self.FLEE_SPEED_MULT
+            self.ai_timer = 0.5
+        else:
+            self.ai_timer -= dt
+            if self.ai_timer <= 0:
+                self.direction = random.choice((-1, 0, 0, 1))  # s'arrête souvent
+                self.ai_timer = random.uniform(1.0, 4.0)
+ 
+        if self.direction:
+            self.set_facing(self.direction)
+            self.velocity.x = self.direction * speed
+ 
+            # Saute par-dessus un obstacle d'un bloc
+            if self.on_ground and self.collides_at(self.direction * 2, 0):
+                self.jump(self.JUMP_FORCE)
+ 
+    def update(self, dt, update_live=True):
+        self.update_ai(dt)
+        super().update(dt, update_live)
+
+
+class Fox(EntityParted):
+    def __init__(self, x, y, world, **kwargs):
+        rect = pygame.Rect(x, y, 0, 0)
+        super().__init__(rect, name="Fox", world=world, **kwargs)
+
+        texture_body = context.get_resource_pack().texture_manager().get_texture(TextureType.FOX_BODY)
+        texture_ear = context.get_resource_pack().texture_manager().get_texture(TextureType.FOX_EAR)
+        texture_leg = context.get_resource_pack().texture_manager().get_texture(TextureType.FOX_LEG)
+        texture_tail = context.get_resource_pack().texture_manager().get_texture(TextureType.FOX_TAIL)
+
+        # Visuel
+        self.add_part(TexturePart(texture_body, offset=(0, game_property.TILE_SIZE // 2),  size=(game_property.TILE_SIZE * 2, game_property.TILE_SIZE), name="body", z_index=99))
+        self.add_part(TexturePart(texture_leg, offset=(10, 0), size=(game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="leg_right", z_index=1))
+        self.add_part(TexturePart(texture_leg, offset=(game_property.TILE_SIZE, 0), size=(game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="leg_left", z_index=2))
+        self.add_part(TexturePart(texture_tail,  offset=(-20, game_property.TILE_SIZE - 6), size=(20, 12), name="tail",  z_index=3, flip_x=True))
+        self.add_part(TexturePart(texture_ear,  offset=(game_property.TILE_SIZE * 2 - 8 * 3, (game_property.TILE_SIZE // 2) * 3), size=(8, 8), name="ear",  z_index=10))
+
+        # Physique
+        self.add_part(CollisionPart((0, game_property.TILE_SIZE // 2),  (game_property.TILE_SIZE * 2, game_property.TILE_SIZE), name="body_hitbox", tag="body"))
+        self.add_part(CollisionPart((10, 0), (game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="head_hitbox", tag="head"))
+        self.add_part(CollisionPart((game_property.TILE_SIZE, 0), (game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="head_hitbox", tag="head"))
+
+
+
 
 ENTITY_CLASSES = {
     "Zombie": Zombie,
