@@ -66,6 +66,8 @@ class TextureType:
     WATER_BUCKET = "water_bucket"
 
     # TOOLS
+    FLINT_AND_STEEL = "flint_and_steel"
+
     WOODEN_SWORD = "wooden_sword"
     WOODEN_PICKAXE = "wooden_pickaxe"
     WOODEN_AXE = "wooden_axe"
@@ -182,6 +184,7 @@ class TextureManager:
 
             # ITEMS
             self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + TOOLS_PATH + "water_bucket.png")
+            self.load_texture(TextureType.FLINT_AND_STEEL, ITEMS_PATH + TOOLS_PATH + "flint_and_steel.png")
 
             self.load_texture(TextureType.DIAMOND_SWORD, ITEMS_PATH + TOOLS_PATH + "diamond_sword.png")
             self.load_texture(TextureType.WOODEN_SWORD, ITEMS_PATH + TOOLS_PATH + "wooden_sword.png")
