@@ -2845,8 +2845,11 @@ class EntityParted:
 
     # ---------------------------------------------------------------- position
     def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
+        """Déplace l'entité (sans collision) et les entités attachées."""
+        self.pos.x += dx
+        self.pos.y += dy
+        self.rect.x = round(self.pos.x)
+        self.rect.y = round(self.pos.y)
 
         for entity in self.attached_entities:
             entity.move(dx, dy)
@@ -2861,7 +2864,7 @@ class EntityParted:
     def jump(self, force):
         self.add_velocity(0, force)
         self.on_ground = False
-
+    
     def add_velocity(self, vx, vy):
         self.velocity.x += (vx * self.speed)
         self.velocity.y += (vy * self.speed)
@@ -2933,6 +2936,12 @@ class EntityParted:
                 self.alpha_texture = 0
                 self.kill()
 
+    def apply_gravity(self, dt):
+        if self.on_ground and self.velocity.y <= 0:
+            self.velocity.y = 0
+        else:
+            self.velocity.y -= self.gravity * self.speed * dt
+
     def update(self, dt, update_live=True):
         self.in_liquid = self.is_touching_liquid()
 
@@ -2942,11 +2951,11 @@ class EntityParted:
         try:
             self.apply_gravity(dt)
 
+            # frottements indépendants des FPS (0.9 par frame à 60 FPS)
+            friction = (0.84 if self.in_liquid else 0.9) ** (dt * 60)
+            self.velocity.x *= friction
             if self.in_liquid:
-                self.velocity.x *= 0.84
-                self.velocity.y *= 0.84
-            else:
-                self.velocity.x *= 0.9
+                self.velocity.y *= friction
 
             # ----- HORIZONTAL -----
             if self.collidable:
@@ -2956,21 +2965,21 @@ class EntityParted:
                 self.move(self.velocity.x * dt, 0)
 
             # ----- VERTICAL -----
-            self.on_ground = False
             if self.collidable:
-                vy = self.velocity.y
-                if self._move_axis(vy * dt, "y"):
-                    if vy < 0:   # en train de tomber → sol touché
-                        self.on_ground = True
+                if self._move_axis(self.velocity.y * dt, "y"):
                     self.velocity.y = 0
+
+                # sol détecté par sondage 1 px sous les pieds
+                self.on_ground = self.velocity.y <= 0 and self.collides_at(0, -1)
+                if self.on_ground:
+                    self.velocity.y = 0
+                    self.move(0, round(self.pos.y) - self.pos.y)
             else:
                 self.move(0, self.velocity.y * dt)
+                self.on_ground = False
 
         except Exception as e:
             print("Exception: ", e)
-
-    def apply_gravity(self, dt):
-        self.velocity.y -= self.gravity * dt
 
     def jump(self, force):
         self.add_velocity(0, force)
@@ -3369,7 +3378,7 @@ class SweetyFox(MobParted):
         ts = game_property.TILE_SIZE
         texture_body = context.get_resource_pack().texture_manager().get_texture(TextureType.SWEETY_FOX_BODY)
 
-        self.add_part(TexturePart(texture_body, offset=(0, 0), size=(ts * 3, ts * 3),
+        self.add_part(TexturePart(texture_body, offset=(-ts, 0), size=(ts * 3, ts * 3),
                                   name="body", z_index=1))
         self.add_part(CollisionPart((0, 0), (ts * 1.5, ts * 3),
                                     name="body_hitbox", tag="body"))
