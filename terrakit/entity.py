@@ -692,143 +692,6 @@ class Living_entity(Entity):
 
         return super().to_json(type_, data)
 
-class Arrow_entity(Living_entity):
-    def __init__(self, pos, v_initial, sender, world=None, name="Arrow entity", texture=None, damage=10, penetration_depth=3, can_be_picked=True):
-        self.damage = damage
-        self.penetration_depth = penetration_depth
-        self.penetration_counter = 0
-
-        rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
-
-        super().__init__(rect, world, name, invulnerable=True, live_time=10)
-        self.sender = sender
-
-        if texture is None:
-            texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ARROW)
-        self.texture = texture
-        self.stucked = False
-
-        self.add_velocity(v_initial.x, v_initial.y)
-        self.can_be_picked = can_be_picked
-
-    def get_damage(self):
-        return self.damage
-    
-    def render(self, screen, cam_rect):
-        if self.texture is None:
-            return
-
-        # Position écran
-        draw_x, draw_y = game_property.world_to_screen(
-            self.rect.x, self.rect.y, self.rect.height, cam_rect
-        )
-
-        # Copie de la texture
-        tex = self.texture.copy()
-
-        # Luminosité
-        light = self.world.get_entity_light(self)
-        brightness = max(0.2, light / 15)
-
-        shade = pygame.Surface(tex.get_size(), pygame.SRCALPHA)
-        shade.fill((
-            int(255 * brightness),
-            int(255 * brightness),
-            int(255 * brightness),
-            255
-        ))
-
-        tex.blit(shade, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
-
-        # Alpha de disparition
-        tex.set_alpha(int(self.alpha_texture))
-
-        # Angle basé sur la vitesse
-        if self.velocity.length_squared() > 0:
-            angle = -self.velocity.angle_to(pygame.Vector2(1, 0)) - 45
-        else:
-            angle = 0
-
-        # Rotation autour du centre
-        pivot = pygame.Vector2(
-            draw_x + self.rect.width / 2,
-            draw_y + self.rect.height / 2
-        )
-
-        rotated_image, rotated_rect = rotate_around_pivot(
-            tex,
-            angle,
-            pivot,
-            pygame.Vector2(0, 0)
-        )
-
-        screen.blit(rotated_image, rotated_rect)
-
-    def move(self, x, y):
-        return super().move(x, y)
-
-    def update(self, dt):
-        if self.stucked:
-            self.update_live_time(dt)
-            return
-
-        # --- PHYSIQUE ---
-        self.apply_gravity(dt)
-        self.velocity.x *= 0.99
-
-        dx = self.velocity.x * dt
-        dy = self.velocity.y * dt
-
-        # nombre de steps (IMPORTANT)
-        steps = int(max(abs(dx), abs(dy)) / (game_property.TILE_SIZE / 4)) + 1
-
-        step_x = dx / steps
-        step_y = dy / steps
-
-        for _ in range(steps):
-
-            new_rect = self.rect.move(step_x, step_y)
-
-            # ----- COLLISION BLOCS -----
-            if self.world.is_collide_at(new_rect):
-
-                self.penetration_counter += 1
-
-                if self.penetration_counter >= self.penetration_depth:
-                    self.stuck()
-                    return
-
-                # on continue mais ralenti / ou on "pousse dans le mur"
-                self.rect = new_rect
-                continue
-
-            # ----- COLLISION ENTITÉS -----
-            for entity in self.world.get_entities():
-                if entity == self or entity == self.sender or isinstance(entity, Arrow_entity):
-                    continue
-
-                if isinstance(entity, Living_entity):
-                    if new_rect.colliderect(entity.rect):
-                        self.penetration_counter += 1
-
-                        if self.penetration_counter >= self.penetration_depth:
-                            self.stuck(entity)
-                            return
-
-                        # on continue mais ralenti / ou on "pousse dans le mur"
-                        self.rect = new_rect
-                        continue
-
-            # appliquer le step
-            self.rect = new_rect
-    
-    def stuck(self, entity=None):
-        if entity:
-            self.attach_self(entity)
-            entity.apply_damage(self.damage * 2, 0)
-        
-        self.stucked = True
-
 class Humanoid(Living_entity):
     def __init__(self, rect, world=None, name="Humanoid entity", displayed_name="", health=20, max_health=20, drops=None, collidable=True, invulnerable=False,
                  leg_texture: TextureType = None, 
@@ -3337,7 +3200,7 @@ class MobParted(LivingEntityParted):
         super().update(dt, update_live)
  
 
-class Fox(EntityParted):
+class Fox(MobParted):
     def __init__(self, x, y, world, **kwargs):
         rect = pygame.Rect(x, y, 0, 0)
         super().__init__(rect, name="Fox", world=world, **kwargs)
@@ -3359,12 +3222,10 @@ class Fox(EntityParted):
         self.add_part(TexturePart(texture_ear,  offset=(game_property.TILE_SIZE * 2 - 8 * 3, game_property.TILE_SIZE // 2 + BODY_SIZE[1]), size=(8, 8), name="ear",  z_index=10))
 
         # Physique
-        self.add_part(CollisionPart((0, game_property.TILE_SIZE // 2),  (game_property.TILE_SIZE * 2, game_property.TILE_SIZE), name="body_hitbox", tag="body"))
-        self.add_part(CollisionPart((10, 0), (game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="head_hitbox", tag="head"))
-        self.add_part(CollisionPart((game_property.TILE_SIZE, 0), (game_property.TILE_SIZE // 3, game_property.TILE_SIZE // 2), name="head_hitbox", tag="head"))
+        self.add_part(CollisionPart((10, 0),  (game_property.TILE_SIZE * 1, game_property.TILE_SIZE // 2 + BODY_SIZE[1]), name="body_hitbox", tag="body"))
 
 
-class SweetyFox(MobParted):
+class WommenFox(MobParted):
 
     WALK_SPEED = game_property.TILE_SIZE * 1.5
     JUMP_FORCE = game_property.JUMP_VELOCITY * 1.3
@@ -3380,8 +3241,142 @@ class SweetyFox(MobParted):
 
         self.add_part(TexturePart(texture_body, offset=(-ts, 0), size=(ts * 3, ts * 3),
                                   name="body", z_index=1))
-        self.add_part(CollisionPart((0, 0), (ts * 1.5, ts * 3),
+        self.add_part(CollisionPart((- 0.5 * ts, 0), (ts * 1.5, ts * 3),
                                     name="body_hitbox", tag="body"))
+
+class Arrow_entity(LivingEntityParted):
+    def __init__(self, pos, v_initial, sender, world=None, name="Arrow entity", texture=None, damage=10, penetration_depth=3, can_be_picked=True):
+        self.damage = damage
+        self.penetration_depth = penetration_depth
+        self.penetration_counter = 0
+
+        rect = pygame.Rect(pos[0], pos[1], game_property.TILE_SIZE, game_property.TILE_SIZE)
+
+        super().__init__(rect, world, name, invulnerable=True, live_time=10)
+        self.sender = sender
+
+        if texture is None:
+            texture = context.get_resource_pack().texture_manager().get_texture(TextureType.ARROW)
+        self.texture = texture
+        self.stucked = False
+
+        self.add_velocity(v_initial.x, v_initial.y)
+        self.can_be_picked = can_be_picked
+
+    def get_damage(self):
+        return self.damage
+    
+    def render(self, screen, cam_rect):
+        if self.texture is None:
+            return
+
+        # Position écran
+        draw_x, draw_y = game_property.world_to_screen(
+            self.rect.x, self.rect.y, self.rect.height, cam_rect
+        )
+
+        # Copie de la texture
+        tex = self.texture.copy()
+
+        # Luminosité
+        light = self.world.get_entity_light(self)
+        brightness = max(0.2, light / 15)
+
+        shade = pygame.Surface(tex.get_size(), pygame.SRCALPHA)
+        shade.fill((
+            int(255 * brightness),
+            int(255 * brightness),
+            int(255 * brightness),
+            255
+        ))
+
+        tex.blit(shade, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+
+        # Alpha de disparition
+        tex.set_alpha(int(self.alpha_texture))
+
+        # Angle basé sur la vitesse
+        if self.velocity.length_squared() > 0:
+            angle = -self.velocity.angle_to(pygame.Vector2(1, 0)) - 45
+        else:
+            angle = 0
+
+        # Rotation autour du centre
+        pivot = pygame.Vector2(
+            draw_x + self.rect.width / 2,
+            draw_y + self.rect.height / 2
+        )
+
+        rotated_image, rotated_rect = rotate_around_pivot(
+            tex,
+            angle,
+            pivot,
+            pygame.Vector2(0, 0)
+        )
+
+        screen.blit(rotated_image, rotated_rect)
+
+    def update(self, dt):
+        if self.stucked:
+            self.update_live_time(dt)
+            return
+
+        # --- PHYSIQUE ---
+        self.apply_gravity(dt)
+        self.velocity.x *= 0.99
+
+        dx = self.velocity.x * dt
+        dy = self.velocity.y * dt
+
+        # nombre de steps (IMPORTANT)
+        steps = int(max(abs(dx), abs(dy)) / (game_property.TILE_SIZE / 4)) + 1
+
+        step_x = dx / steps
+        step_y = dy / steps
+
+        for _ in range(steps):
+
+            new_rect = self.rect.move(step_x, step_y)
+
+            # ----- COLLISION BLOCS -----
+            if self.world.is_collide_at(new_rect):
+
+                self.penetration_counter += 1
+
+                if self.penetration_counter >= self.penetration_depth:
+                    self.stuck()
+                    return
+
+                # on continue mais ralenti / ou on "pousse dans le mur"
+                self.rect = new_rect
+                continue
+
+            # ----- COLLISION ENTITÉS -----
+            for entity in self.world.get_entities():
+                if entity == self or entity == self.sender or isinstance(entity, Arrow_entity):
+                    continue
+
+                if isinstance(entity, Living_entity):
+                    if new_rect.colliderect(entity.rect):
+                        self.penetration_counter += 1
+
+                        if self.penetration_counter >= self.penetration_depth:
+                            self.stuck(entity)
+                            return
+
+                        # on continue mais ralenti / ou on "pousse dans le mur"
+                        self.rect = new_rect
+                        continue
+
+            # appliquer le step
+            self.rect = new_rect
+    
+    def stuck(self, entity=None):
+        if entity:
+            self.attach_self(entity)
+            entity.apply_damage(self.damage * 2, 0)
+        
+        self.stucked = True
 
 ENTITY_CLASSES = {
     "Zombie": Zombie,
