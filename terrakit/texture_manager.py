@@ -128,6 +128,8 @@ class TextureType:
     COOKED_EGG = "cooked_egg"
     DEFAULT = "default"
 
+    SWEETY_FOX_BODY = "sweety_fox_body"
+
     # IAMGES UI
     MAIN_MENU = "main_menu"
     TITLE = "title"
@@ -257,6 +259,8 @@ class TextureManager:
             self.load_texture(TextureType.FOX_EAR, ENTITIES_PATH + MOBS_PATH + "fox/fox_ear.png")
             self.load_texture(TextureType.FOX_LEG, ENTITIES_PATH + MOBS_PATH + "fox/fox_leg.png")
             self.load_texture(TextureType.FOX_TAIL, ENTITIES_PATH + MOBS_PATH + "fox/fox_tail.png")
+
+            self.load_texture(TextureType.SWEETY_FOX_BODY, ENTITIES_PATH + MOBS_PATH + "sweetyfox/body.png")
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")

@@ -41,6 +41,50 @@
             "live_time": null,
             "health": 20,
             "max_health": 20,
+            "orientation": "left",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "LivingEntityParted",
+            "uuid": "7fa0cfe0-c68f-41fc-9ae8-c7775d912caa",
+            "x": 76741.99200000035,
+            "y": -320.0,
+            "w": 64,
+            "h": 96,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "",
+            "name": "SweetyFox",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "invulnerable": false,
+            "drops": []
+        },
+        {
+            "type": "Zombie",
+            "uuid": "d3a965ab-2f89-4447-913c-151002636ad4",
+            "x": 76734,
+            "y": -2016,
+            "w": 27,
+            "h": 80,
+            "vx": 108.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
             "orientation": "right",
             "drops": [],
             "IA": true,
@@ -146,8 +190,8 @@
             "y": -1408,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
+            "vx": -108.0,
+            "vy": -27.73333333333352,
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
@@ -3125,7 +3169,7 @@
                         "itemStack": {
                             "item_type_name": "bow",
                             "count": 1,
-                            "durability": 10,
+                            "durability": 8,
                             "components": []
                         }
                     },
@@ -3178,7 +3222,7 @@
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "count": 1,
+                            "count": 3,
                             "durability": null,
                             "components": []
                         }
@@ -3198,6 +3242,15 @@
                             "item_type_name": "sand",
                             "count": 3,
                             "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 9,
+                        "itemStack": {
+                            "item_type_name": "flint_and_steel",
+                            "count": 1,
+                            "durability": 100,
                             "components": []
                         }
                     },
@@ -12147,6 +12200,28 @@
             "3121:51": {
                 "x": 3121,
                 "y": 51,
+                "block": "air",
+                "components": []
+            }
+        },
+        "149": {
+            "2391:3": {
+                "x": 2391,
+                "y": 3,
+                "block": "air",
+                "components": []
+            }
+        },
+        "148": {
+            "2381:3": {
+                "x": 2381,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "2382:3": {
+                "x": 2382,
+                "y": 3,
                 "block": "air",
                 "components": []
             }
