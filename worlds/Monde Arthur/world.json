@@ -1,0 +1,33 @@
+{
+    "seed": 203577,
+    "entitys": [
+        {
+            "type": "Player",
+            "uuid": "5ac97add-abc9-4320-a3de-100f38b8bbf3",
+            "x": -1033,
+            "y": 577,
+            "w": 27,
+            "h": 80,
+            "vx": -198.97050023368826,
+            "vy": 13.866666666666362,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "Arthur",
+            "name": "Arthur",
+            "live_time": null,
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "2bd77fb5-0535-4804-a580-bfbff28a6214",
+                "size": 24,
+                "title": "Inventory of Arthur",
+                "items": [],
+                "owner_uuid": "5ac97add-abc9-4320-a3de-100f38b8bbf3"
+            }
+        }
+    ],
+    "modified_blocks": {}
+}

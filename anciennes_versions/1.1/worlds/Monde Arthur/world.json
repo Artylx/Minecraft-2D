@@ -29,11 +29,11 @@
         {
             "type": "Player",
             "uuid": "9a516c83-dbc2-4085-8a53-ca322d56f90c",
-            "x": -554,
-            "y": 32,
+            "x": -1428,
+            "y": 480,
             "w": 27,
             "h": 80,
-            "vx": -2.134679487017388e-41,
+            "vx": -13.727279171995807,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -52,49 +52,56 @@
                         "slot": 0,
                         "itemStack": {
                             "item_type_name": "grass",
-                            "count": 4
+                            "count": 2
                         }
                     },
                     {
                         "slot": 1,
                         "itemStack": {
-                            "item_type_name": "stone",
-                            "count": 20
+                            "item_type_name": "stone_pickaxe",
+                            "count": 1
                         }
                     },
                     {
                         "slot": 2,
                         "itemStack": {
-                            "item_type_name": "wooden_pickaxe",
-                            "count": 1
+                            "item_type_name": "coal",
+                            "count": 13
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
                             "item_type_name": "oak_plank",
-                            "count": 1
+                            "count": 5
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "count": 4
+                            "count": 5
                         }
                     },
                     {
                         "slot": 5,
                         "itemStack": {
                             "item_type_name": "torch",
-                            "count": 2
+                            "count": 10
                         }
                     },
                     {
                         "slot": 6,
                         "itemStack": {
-                            "item_type_name": "coal",
-                            "count": 8
+                            "item_type_name": "stone",
+                            "count": 17
+                        }
+                    },
+                    {
+                        "slot": 8,
+                        "itemStack": {
+                            "item_type_name": "wooden_pickaxe",
+                            "count": 1
                         }
                     }
                 ],
@@ -143,12 +150,62 @@
                 "x": 3,
                 "y": 28,
                 "block": "air"
+            },
+            {
+                "x": 9,
+                "y": 31,
+                "block": "air"
+            },
+            {
+                "x": 10,
+                "y": 32,
+                "block": "air"
+            },
+            {
+                "x": 10,
+                "y": 31,
+                "block": "air"
             }
         ],
         "-3": [
             {
                 "x": -41,
                 "y": 14,
+                "block": "air"
+            },
+            {
+                "x": -37,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 7,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 5,
+                "block": "air"
+            },
+            {
+                "x": -39,
+                "y": 6,
+                "block": "air"
+            },
+            {
+                "x": -38,
+                "y": 5,
                 "block": "air"
             }
         ],
@@ -493,6 +550,36 @@
                 "x": -17,
                 "y": 3,
                 "block": "torch"
+            },
+            {
+                "x": -18,
+                "y": 3,
+                "block": "grass"
+            },
+            {
+                "x": -18,
+                "y": 7,
+                "block": "grass"
+            },
+            {
+                "x": -18,
+                "y": 7,
+                "block": "grass"
+            },
+            {
+                "x": -18,
+                "y": 11,
+                "block": "grass"
+            },
+            {
+                "x": -18,
+                "y": 11,
+                "block": "grass"
+            },
+            {
+                "x": -18,
+                "y": 14,
+                "block": "grass"
             }
         ],
         "-1": [
@@ -505,6 +592,58 @@
                 "x": -12,
                 "y": 6,
                 "block": "torch"
+            }
+        ],
+        "1": [
+            {
+                "x": 18,
+                "y": 37,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 38,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 39,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 41,
+                "block": "air"
+            },
+            {
+                "x": 18,
+                "y": 40,
+                "block": "air"
+            },
+            {
+                "x": 23,
+                "y": 40,
+                "block": "air"
+            },
+            {
+                "x": 23,
+                "y": 39,
+                "block": "air"
+            },
+            {
+                "x": 23,
+                "y": 41,
+                "block": "air"
+            },
+            {
+                "x": 23,
+                "y": 42,
+                "block": "air"
+            },
+            {
+                "x": 21,
+                "y": 39,
+                "block": "crafting_table"
             }
         ]
     }
