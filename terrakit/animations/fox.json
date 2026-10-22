@@ -1,0 +1,49 @@
+{
+  "idle": {
+    "duration": 2.0,
+    "loop": true,
+    "tracks": {
+      "body": {
+        "offset": [
+          {"t": 0.0, "v": [0, 0], "ease": "ease_in_out"},
+          {"t": 1.0, "v": [0, 1], "ease": "ease_in_out"},
+          {"t": 2.0, "v": [0, 0]}
+        ]
+      }
+    }
+  },
+  "walk": {
+    "duration": 0.6,
+    "loop": true,
+    "tracks": {
+      "leg_left": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": 20,  "ease": "ease_in_out"},
+          {"t": 0.45, "v": -20, "ease": "ease_in_out"},
+          {"t": 0.6,  "v": 0}
+        ]
+      },
+      "leg_right": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": -20,  "ease": "ease_in_out"},
+          {"t": 0.45, "v": 20, "ease": "ease_in_out"},
+          {"t": 0.6,  "v": 0}
+        ]
+      },
+      "body": {
+        "offset": [
+          {"t": 0.0, "v": [0, 0]},
+          {"t": 0.3, "v": [0, 1]},
+          {"t": 0.6, "v": [0, 0]}
+        ],
+        "angle": [
+          {"t": 0.0, "v": 0},
+          {"t": 0.3, "v": 5},
+          {"t": 0.6, "v": 0}
+        ]
+      }
+    }
+  }
+}

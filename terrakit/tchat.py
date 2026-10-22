@@ -1,7 +1,10 @@
+from math import e
+
 import pygame
 from terrakit import game_property, game_type
 import re
 import time
+from terrakit.entity import get_classe_by_str
 from terrakit.inventory import ItemStack
 
 COLORS = {
@@ -202,6 +205,8 @@ class CommandManager:
             self.tchat.send_message("", "- /give <player> <itemType> <count>")
             self.tchat.send_message("", "- /say <message>")
             self.tchat.send_message("", "- /clear <player>")
+            self.tchat.send_message("", "- /kill <entityType>")
+            self.tchat.send_message("", "- /summon <entityType>")
 
         elif command == "tp":
             player = None
@@ -299,6 +304,46 @@ class CommandManager:
                 return
             
             player.inventory.clear()
+
+        elif command == "kill":
+            if len(args) == 0:
+                self.send_error_message_command(content)
+            elif len(args) > 1:
+                self.send_error_message_command(content)
+            else:
+                cls = get_classe_by_str(args[0])
+                if not cls:
+                    self.send_error_message(f"L'entité {args[0]} n'existe pas")
+                else:
+                    i = 0
+                    for entity in self.game.World.get_entities(cls):
+                        entity.kill()
+                        i += 1
+                    self.tchat.send_message("", f"{i} {args[0]} tué")
+
+        elif command == "summon":
+            if len(args) == 0:
+                self.send_error_message_command(content)
+            elif len(args) > 1:
+                self.send_error_message_command(content)
+            else:
+                cls = get_classe_by_str(args[0])
+                if not cls:
+                    self.send_error_message(f"L'entité {args[0]} n'existe pas")
+                    return
+                
+                player = self.game.World.get_player_by_name(sender)
+                if not player:
+                    self.send_error_message(f"Le joueur {sender} n'existe pas (position)")
+                    return 
+                
+                entity = cls(world=self.game.World)
+                entity.tp(player.get_pos()[0], player.get_pos()[1] + game_property.TILE_SIZE * 10)
+                self.game.World.create_entity(entity)
+                if entity.is_valid():
+                    self.tchat.send_message("", f"{args[0]} invoqué")
+                else:
+                    self.send_error_message(f"L'entité {args[0]} ne s'est pas invoqué")
 
         else:
             self.send_error_message_command(content)

@@ -59,6 +59,9 @@ def screen_to_world(sx, sy, h, cam_rect):
 
     return int(x), int(y)
 
+def get_brightness(light):
+    return max(0, light / 15)
+
 from pathlib import Path
 import sys
 
@@ -82,3 +85,7 @@ def get_resource_path(relative_path: str) -> str:
 
 def safe_div(a, b):
     return a / b if b > 0 else 0
+
+def _smoothstep(x):
+    x = max(0.0, min(1.0, x))
+    return x * x * (3 - 2 * x)

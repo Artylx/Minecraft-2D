@@ -60,6 +60,7 @@ class Game:
         # ICON
         icon = pygame.image.load(game_property.get_resource_path("resource_pack/Default/texture/blocks/grass_block.png")).convert_alpha()
         pygame.display.set_icon(icon)
+        pygame.mouse.set_visible(False)
 
         terrakit.init()
         self.texture_manager = terrakit.context.get_resource_pack().texture_manager()

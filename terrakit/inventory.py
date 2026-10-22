@@ -969,7 +969,6 @@ class ItemStack():
                 return self.item_property.get_texture_used()
             except:
                 pass
-
         return self.item_property.get_texture()
     
     def is_posable(self):

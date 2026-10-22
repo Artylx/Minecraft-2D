@@ -1,6 +1,10 @@
+from tkinter import W
+
+from matplotlib import animation
 import pygame
 import random, json
 from terrakit import tchat, world, game_property, game_type, entity, ui, interface
+from terrakit.annimator import Anim
 from terrakit.keymanager import KeyCollection
 from server import ServerConnection
 
@@ -121,8 +125,8 @@ class GameClient:
     def update_cam_rect(self):
         if self.player:
             self.cam_rect.center = (
-                int(self.player.rect.centerx),
-                int(self.player.rect.centery)
+                int(self.player.bounding_rect().centerx),
+                int(self.player.bounding_rect().centery)
             )
 
     def update_screen_size(self, width, height):
@@ -177,6 +181,7 @@ class GameClient:
                     # Try break
                     if self.old_current_bock_pos == self.current_block_pos:
                         self.World.try_destroy_block(self.current_block_pos, self.player)
+                        self.player.hold_action(Anim.BREAK)
                     else:
                         self.World.reset_block(self.old_current_bock_pos)
                 else:
@@ -213,36 +218,6 @@ class GameClient:
             if game.is_press(self.key_manager.get(KeyCollection.SLOT_6)):
                 self.player.inventory.ui.set_selected_index(5)
 
-            # Spawning for debug
-            if game.is_press(pygame.K_m):
-                z = entity.Zombie(world=self.World)
-                z.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
-                self.World.create_entity(z)
-
-            if game.is_press(pygame.K_h):
-                z = entity.Pig(self.player.get_pos()[0], self.player.get_pos()[1] + 1000, world=self.World)
-                self.World.create_entity(z)
-
-            if game.is_press(pygame.K_u):
-                z = entity.Fox(self.player.get_pos()[0], self.player.get_pos()[1] + 1000, world=self.World)
-                self.World.create_entity(z)
-
-            if game.is_press(pygame.K_i):
-                z = entity.WommenFox(self.player.get_pos()[0], self.player.get_pos()[1] + 1000, world=self.World)
-                self.World.create_entity(z)
-
-            if game.is_press(pygame.K_l):
-                self.UI.objective_open = True
-                
-            if game.is_press(pygame.K_p):
-                s = entity.Skeleton(world=self.World)
-                s.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
-                self.World.create_entity(s)
-
-            if game.is_press(pygame.K_o):
-                p = entity.Npc(world=self.World, name="Armurier", displayed_name="Armurier")
-                p.tp(self.player.get_pos()[0], self.player.get_pos()[1] + 1000)
-                self.World.create_entity(p)
             
             if game.is_press(self.key_manager.get(KeyCollection.INVENTORY)):
                 self.UI.open_crafting(self.player.inventory)
@@ -324,8 +299,13 @@ class GameClient:
         if old_block:
             if old_block.block_property == game_type.BlockProperty.AIR or old_block.block_property.liquid:
                 self.pos_block(pos_block, player)
+                player.play_action(Anim.PLACE)
             else:
                 self.World.add_modified_block(old_block.get_pos()[0], old_block.get_pos()[1])
+
+                if old_block.block_property.has_event(game_type.BlockEvent.IGNITE):
+                    old_block.events.apply_event(game_type.BlockEvent.IGNITE, self.World, player=player)
+                    return True
 
                 if old_block.block_property == game_type.BlockProperty.CRAFTING_TABLE:
                     
@@ -379,12 +359,14 @@ class GameClient:
             else:
                 self.World.hit_box_visible = False
 
-            if self.highlight and not self.tchat.oppened and not self.UI.is_open_inv():
-                self.UI.highlight_block(screen, self.current_block_pos, self.cam_rect, self.player)
+            if not self.game.toogle_.get(pygame.K_F1):
+                if self.highlight and not self.tchat.oppened and not self.UI.is_open_inv():
+                    self.UI.highlight_block(screen, self.current_block_pos, self.cam_rect, self.player)
 
             self.World.render_entitys(screen, self.cam_rect)
 
-            self.UI.render(screen, self.player)
+            if not self.game.toogle_.get(pygame.K_F1):
+                self.UI.render(screen, self.player)
 
     def update_debug(self, dt):
         self.debug_timer += dt

@@ -1,6 +1,7 @@
 import pygame
 from terrakit import context, config
 from terrakit.audio_manager import AudioType
+from terrakit.texture_manager import TextureType
 
 def lerp(a, b, t):
     return a + (b - a) * min(t, 1)
@@ -48,6 +49,8 @@ class ObjectInterface:
         self.sound_enabled = sound_enabled
 
         self.click_sound = context.get_resource_pack().audio_manager().get_audio(AudioType.CLICK)
+        self.pointer_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.POINTER)
+        self.hand_texture = context.get_resource_pack().texture_manager().get_texture(TextureType.HAND_POINT)
 
     def set_enable(self, value):
         self.enable = value
@@ -108,15 +111,18 @@ class ObjectInterface:
 
     # ------------------------
 
+    def get_cursor_texture(self):
+        if self.is_hover() and self.cursor_hand:
+            return self.hand_texture
+
+        return self.pointer_texture
+
     def update(self, dt):
 
         if not self.enable:
             return
 
         if self.is_hover():
-            if self.cursor_hand:
-                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-
             if self.annimation:
                 self.target_scale = self.hover_scale
         else:

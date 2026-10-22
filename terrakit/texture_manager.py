@@ -45,6 +45,7 @@ class TextureType:
     MUSHROOM = "mushroom"
     GRASS_TAN = "grass_tan"
     ROCK_MOSS = "rock_moss"
+    WHEAT = "wheat"
 
     OAK_TRUNK = "oak_trunk"
     OAK_LEAVES = "oak_leaves"
@@ -122,17 +123,29 @@ class TextureType:
     FOX_EAR = "fox_ear"
     FOX_LEG = "fox_leg"
     FOX_TAIL = "fox_tail"
+    FOX_MEAT = "fox_meat"
+    FOX_COOKED_MEAT = "fox_cooked_meat"
+
+    WITHER_LITTLE_HEAD = "wither_little_head"
+    WITHER_HEAD = "wither_head"
+    WITHER_TOP_BODY = "wither_top_body"
+    WITHER_BODY_PART = "wither_body_part"
+    WITHER_BODY_CORPS = "wither_body_corps"
     
     CHIPS = "chips"
     EGG = "egg"
     COOKED_EGG = "cooked_egg"
     DEFAULT = "default"
+    POUP = "poup"
 
     SWEETY_FOX_BODY = "sweety_fox_body"
 
     # IAMGES UI
     MAIN_MENU = "main_menu"
     TITLE = "title"
+
+    POINTER = "pointer"
+    HAND_POINT = "hand_point"
 
     HEART_FULL = "heart_full"
     HEART_HALF = "heart_half"
@@ -188,6 +201,9 @@ class TextureManager:
             self.load_texture(TextureType.ROCK_MOSS, BLOCKS_PATH + "rock_moss.png")
             self.load_texture(TextureType.ROCK, BLOCKS_PATH + "rock.png")
             self.load_texture(TextureType.MUSHROOM, BLOCKS_PATH + "mushroom_red.png")
+            self.load_texture(TextureType.WHEAT, BLOCKS_PATH + "wheat.png")
+
+            self.load_texture(TextureType.POUP, ITEMS_PATH + CONSUMABLE_PATH + "poup.png")
 
             # ITEMS
             self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + TOOLS_PATH + "water_bucket.png")
@@ -259,8 +275,17 @@ class TextureManager:
             self.load_texture(TextureType.FOX_EAR, ENTITIES_PATH + MOBS_PATH + "fox/fox_ear.png")
             self.load_texture(TextureType.FOX_LEG, ENTITIES_PATH + MOBS_PATH + "fox/fox_leg.png")
             self.load_texture(TextureType.FOX_TAIL, ENTITIES_PATH + MOBS_PATH + "fox/fox_tail.png")
+            self.load_texture(TextureType.FOX_MEAT, ITEMS_PATH + CONSUMABLE_PATH + "fox_meat.png")
+            self.load_texture(TextureType.FOX_COOKED_MEAT, ITEMS_PATH + CONSUMABLE_PATH + "fox_cooked_meat.png")
 
             self.load_texture(TextureType.SWEETY_FOX_BODY, ENTITIES_PATH + MOBS_PATH + "sweetyfox/body.png")
+
+            # WITHER
+            self.load_texture(TextureType.WITHER_HEAD, ENTITIES_PATH + MOBS_PATH + "wither/head.png")
+            self.load_texture(TextureType.WITHER_LITTLE_HEAD, ENTITIES_PATH + MOBS_PATH + "wither/little_head.png")
+            self.load_texture(TextureType.WITHER_TOP_BODY, ENTITIES_PATH + MOBS_PATH + "wither/top_body.png")
+            self.load_texture(TextureType.WITHER_BODY_CORPS, ENTITIES_PATH + MOBS_PATH + "wither/body_corps.png")
+            self.load_texture(TextureType.WITHER_BODY_PART, ENTITIES_PATH + MOBS_PATH + "wither/body_part.png")
 
             #
             self.load_texture(TextureType.DEFAULT, "default.png")
@@ -268,6 +293,9 @@ class TextureManager:
             # MENU
             self.load_texture(TextureType.MAIN_MENU, UI_PATH + "main_menu.png", size=None)
             self.load_texture(TextureType.TITLE, UI_PATH + "title.png", size=None)
+
+            self.load_texture(TextureType.POINTER, UI_PATH + "pointer.png", size=(20, 20))
+            self.load_texture(TextureType.HAND_POINT, UI_PATH + "hand_point.png", size=(20, 20))
 
             self.load_texture(TextureType.HEART_FULL, UI_PATH + "heart_full.png")
             self.load_texture(TextureType.HEART_HALF, UI_PATH + "heart_half.png")

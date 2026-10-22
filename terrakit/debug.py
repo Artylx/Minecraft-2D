@@ -1,7 +1,7 @@
 AUTO_START = {
     "enable": True, 
-    "world_name": "test",
-    "player_name": "Arthur",
+    "world_name": "mathilde",
+    "player_name": "math",
 }
 
 LIGHT = True

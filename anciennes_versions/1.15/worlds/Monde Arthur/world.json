@@ -3,13 +3,13 @@
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "dcb7e649-66fe-4b78-bc04-95e3dd0ac464",
-            "x": 56576,
-            "y": -2016,
+            "uuid": "633d60d5-d838-4036-be88-03002852e648",
+            "x": 57798,
+            "y": -970,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
+            "vx": 108.0,
+            "vy": -221.86666666666667,
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
@@ -18,7 +18,7 @@
             "live_time": null,
             "health": 20,
             "max_health": 20,
-            "orientation": "left",
+            "orientation": "right",
             "drops": [],
             "IA": true,
             "auto_jump": true,
@@ -26,9 +26,9 @@
         },
         {
             "type": "Zombie",
-            "uuid": "f9be26cb-a6aa-48e0-97f4-3c6720e9f706",
-            "x": 56612,
-            "y": -512,
+            "uuid": "b83cb031-e5e6-4021-8139-266044644e39",
+            "x": 58692,
+            "y": -2016,
             "w": 27,
             "h": 80,
             "vx": 0.0,
@@ -49,13 +49,13 @@
         },
         {
             "type": "Zombie",
-            "uuid": "e631f3ec-eedf-4fd6-85dc-d5357958931f",
-            "x": 56512,
-            "y": 352,
+            "uuid": "6e78f9c8-28ac-44c6-ae51-ec96fd756aa9",
+            "x": 58414,
+            "y": -1913,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
+            "vx": -108.0,
+            "vy": -194.13333333333352,
             "gravity": 80,
             "speed": 41.6,
             "display_name": false,
@@ -72,12 +72,35 @@
         },
         {
             "type": "Zombie",
-            "uuid": "620adff4-8493-4a17-9281-6794e03df8cd",
-            "x": 56580,
-            "y": -2016,
+            "uuid": "a503644e-3801-4754-b939-8158d156dd06",
+            "x": 58300,
+            "y": -576,
             "w": 27,
             "h": 80,
-            "vx": 0.0,
+            "vx": 108.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "displayed_name": "20",
+            "name": "Unamed entity",
+            "live_time": null,
+            "health": 20,
+            "max_health": 20,
+            "orientation": "right",
+            "drops": [],
+            "IA": true,
+            "auto_jump": true,
+            "inventory": null
+        },
+        {
+            "type": "Zombie",
+            "uuid": "e3e0dda9-f075-432d-88f9-491a1fe92bd9",
+            "x": 58484,
+            "y": -1984,
+            "w": 27,
+            "h": 80,
+            "vx": 108.0,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -123,11 +146,11 @@
         {
             "type": "Player",
             "uuid": "b5d6bc23-1d81-4b2c-81a2-dd39d8fbd2d0",
-            "x": 56682,
-            "y": 1056,
+            "x": 59654,
+            "y": 1472,
             "w": 27,
             "h": 80,
-            "vx": 3.4759710766942194e-50,
+            "vx": 4.980566315945439,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -175,7 +198,7 @@
                         "slot": 3,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 4,
+                            "count": 16,
                             "durability": null,
                             "components": []
                         }
@@ -193,7 +216,7 @@
                         "slot": 6,
                         "itemStack": {
                             "item_type_name": "dirt",
-                            "count": 17,
+                            "count": 24,
                             "durability": null,
                             "components": []
                         }
@@ -4617,6 +4640,268 @@
                 "x": 1781,
                 "y": 23,
                 "block": "water",
+                "components": []
+            },
+            "1784:33": {
+                "x": 1784,
+                "y": 33,
+                "block": "air",
+                "components": []
+            },
+            "1791:35": {
+                "x": 1791,
+                "y": 35,
+                "block": "air",
+                "components": []
+            },
+            "1789:36": {
+                "x": 1789,
+                "y": 36,
+                "block": "air",
+                "components": []
+            },
+            "1777:35": {
+                "x": 1777,
+                "y": 35,
+                "block": "air",
+                "components": []
+            },
+            "1788:35": {
+                "x": 1788,
+                "y": 35,
+                "block": "air",
+                "components": []
+            },
+            "1778:34": {
+                "x": 1778,
+                "y": 34,
+                "block": "air",
+                "components": []
+            },
+            "1790:34": {
+                "x": 1790,
+                "y": 34,
+                "block": "air",
+                "components": []
+            },
+            "1785:34": {
+                "x": 1785,
+                "y": 34,
+                "block": "air",
+                "components": []
+            },
+            "1777:34": {
+                "x": 1777,
+                "y": 34,
+                "block": "air",
+                "components": []
+            },
+            "1785:33": {
+                "x": 1785,
+                "y": 33,
+                "block": "air",
+                "components": []
+            }
+        },
+        "112": {
+            "1797:36": {
+                "x": 1797,
+                "y": 36,
+                "block": "air",
+                "components": []
+            },
+            "1798:36": {
+                "x": 1798,
+                "y": 36,
+                "block": "air",
+                "components": []
+            },
+            "1794:36": {
+                "x": 1794,
+                "y": 36,
+                "block": "air",
+                "components": []
+            },
+            "1792:34": {
+                "x": 1792,
+                "y": 34,
+                "block": "air",
+                "components": []
+            },
+            "1794:37": {
+                "x": 1794,
+                "y": 37,
+                "block": "stone",
+                "components": []
+            },
+            "1792:35": {
+                "x": 1792,
+                "y": 35,
+                "block": "air",
+                "components": []
+            }
+        },
+        "113": {
+            "1808:16": {
+                "x": 1808,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "1810:13": {
+                "x": 1810,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "1810:16": {
+                "x": 1810,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "1810:22": {
+                "x": 1810,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "1810:19": {
+                "x": 1810,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "1810:25": {
+                "x": 1810,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "1810:28": {
+                "x": 1810,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "1809:14": {
+                "x": 1809,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "1808:15": {
+                "x": 1808,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "1810:15": {
+                "x": 1810,
+                "y": 15,
+                "block": "stone",
+                "components": []
+            },
+            "1810:18": {
+                "x": 1810,
+                "y": 18,
+                "block": "stone",
+                "components": []
+            },
+            "1810:21": {
+                "x": 1810,
+                "y": 21,
+                "block": "stone",
+                "components": []
+            },
+            "1810:27": {
+                "x": 1810,
+                "y": 27,
+                "block": "stone",
+                "components": []
+            },
+            "1810:24": {
+                "x": 1810,
+                "y": 24,
+                "block": "stone",
+                "components": []
+            },
+            "1810:30": {
+                "x": 1810,
+                "y": 30,
+                "block": "stone",
+                "components": []
+            },
+            "1809:16": {
+                "x": 1809,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "1808:14": {
+                "x": 1808,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "1810:17": {
+                "x": 1810,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "1810:14": {
+                "x": 1810,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "1810:20": {
+                "x": 1810,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "1810:23": {
+                "x": 1810,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "1810:29": {
+                "x": 1810,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "1810:26": {
+                "x": 1810,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "1809:15": {
+                "x": 1809,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "1810:33": {
+                "x": 1810,
+                "y": 33,
+                "block": "stone",
+                "components": []
+            },
+            "1810:39": {
+                "x": 1810,
+                "y": 39,
+                "block": "stone",
+                "components": []
+            },
+            "1810:36": {
+                "x": 1810,
+                "y": 36,
+                "block": "stone",
                 "components": []
             }
         }

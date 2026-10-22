@@ -11,3 +11,6 @@
 
 - Faire un systève avec PythonPlugin
 - Au lancement avoir un register d'event
+
+
+- Annimation avec des json et des noms de parts

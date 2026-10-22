@@ -28,12 +28,37 @@
         },
         {
             "type": "Player",
-            "uuid": "9a516c83-dbc2-4085-8a53-ca322d56f90c",
-            "x": -1428,
-            "y": 480,
+            "uuid": "6c874dab-da5f-4e15-a337-94e226503287",
+            "x": -1086,
+            "y": 352,
             "w": 27,
             "h": 80,
-            "vx": -13.727279171995807,
+            "vx": 0.0,
+            "vy": 0.0,
+            "gravity": 80,
+            "speed": 41.6,
+            "display_name": false,
+            "name": "Player2",
+            "health": 40,
+            "max_health": 40,
+            "orientation": "left",
+            "drops": [],
+            "inventory": {
+                "uuid": "2c44d1b8-37be-4388-b173-5c92096b68cd",
+                "size": 24,
+                "title": "Inventory of Player2",
+                "items": [],
+                "owner_uuid": "6c874dab-da5f-4e15-a337-94e226503287"
+            }
+        },
+        {
+            "type": "Player",
+            "uuid": "9a516c83-dbc2-4085-8a53-ca322d56f90c",
+            "x": -8532,
+            "y": 928,
+            "w": 27,
+            "h": 80,
+            "vx": -0.009873893870818166,
             "vy": 0.0,
             "gravity": 80,
             "speed": 41.6,
@@ -79,8 +104,8 @@
                     {
                         "slot": 4,
                         "itemStack": {
-                            "item_type_name": "dirt",
-                            "count": 5
+                            "item_type_name": "bow",
+                            "count": 1
                         }
                     },
                     {
@@ -98,10 +123,24 @@
                         }
                     },
                     {
+                        "slot": 7,
+                        "itemStack": {
+                            "item_type_name": "dirt",
+                            "count": 5
+                        }
+                    },
+                    {
                         "slot": 8,
                         "itemStack": {
                             "item_type_name": "wooden_pickaxe",
                             "count": 1
+                        }
+                    },
+                    {
+                        "slot": 9,
+                        "itemStack": {
+                            "item_type_name": "arrow",
+                            "count": 10
                         }
                     }
                 ],

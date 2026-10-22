@@ -3,6 +3,10 @@ import json
 from terrakit import context
 from terrakit import game_property
 
+class BlockEvent:
+    EXPLODING = "exploding"
+    IGNITE = "ignite"
+
 class BlockConditions:
     def __init__(self, fluid_break=False, required=None):
         self.fluid_break = fluid_break
@@ -43,7 +47,7 @@ class BlocksConditions:
 class BlockProperty:
     REGISTRY = {}
 
-    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0, container=(0, 0), liquid=False, block_name_conditions=None):
+    def __init__(self, name, block_id, collidable, texture, breakable, item_type, life, weakness=None, need_to_drop=None, light_emission=0, container=(0, 0), liquid=False, flammable=False, block_name_conditions=None, events=None):
         self.block_name = name
         self.block_id = block_id
         self.texture = texture
@@ -56,6 +60,8 @@ class BlockProperty:
         self.need_to_drop = need_to_drop
         self.light_emission = light_emission
         self.container = container
+        self.flammable = flammable
+        self.block_events = events or {}
 
         self.block_name_conditions = block_name_conditions
         self.block_conditions = None
@@ -64,6 +70,12 @@ class BlockProperty:
             self.block_conditions = BlocksConditions.REGISTRY.get(self.block_name_conditions, None)
 
         BlockProperty.REGISTRY[name.upper()] = self
+
+    def has_event(self, event_type: BlockEvent) -> bool:
+        return event_type in self.block_events
+
+    def get_event_data(self, event_type: BlockEvent) -> dict:
+        return self.block_events.get(event_type, {})
 
     def can_drop(self, tool) -> bool:
         if not self.need_to_drop:
@@ -310,18 +322,18 @@ class Axe_tool(Tool):
         self.power = power
 
 class Consumable(ItemProperty):
-    def __init__(self, name, texture, max_stack, description=None):
+    def __init__(self, name, texture, max_stack, description=None, heatable=False, warmer_item=None):
         if not description:
             description = "Consommable"
-        super().__init__(name, texture, max_stack, False, None, description)
+        super().__init__(name, texture, max_stack, False, None, description, heatable=heatable, warmer_item=warmer_item)
 
 class Hanger_consumable(Consumable):
-    def __init__(self, name, texture, max_stack, life_regen, description=None):
+    def __init__(self, name, texture, max_stack, life_regen, description=None, heatable=False, warmer_item=None):
 
         if not description:
             description = "Régénération de vie: &a" + str(life_regen)
 
-        super().__init__(name, texture, max_stack, description)
+        super().__init__(name, texture, max_stack, description, heatable=heatable, warmer_item=warmer_item)
         self.life_regen = life_regen
 
 class Shovel_tool(Tool):
@@ -378,6 +390,7 @@ ItemProperty.SAND = ItemProperty("sand", TextureType.SAND, 100, True, "SAND")
 ItemProperty.REDSTONE_SAND = ItemProperty("redstone_sand", TextureType.REDSTONE_SAND, 100, True, "REDSTONE_SAND")
 ItemProperty.OAK_PLANK = ItemProperty("oak_plank", TextureType.OAK_PLANK, 100, True, "OAK_PLANK", fuel_level=4)
 ItemProperty.TNT = ItemProperty("tnt", TextureType.TNT, 100, True, "TNT")
+ItemProperty.GLITCHED_TNT = ItemProperty("glitched_tnt", TextureType.TNT, 100, True, "GLITCHED_TNT")
 
 ItemProperty.GRASS_1 = ItemProperty("grass_1", TextureType.GRASS_1, 100, True, "GRASS_1")
 ItemProperty.GRASS_2 = ItemProperty("grass_2", TextureType.GRASS_2, 100, True, "GRASS_2")
@@ -386,6 +399,7 @@ ItemProperty.GRASS_4 = ItemProperty("grass_4", TextureType.GRASS_4, 100, True, "
 ItemProperty.GRASS_BROWN = ItemProperty("grass_brown", TextureType.GRASS_BROWN, 100, True, "GRASS_BROWN")
 ItemProperty.ROCK = ItemProperty("rock", TextureType.ROCK, 100, True, "ROCK")
 ItemProperty.MUSHROOM = ItemProperty("mushroom", TextureType.MUSHROOM, 100, True, "MUSHROOM")
+ItemProperty.WHEAT = ItemProperty("wheat", TextureType.WHEAT, 100, True, "WHEAT")
 ItemProperty.TORCH = ItemProperty("torch", TextureType.TORCH, 100, True, "TORCH", "Produit de la lumière.")
 
 ItemProperty.WATER_BUCKET = ItemProperty("water_bucket", TextureType.WATER_BUCKET, 1, True, "WATER", "Outils")
@@ -420,21 +434,24 @@ ItemProperty.ARROW = ItemProperty("arrow", TextureType.ARROW, 100, False, None)
 ItemProperty.CHIPS = Hanger_consumable("chips", TextureType.CHIPS, 10, 40)
 ItemProperty.EGG = ItemProperty("egg", TextureType.EGG, 100, False, None, "Peut être cuit", True, warmer_item="COOKED_EGG")
 ItemProperty.COOKED_EGG = Hanger_consumable("cooked_egg", TextureType.COOKED_EGG, 10, 20)
+ItemProperty.POUP = Hanger_consumable("poup", TextureType.POUP, 10, -20)
+ItemProperty.FOX_MEAT = Hanger_consumable("fox_meat", TextureType.FOX_MEAT, 10, 4, heatable=True, warmer_item="FOX_COOKED_MEAT")
+ItemProperty.FOX_COOKED_MEAT = Hanger_consumable("fox_cooked_meat", TextureType.FOX_COOKED_MEAT, 10, 20)
 
 ItemProperty.STICK = ItemProperty("stick", TextureType.STICK, 100, False, None)
 
 ItemProperty.NONE = ItemProperty("none", TextureType.DEFAULT, 0, False, None, "&cItem non utilisable")
 
 # BLOCKS
-BlockProperty.STONE = BlockProperty("stone", 1, True, TextureType.STONE, True, "STONE", 300, Pickaxe_tool, Pickaxe_tool)
-BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIRT", 60)
+BlockProperty.STONE = BlockProperty("stone", 1, True, TextureType.STONE, True, "STONE", 300, Pickaxe_tool, Pickaxe_tool, events={BlockEvent.EXPLODING: {"resistance": 10}})
+BlockProperty.DIRT = BlockProperty("dirt", 2, True, TextureType.DIRT, True, "DIRT", 60, events={BlockEvent.EXPLODING: {"resistance": 6}})
 BlockProperty.AIR = BlockProperty("air", 3, False, TextureType.NONE, False, None, None)
-BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "DIRT", 60)
+BlockProperty.GRASS = BlockProperty("grass", 4, True, TextureType.GRASS, True, "DIRT", 60, events={BlockEvent.EXPLODING: {"resistance": 6}})
 BlockProperty.BEDROCK = BlockProperty("bedrock", 5, True, TextureType.BEDROCK, False, "BEDROCK", None)
 
-BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool, Pickaxe_tool)
-BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool, Pickaxe_tool)
-BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool, Pickaxe_tool)
+BlockProperty.COAL_ORE = BlockProperty("coal_ore", 6, True, TextureType.COAL_ORE, True, "COAL_INGOT", 360, Pickaxe_tool, Pickaxe_tool, events={BlockEvent.EXPLODING: {"resistance": 13}})
+BlockProperty.IRON_ORE = BlockProperty("iron_ore", 7, True, TextureType.IRON_ORE, True, "IRON_ORE", 540, Pickaxe_tool, Pickaxe_tool, events={BlockEvent.EXPLODING: {"resistance": 15}})
+BlockProperty.GOLD_ORE = BlockProperty("gold_ore", 8, True, TextureType.GOLD_ORE, True, "GOLD_ORE", 800, Pickaxe_tool, Pickaxe_tool, events={BlockEvent.EXPLODING: {"resistance": 18}})
 
 BlockProperty.SAND = BlockProperty("sand", 9, True, TextureType.SAND, True, "SAND", 70)
 BlockProperty.WATER = BlockProperty("water", 10, False, TextureType.WATER, False, None, None, liquid=True)
@@ -447,23 +464,25 @@ BlockProperty.SNOW = BlockProperty("snow", 20, True, TextureType.SNOW, True, "SN
 BlockProperty.REDSTONE = BlockProperty("redstone", 21, True, TextureType.REDSTONE, True, "REDSTONE", 500, Pickaxe_tool)
 BlockProperty.REDSTONE_EMERALD = BlockProperty("redstone_emerald", 22, True, TextureType.REDSTONE_EMERALD, True, "EMERALD_INGOT", 1200, Pickaxe_tool)
 BlockProperty.REDSTONE_SAND = BlockProperty("redstone_sand", 23, True, TextureType.REDSTONE_SAND, True, "REDSTONE_SAND", 550, Pickaxe_tool)    
-BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20)
+BlockProperty.TNT = BlockProperty("tnt", 28, True, TextureType.TNT, True, "TNT", 20, events={BlockEvent.IGNITE: {"radius": 4, "power": 500*100}})
+BlockProperty.GLITCHED_TNT = BlockProperty("glitched_tnt", 35, True, TextureType.TNT, True, "GLITCHED_TNT", 20, events={BlockEvent.IGNITE: {"radius": 4*12, "power": 500*100}})
 
-BlockProperty.OAK_TRUNK = BlockProperty("oak_trunk", 11, True, TextureType.OAK_TRUNK, True, "OAK_TRUNK", 100, Axe_tool)
-BlockProperty.OAK_LEAVES = BlockProperty("oak_leaves", 12, False, TextureType.OAK_LEAVES, True, None, 60, Axe_tool)
-BlockProperty.OAK_TRUNK_BOTTOM = BlockProperty("oak_trunk_bottom", 13, False, TextureType.OAK_TRUNK_BOTTOM, True, "OAK_TRUNK", 100, Axe_tool)
-BlockProperty.OAK_TRUNK_MID = BlockProperty("oak_trunk_mid", 13, False, TextureType.OAK_TRUNK_MID, True, "OAK_TRUNK", 100, Axe_tool)
-BlockProperty.OAK_PLANK = BlockProperty("oak_plank", 27, True, TextureType.OAK_PLANK, True, "OAK_PLANK", 100, Axe_tool)
+BlockProperty.OAK_TRUNK = BlockProperty("oak_trunk", 11, True, TextureType.OAK_TRUNK, True, "OAK_TRUNK", 100, Axe_tool, events={BlockEvent.EXPLODING: {"resistance": 8}})
+BlockProperty.OAK_LEAVES = BlockProperty("oak_leaves", 12, False, TextureType.OAK_LEAVES, True, None, 60, Axe_tool, events={BlockEvent.EXPLODING: {"resistance": 3}})
+BlockProperty.OAK_TRUNK_BOTTOM = BlockProperty("oak_trunk_bottom", 13, False, TextureType.OAK_TRUNK_BOTTOM, True, "OAK_TRUNK", 100, Axe_tool, events={BlockEvent.EXPLODING: {"resistance": 8}})
+BlockProperty.OAK_TRUNK_MID = BlockProperty("oak_trunk_mid", 13, False, TextureType.OAK_TRUNK_MID, True, "OAK_TRUNK", 100, Axe_tool, events={BlockEvent.EXPLODING: {"resistance": 8}})
+BlockProperty.OAK_PLANK = BlockProperty("oak_plank", 27, True, TextureType.OAK_PLANK, True, "OAK_PLANK", 100, Axe_tool, events={BlockEvent.EXPLODING: {"resistance": 8}})
 
-BlockProperty.GRASS_1 = BlockProperty("grass_1", 14, False, TextureType.GRASS_1, True, None, 30, block_name_conditions="grass")
-BlockProperty.GRASS_2 = BlockProperty("grass_2", 15, False, TextureType.GRASS_2, True, None, 30, block_name_conditions="grass")
-BlockProperty.GRASS_3 = BlockProperty("grass_3", 16, False, TextureType.GRASS_3, True, None, 30, block_name_conditions="grass")
-BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4, True, None, 30, block_name_conditions="grass")
-BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30, block_name_conditions="brown_grass")
-BlockProperty.GRASS_TAN = BlockProperty("grass_tan", 33, False, TextureType.GRASS_TAN, True, None, 30, block_name_conditions="brown_grass")
-BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool, block_name_conditions="rock")
-BlockProperty.ROCK_MOSS = BlockProperty("rock_moss", 34, False, TextureType.ROCK_MOSS, True, "STONE", 130, Pickaxe_tool, block_name_conditions="rock")
-BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20, block_name_conditions="mushroom")
+BlockProperty.GRASS_1 = BlockProperty("grass_1", 14, False, TextureType.GRASS_1, True, None, 30, block_name_conditions="grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.GRASS_2 = BlockProperty("grass_2", 15, False, TextureType.GRASS_2, True, None, 30, block_name_conditions="grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.GRASS_3 = BlockProperty("grass_3", 16, False, TextureType.GRASS_3, True, None, 30, block_name_conditions="grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.GRASS_4 = BlockProperty("grass_4", 17, False, TextureType.GRASS_4, True, None, 30, block_name_conditions="grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.GRASS_BROWN = BlockProperty("grass_brown", 24, False, TextureType.GRASS_BROWN, True, None, 30, block_name_conditions="brown_grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.GRASS_TAN = BlockProperty("grass_tan", 33, False, TextureType.GRASS_TAN, True, None, 30, block_name_conditions="brown_grass", events={BlockEvent.EXPLODING: {"resistance": 2}})
+BlockProperty.ROCK = BlockProperty("rock", 25, False, TextureType.ROCK, True, "STONE", 150, Pickaxe_tool, block_name_conditions="rock", events={BlockEvent.EXPLODING: {"resistance": 4}})
+BlockProperty.ROCK_MOSS = BlockProperty("rock_moss", 34, False, TextureType.ROCK_MOSS, True, "STONE", 130, Pickaxe_tool, block_name_conditions="rock", events={BlockEvent.EXPLODING: {"resistance": 4}})
+BlockProperty.MUSHROOM = BlockProperty("mushroom", 26, False, TextureType.MUSHROOM, True, "MUSHROOM", 20, block_name_conditions="mushroom", events={BlockEvent.EXPLODING: {"resistance": 3}})
+BlockProperty.WHEAT = BlockProperty("wheat", 26, False, TextureType.WHEAT, True, None, 30, block_name_conditions="wheat")
 
 BlockProperty.TORCH = BlockProperty("torch", 29, False, TextureType.TORCH, True, "TORCH", 1, light_emission=15)
 

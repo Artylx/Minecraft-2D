@@ -6,7 +6,6 @@ STRUCTURES_DIR = "terrakit/structs/"
 
 class StructureType(Enum):
     SMALL_TREE = "small_tree"
-    HOUSE = "house"
     BIG_TREE = "big_tree"
     GRASS_1 = "grass_1"
     GRASS_2 = "grass_2"
@@ -17,6 +16,9 @@ class StructureType(Enum):
     GRASS_BROWN = "grass_brown"
     GRASS_TAN = "grass_tan"
     ROCK_MOSS = "rock_moss"
+    WHEAT = "wheat"
+
+    HOUSE = "house"
 
 class StructureManager:
     def __init__(self):
@@ -36,6 +38,8 @@ class StructureManager:
         self.load_structure(StructureType.GRASS_BROWN, "grass_brown.json")
         self.load_structure(StructureType.GRASS_TAN, "grass_tan.json")
         self.load_structure(StructureType.ROCK_MOSS, "rock_moss.json")
+        self.load_structure(StructureType.WHEAT, "wheat.json")
+        self.load_structure(StructureType.HOUSE, "house.json")
 
     def load_structure(self, struct_type: StructureType, json_path):
         try:

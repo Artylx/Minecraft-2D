@@ -752,10 +752,10 @@ class WorldSolo():
             )
 
     def apply_damage_to_entity(self, entity, damage, dx, source):
-        if isinstance(entity, EntityClass.Living_entity):
-
-            entity.apply_damage(damage, dx)
+        if isinstance(entity, EntityClass.LivingEntity):
             print("Damage applied to entity:", entity.get_name(), "Damage:", damage, "Source:", source.get_name())
+            entity.apply_damage(damage, dx)
+            
 
     def build_mob_spawn_points_chunk(self, chunk_x, chunk_y=0):
 
@@ -829,60 +829,64 @@ class WorldSolo():
     
     def try_spawn_mobs(self):
 
-        players = self.get_players()
-        if not players:
-            return
+        return
+
+        # players = self.get_players()
+        # if not players:
+        #     return
         
-        r = random.Random().randint(1, 100)
-        class_monster = EntityClass.Zombie
+        # r = random.Random().randint(1, 100)
+        # class_monster = None
+        # class_monster = EntityClass.Zombie
 
-        if r < 40:
-            class_monster = EntityClass.Skeleton
+        # if r < 40:
+        #     class_monster = EntityClass.Skeleton
 
-        monsters = self.get_entities(class_monster)
-        if len(monsters) >= config.Config().get("preload_distance", 6) * 2 + 1:
-            return
+        # monsters = self.get_entities(class_monster)
+        # if len(monsters) >= config.Config().get("preload_distance", 6) * 2 + 1:
+        #     return
 
-        if not self.mob_spawn_points:
-            return
+        # if not self.mob_spawn_points:
+        #     return
 
-        for _ in range(5):
-            player = random.choice(players)
+        # for _ in range(5):
+        #     player = random.choice(players)
 
-            tile = game_property.TILE_SIZE
-            chunk_x = player.rect.x // (game_property.CHUNK_WIDTH * tile)
-            chunk_key = (chunk_x, 0)
+        #     tile = game_property.TILE_SIZE
+        #     chunk_x = player.rect.x // (game_property.CHUNK_WIDTH * tile)
+        #     chunk_key = (chunk_x, 0)
 
-            chunk = self.mob_spawn_points.get(chunk_key)
-            if not chunk:
-                continue
+        #     chunk = self.mob_spawn_points.get(chunk_key)
+        #     if not chunk:
+        #         continue
 
-            # filtrer les points encore disponibles
-            valid_points = [
-                pos for pos, count in chunk.items()
-                if count < self.MAX_MOB_PER_SPAWN_POINT
-            ]
+        #     filtrer les points encore disponibles
+        #     valid_points = [
+        #         pos for pos, count in chunk.items()
+        #         if count < self.MAX_MOB_PER_SPAWN_POINT
+        #     ]
 
-            if not valid_points:
-                continue
+        #     if not valid_points:
+        #         continue
 
-            spawn_x, spawn_y = random.choice(valid_points)
+        #     spawn_x, spawn_y = random.choice(valid_points)
 
-            if not self.can_spawn_monster(spawn_x, spawn_y, player):
-                continue
+        #     if not self.can_spawn_monster(spawn_x, spawn_y, player):
+        #         continue
 
-            monster = EntityClass.Zombie(world=self, spawn_point=(spawn_x, spawn_y, chunk_key))
-            monster.tp_tile(spawn_x, spawn_y)
+        #     monster = EntityClass.Zombie(world=self, spawn_point=(spawn_x, spawn_y, chunk_key))
+        #     monster.tp_tile(spawn_x, spawn_y)
 
-            self.create_entity(monster)
+        #     self.create_entity(monster)
 
-            chunk[(spawn_x, spawn_y)] += 1
+        #     chunk[(spawn_x, spawn_y)] += 1
 
-            break
+        #     break
 
     def on_entity_death(self, entity):
-        if isinstance(entity, EntityClass.Zombie):
-            self.release_spawn_point(entity)
+        # if isinstance(entity, EntityClass.Zombie):
+        #     self.release_spawn_point(entity)
+        pass
 
     def release_spawn_point(self, monster):
 
@@ -955,9 +959,36 @@ class WorldSolo():
                 return player
             else:
                 player = entity.Player(self, name=player_name)
+                spawn_x, spawn_y = self.find_spawn_tile(0)
+                player.tp_tile(spawn_x, spawn_y)
 
                 self.create_entity(player)
                 return player
+
+    def find_surface_y(self, tile_x):
+        """Renvoie la ligne de tuiles libre juste au-dessus du bloc solide le plus haut
+        de la colonne `tile_x`, ou None s'il n'y a aucun bloc solide."""
+        chunk_x = tile_x // game_property.CHUNK_WIDTH
+        if chunk_x not in self.chunks:
+            self.add_chunk(chunk_x)                 # le chunk doit exister pour lire ses blocs
+        chunk = self.chunks.get(chunk_x)
+        if chunk is None:
+            return None
+
+        for y in range(game_property.CHUNK_MAX_HEIGHT, game_property.CHUNK_MIN_HEIGHT - 1, -1):
+            block = chunk.blocks.get((tile_x, y))
+            if block and block.can_collide():
+                return y + 1
+        return None
+
+    def find_spawn_tile(self, start_x=0, search=16):
+        """Cherche une colonne avec un sol, de plus en plus loin de `start_x`."""
+        for offset in range(search + 1):
+            for x in (start_x + offset, start_x - offset):
+                y = self.find_surface_y(x)
+                if y is not None:
+                    return x, y
+        return start_x, game_property.CHUNK_MAX_HEIGHT
             
     def player_is_offline(self, player_name):
         player = self.get_player_offline(player_name)
@@ -1052,7 +1083,7 @@ class WorldSolo():
         unload_distance = preload_distance + game_property.UNLOAD_DISTANCE
 
         for player_ in self.get_entities(EntityClass.Player):
-            chunk_x = player_.get_pos()[0] // chunk_size
+            chunk_x = int(player_.get_pos()[0] // chunk_size)
             player_chunks.append(chunk_x)
 
             # chunks à charger
@@ -1710,33 +1741,29 @@ class WorldSolo():
 
 
     def is_collide_at(self, rect):
-        """Teste si un rect collide avec les blocs solides"""
+        return bool(self.get_solid_rects_in(rect))
 
+    def get_solid_rects_in(self, rect):
+        """Renvoie les pygame.Rect (en pixels monde) des blocs solides couverts par `rect`."""
         tile = game_property.TILE_SIZE
 
-        # coordonnées des tuiles couvertes par le rect
         start_x = rect.left // tile
-        end_x = rect.right // tile
-
+        end_x = (rect.right - 1) // tile      # -1 : right/bottom sont exclusifs
         start_y = rect.top // tile
-        end_y = rect.bottom // tile
+        end_y = (rect.bottom - 1) // tile
 
+        result = []
         for x in range(start_x, end_x + 1):
-
-            chunk_x = x // game_property.CHUNK_WIDTH
-
-            chunk = self.chunks.get(chunk_x)
+            chunk = self.chunks.get(x // game_property.CHUNK_WIDTH)
             if not chunk:
                 continue
 
             for y in range(start_y, end_y + 1):
-
                 block = chunk.blocks.get((x, y))
-
                 if block and block.can_collide():
-                    return True
+                    result.append(pygame.Rect(x * tile, y * tile, tile, tile))
 
-        return False
+        return result
     
     def destroy_block(self, block_pos, player):
         current_block = self.get_block(block_pos[0], block_pos[1])
@@ -1795,6 +1822,18 @@ class WorldSolo():
         current_block.try_destroy(player.get_force_selected_item(current_block.block_property))
         if current_block.life < 0:
             self.destroy_block(block_pos, player)
+
+    def explode(self, cx, cy, radius, power):
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                dist = (dx * dx + dy * dy) ** 0.5
+                if dist > radius:
+                    continue
+                block = self.get_block(cx + dx, cy + dy)
+                if block:
+                    # la puissance diminue avec la distance
+                    block.events.apply_event(BlockEvent.EXPLODING, self,
+                                            power=power * (1 - dist / radius))
     
     def reset_block(self, block_pos):
         if not block_pos:
@@ -2467,6 +2506,7 @@ class Block:
 
         self.block_property = block_property
         self.components = {}
+        self.events = EventBlock(self)
 
         if self.block_property.life:
             self.life = self.block_property.life
@@ -2847,3 +2887,46 @@ class SolidBlock(Block):
 
     def __str__(self):
             return f"SolidBlock(x:{self.rect.x // game_property.TILE_SIZE}, y:{self.rect.y // game_property.TILE_SIZE}, width:{self.rect.width // game_property.TILE_SIZE}, height:{self.rect.width // game_property.TILE_SIZE}, BlockProperty:{self.block_property})"
+
+from terrakit.game_type import BlockEvent
+
+class EventBlock:
+    def __init__(self, block):
+        self.block = block
+        self._handlers = {
+            BlockEvent.EXPLODING: self._on_exploding,
+            BlockEvent.IGNITE: self._on_ignite,
+        }
+
+    def apply_event(self, event_type: BlockEvent, world, **data) -> bool:
+        prop = self.block.block_property
+
+        if not prop.has_event(event_type):      # le bloc ne réagit pas
+            return False
+
+        handler = self._handlers.get(event_type)
+        if handler is None:
+            return False
+
+        # paramètres du BlockProperty, écrasés par ceux de l'appel
+        params = {**prop.get_event_data(event_type), **data}
+        return handler(world, **params)
+
+    def _on_exploding(self, world, power=1, resistance=1, **_) -> bool:
+        block = self.block
+        if not block.is_breackable():
+            return False
+
+        if block.try_destroy(power / resistance):
+            x, y = block.pos
+            world.modif_block(x, y, SolidBlock(x, y, game_type.BlockProperty.AIR))
+        else:
+            world.reset_block(block.pos)
+        return True
+
+    def _on_ignite(self, world, radius=3, power=100, **_) -> bool:
+        x, y = self.block.pos
+        # on remplace la TNT par de l'air d'abord
+        world.modif_block(x, y, SolidBlock(x, y, game_type.BlockProperty.AIR))
+        world.explode(x, y, radius, power)
+        return True

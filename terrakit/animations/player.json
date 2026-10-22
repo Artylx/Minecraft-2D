@@ -1,0 +1,93 @@
+{
+  "idle": {
+    "duration": 2.0,
+    "loop": true,
+    "tracks": {
+      "head_texture": {
+        "offset": [
+          {"t": 0.0, "v": [0, 0], "ease": "ease_in_out"},
+          {"t": 1.0, "v": [0, 1], "ease": "ease_in_out"},
+          {"t": 2.0, "v": [0, 0]}
+        ]
+      }
+    }
+  },
+  "walk": {
+    "duration": 0.6,
+    "loop": true,
+    "tracks": {
+      "left_leg_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": 15,  "ease": "ease_in_out"},
+          {"t": 0.45, "v": -15, "ease": "ease_in_out"},
+          {"t": 0.6,  "v": 0}
+        ]
+      },
+      "right_leg_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": -15, "ease": "ease_in_out"},
+          {"t": 0.45, "v": 15,  "ease": "ease_in_out"},
+          {"t": 0.6,  "v": 0}
+        ]
+      }
+    }
+  },
+  "shoot": {
+    "duration": 0.25,
+    "loop": false,
+    "tracks": {
+      "arm_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,  "ease": "ease_out"},
+          {"t": 0.08, "v": 60, "ease": "ease_in_out"},
+          {"t": 0.25, "v": 0}
+        ]
+      }
+    },
+    "events": [ {"t": 0.08, "name": "release_arrow"} ]
+  },
+  "attack": {
+    "duration": 0.3,
+    "loop": false,
+    "tracks": {
+        "arm_texture": {
+          "angle": [
+              {"t": 0.0,  "v": 0,   "ease": "ease_out"},
+              {"t": 0.09, "v": 50,  "ease": "ease_in"},
+              {"t": 0.16, "v": -90, "ease": "ease_in_out"},
+              {"t": 0.3,  "v": 0}
+          ]
+        }
+      },
+      "events": [ {"t": 0.16, "name": "hit"} ]
+    },
+    "place": {
+      "duration": 0.15,
+      "loop": false,
+      "tracks": {
+          "arm_texture": {
+            "angle": [
+                {"t": 0.0,  "v": 0,   "ease": "ease_out"},
+                {"t": 0.07, "v": -25,  "ease": "ease_in"},
+                {"t": 0.15,  "v": 0}
+            ]
+          }
+        }
+    },
+    "break": {
+      "duration": 0.3,
+      "loop": true,
+      "tracks": {
+          "arm_texture": {
+            "angle": [
+                {"t": 0.0,  "v": 0,   "ease": "ease_out"},
+                {"t": 0.1, "v": 25,  "ease": "ease_in"},
+                {"t": 0.2, "v": -25,  "ease": "ease_in_out"},
+                {"t": 0.3,  "v": 0}
+            ]
+          }
+        }
+    }
+}
