@@ -30,19 +30,11 @@ DAMAGE_COEF = 1/3
 MAX_LIGHT = 15
 LIGHT_COEF = 1
 
-VERSION = "1.16"
-
-# def world_to_screen(x, y, h, cam_rect):
-#     sx = x - cam_rect.x
-#     sy = cam_rect.height - (y - cam_rect.y) - h
-#     return int(sx), int(sy)
-
-# def screen_to_world(sx, sy, h, cam_rect):
-#     x = sx + cam_rect.x
-#     y = (cam_rect.height - sy - h) + cam_rect.y
-#     return int(x), int(y)
+VERSION = "1.17"
 
 import zlib
+from pathlib import Path
+import sys
 
 def stable_hash(text: str) -> int:
     return zlib.crc32(text.encode("utf-8"))
@@ -61,9 +53,6 @@ def screen_to_world(sx, sy, h, cam_rect):
 
 def get_brightness(light):
     return max(0, light / 15)
-
-from pathlib import Path
-import sys
 
 def get_resource_path(relative_path: str) -> str:
     """

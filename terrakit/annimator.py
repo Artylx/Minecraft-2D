@@ -12,7 +12,8 @@ class AnimationSet(Enum):
     PLAYER = "player.json"
     FOX = "fox.json"
     ZOMBIE = "zombie.json"
-
+    SKELETON = "skeleton.json"
+    
 
 class Anim(str, Enum):
     """Noms des animations (clés du JSON)."""

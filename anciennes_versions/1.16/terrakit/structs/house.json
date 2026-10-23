@@ -1,0 +1,31 @@
+{
+  "origin": {"x": 0, "y": 0},
+  "condition_blocks":[
+    
+  ],
+  "blocks": [
+    {"x": 0, "y": 0, "block": "crafting_table"},
+    {"x": -1, "y": 0, "block": "stone"},
+    {"x": -2, "y": 0, "block": "stone"},
+    {"x": 1, "y": 0, "block": "stone"},
+    {"x": 2, "y": 0, "block": "stone"},
+
+    {"x": -2, "y": 4, "block": "oak_plank"},
+    {"x": -1, "y": 4, "block": "oak_plank"},
+    {"x": -1, "y": 5, "block": "oak_plank"},
+    {"x": 0, "y": 5, "block": "oak_plank"},
+    {"x": 0, "y": 6, "block": "oak_plank"},
+    {"x": 1, "y": 5, "block": "oak_plank"},
+    {"x": 1, "y": 4, "block": "oak_plank"},
+    {"x": 2, "y": 4, "block": "oak_plank"},
+
+    {"x": 2, "y": 3, "block": "oak_trunk"},
+    {"x": 2, "y": 2, "block": "oak_trunk"},
+    {"x": 2, "y": 1, "block": "oak_trunk"},
+
+    {"x": 0, "y": 4, "block": "torch"},
+    {"x": 1, "y": 1, "block": "chest"}
+
+  ],
+  "entities": []
+}

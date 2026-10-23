@@ -1,1004 +1,201 @@
 {
-    "seed": 388548,
+    "seed": 116053,
     "entitys": [
         {
             "type": "Zombie",
-            "uuid": "8cf4a637-b816-4471-8cca-c8acd917f2ab",
-            "x": 10820,
-            "y": -800,
-            "w": 27,
-            "h": 80,
+            "uuid": "983d6b94-6c11-4cb4-aaab-dfff36bb5da1",
+            "x": 2958.0,
+            "y": -1696.0000000000025,
             "vx": 0.0,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
+            "display_name": null,
+            "name": "Mob",
+            "health": 8.0,
             "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "a39c04b4-ee28-4672-ba77-c79ac2f57b9e",
-            "x": 10816,
-            "y": -800,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "4478acda-9706-45d7-badd-a42c5a38cef3",
-            "x": 11136,
-            "y": -416,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "192b2650-a102-45a9-b704-424de112cdfd",
-            "x": 11040,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "dbf143bd-7d99-4458-a67d-24cc29f5061f",
-            "x": 11172,
-            "y": -384,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "67960e77-a8f5-479e-964a-14979a28e94c",
-            "x": 10208,
-            "y": -1248,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "cf1c467e-358e-4ddd-aefb-9184df740deb",
-            "x": 10500,
-            "y": -1984,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "7bf85694-d22e-41aa-8524-bc495d3a58ec",
-            "x": 10336,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "EntityParted",
-            "uuid": "be2efcf0-01f4-4f57-8dbf-cfa2061c97b2",
-            "x": 10667,
-            "y": 768,
-            "w": 0,
-            "h": 0,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "",
-            "name": "Fox",
-            "live_time": null,
-            "parts": [
-                {
-                    "kind": "texture",
-                    "name": "leg_right",
-                    "ox": 10.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 1,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "leg_left",
-                    "ox": 32.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 2,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "tail",
-                    "ox": -20.0,
-                    "oy": 26.0,
-                    "w": 20,
-                    "h": 12,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 3,
-                    "alpha": 255,
-                    "flip_x": true
-                },
-                {
-                    "kind": "texture",
-                    "name": "ear",
-                    "ox": 40.0,
-                    "oy": 48.0,
-                    "w": 8,
-                    "h": 8,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 10,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "body",
-                    "ox": 0.0,
-                    "oy": 16.0,
-                    "w": 64,
-                    "h": 32,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 99,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "collision",
-                    "name": "body",
-                    "ox": 0.0,
-                    "oy": 0.0,
-                    "w": 0,
-                    "h": 0,
-                    "visible": true,
-                    "solid": true,
-                    "tag": null
-                },
-                {
-                    "kind": "collision",
-                    "name": "body_hitbox",
-                    "ox": 0.0,
-                    "oy": 16.0,
-                    "w": 64,
-                    "h": 32,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "body"
-                },
-                {
-                    "kind": "collision",
-                    "name": "head_hitbox",
-                    "ox": 10.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "head"
-                },
-                {
-                    "kind": "collision",
-                    "name": "head_hitbox",
-                    "ox": 32.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "head"
-                }
-            ]
-        },
-        {
-            "type": "Zombie",
-            "uuid": "2326d7bf-6ae3-4677-916d-87759036a7d0",
-            "x": 10816,
-            "y": -800,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "de0a4184-a6bb-4edb-a7dc-c6577fd96126",
-            "x": 10816,
-            "y": -800,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "e75bb913-e379-4844-b78a-f0b073ebe74f",
-            "x": 11236,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "028181c1-0878-4f76-a7da-ec275489f1b2",
-            "x": 11040,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "8b368a19-44fd-49a7-b2c3-3abaef7eabd1",
-            "x": 10852,
-            "y": -1600,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "14a98a66-2c5c-4626-a3a1-f4f85792cbc9",
-            "x": 12100,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "370b6d2b-6dc8-4ee6-a8dd-80d76784aee4",
-            "x": 11364,
-            "y": 224,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "0eda8bdc-606d-4075-b6da-374309b8db67",
-            "x": 11172,
-            "y": -384,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "18f3494f-c0e0-4f71-92dc-9047a2ba6fcb",
-            "x": 10944,
-            "y": 192,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "aaec210b-bd81-41c6-9d06-b58157f1d789",
-            "x": 10336,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "EntityParted",
-            "uuid": "d13721f7-8e8c-415b-818b-06eb3a47ac58",
-            "x": 10182,
-            "y": 736,
-            "w": 0,
-            "h": 0,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "",
-            "name": "Fox",
-            "live_time": null,
-            "parts": [
-                {
-                    "kind": "texture",
-                    "name": "leg_right",
-                    "ox": 10.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 1,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "leg_left",
-                    "ox": 32.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 2,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "tail",
-                    "ox": -20.0,
-                    "oy": 26.0,
-                    "w": 20,
-                    "h": 12,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 3,
-                    "alpha": 255,
-                    "flip_x": true
-                },
-                {
-                    "kind": "texture",
-                    "name": "ear",
-                    "ox": 40.0,
-                    "oy": 48.0,
-                    "w": 8,
-                    "h": 8,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 10,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "texture",
-                    "name": "body",
-                    "ox": 0.0,
-                    "oy": 16.0,
-                    "w": 64,
-                    "h": 32,
-                    "visible": true,
-                    "texture_name": null,
-                    "color": [
-                        255,
-                        255,
-                        255
-                    ],
-                    "z_index": 99,
-                    "alpha": 255,
-                    "flip_x": false
-                },
-                {
-                    "kind": "collision",
-                    "name": "body",
-                    "ox": 0.0,
-                    "oy": 0.0,
-                    "w": 0,
-                    "h": 0,
-                    "visible": true,
-                    "solid": true,
-                    "tag": null
-                },
-                {
-                    "kind": "collision",
-                    "name": "body_hitbox",
-                    "ox": 0.0,
-                    "oy": 16.0,
-                    "w": 64,
-                    "h": 32,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "body"
-                },
-                {
-                    "kind": "collision",
-                    "name": "head_hitbox",
-                    "ox": 10.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "head"
-                },
-                {
-                    "kind": "collision",
-                    "name": "head_hitbox",
-                    "ox": 32.0,
-                    "oy": 0.0,
-                    "w": 10,
-                    "h": 16,
-                    "visible": true,
-                    "solid": true,
-                    "tag": "head"
-                }
-            ]
-        },
-        {
-            "type": "Zombie",
-            "uuid": "f11decd1-349c-4d8a-920c-17650154a5ce",
-            "x": 10628,
-            "y": -1280,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Living_entity",
-            "uuid": "c1830e83-02b5-46a8-b395-24c25bf59f4d",
-            "x": 10460,
-            "y": 768,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "Armurier",
-            "name": "Armurier",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
+            "flip_x": true,
             "drops": []
         },
         {
             "type": "Zombie",
-            "uuid": "37748616-f9ee-4d79-a26b-1ca9ae6a1aff",
-            "x": -192,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
+            "uuid": "8cebf341-846f-4aad-8139-d7eb1e77fa0b",
+            "x": 3146.3519999991704,
+            "y": -1792.0,
+            "vx": 5.577900382841704e-09,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
+            "display_name": null,
+            "name": "Mob",
             "health": 20,
             "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
+            "flip_x": false,
+            "drops": []
+        },
+        {
+            "type": "Fox",
+            "uuid": "db8e14d8-3b17-44cf-be2a-0b596e413a76",
+            "x": 1765.6319999999996,
+            "y": 671.9999999999998,
+            "vx": -34.56,
+            "vy": 0.0,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": true,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
+        },
+        {
+            "type": "Fox",
+            "uuid": "cbceee52-58f8-43a1-8721-402443308779",
+            "x": 1712.0,
+            "y": 737.6355555555456,
+            "vx": 0.0,
+            "vy": 55.46666666666499,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": true,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
+        },
+        {
+            "type": "Fox",
+            "uuid": "87711ddc-67f5-4d46-b8b0-2b3fea55a1a5",
+            "x": 1035.0079999999818,
+            "y": 800.3555555555555,
+            "vx": -34.56,
+            "vy": 0.0,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": true,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
+        },
+        {
+            "type": "Fox",
+            "uuid": "4fd22d3b-fa1b-40a1-be85-883d58e484d2",
+            "x": 3760.0,
+            "y": 307.4133333333327,
+            "vx": 0.0,
+            "vy": -277.3333333333341,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": true,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
         },
         {
             "type": "Zombie",
-            "uuid": "3fe1cb10-a59a-49ca-891c-7b147f57b46a",
-            "x": -348,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
+            "uuid": "1a45dff4-619e-4646-8484-1a5d8548d4d2",
+            "x": 2386.0,
+            "y": 287.99999999998795,
             "vx": 0.0,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
+            "display_name": null,
+            "name": "Mob",
             "health": 20,
             "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
+            "flip_x": false,
+            "drops": []
         },
         {
             "type": "Zombie",
-            "uuid": "fe258d2c-5e90-4fbb-80fe-7c630cc0ebfa",
-            "x": -348,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
+            "uuid": "e393b3b1-0b10-439c-99d6-c6c25f0eae88",
+            "x": 1806.0,
+            "y": 224.35555555555206,
             "vx": 0.0,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
+            "display_name": null,
+            "name": "Mob",
             "health": 20,
             "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
+            "flip_x": true,
+            "drops": []
         },
         {
-            "type": "Zombie",
-            "uuid": "f9cdc1dd-fa83-4310-9116-74a99a5fd36b",
-            "x": 704,
-            "y": -1760,
-            "w": 27,
-            "h": 80,
+            "type": "Fox",
+            "uuid": "f0abfbd5-bb54-49cc-b217-2a49500a0ad7",
+            "x": 3184.0,
+            "y": 735.999999999999,
             "vx": 0.0,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "4f9838db-c780-42d9-8057-953dde6115f7",
-            "x": 2144,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "d6c74666-fe7d-414a-8c1a-7ef3089dd974",
-            "x": 3204,
-            "y": -1888,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "7a3e5681-9713-42ab-88bf-82ba7cf845b9",
-            "x": 3876,
-            "y": -256,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "012d8abd-8ac3-4e63-b0c1-dd37a1e5c78c",
-            "x": 4992,
-            "y": -2016,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "left",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
-        },
-        {
-            "type": "Zombie",
-            "uuid": "665d9073-76e2-420f-9e3b-b5a5d438dfd1",
-            "x": 6084,
-            "y": -960,
-            "w": 27,
-            "h": 80,
-            "vx": 0.0,
-            "vy": 0.0,
-            "gravity": 80,
-            "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "20",
-            "name": "Unamed entity",
-            "live_time": null,
-            "health": 20,
-            "max_health": 20,
-            "orientation": "right",
-            "drops": [],
-            "IA": true,
-            "auto_jump": true,
-            "inventory": null
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": true,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
         },
         {
             "type": "Player",
-            "uuid": "8441e524-c1aa-40ec-b0a6-a16804f942e2",
-            "x": 8901,
-            "y": -1024,
-            "w": 27,
-            "h": 80,
-            "vx": 6.574608349235035e-13,
+            "uuid": "4293f052-8eae-4bc6-aa7a-fcf302a3376e",
+            "x": 2127.6000000000136,
+            "y": 832.0,
+            "vx": -1.046406629616356e-10,
             "vy": 0.0,
-            "gravity": 80,
             "speed": 41.6,
-            "display_name": false,
-            "displayed_name": "gaby",
-            "name": "gaby",
-            "live_time": null,
-            "health": 40,
-            "max_health": 40,
-            "orientation": "right",
+            "display_name": null,
+            "name": "olivia",
+            "health": 19.666666666666668,
+            "max_health": 20,
+            "flip_x": true,
             "drops": [],
             "inventory": {
-                "uuid": "15f0e89b-1e94-4390-a9b5-93616e5697db",
+                "uuid": "28955de6-2207-405e-b64a-f57a6cb53cbc",
                 "size": 24,
-                "title": "Inventory of gaby",
+                "title": "Inventory of olivia",
                 "items": [
                     {
                         "slot": 0,
                         "itemStack": {
-                            "item_type_name": "oak_plank",
-                            "count": 9,
-                            "durability": null,
+                            "item_type_name": "diamond_sword",
+                            "count": 1,
+                            "durability": 1561,
                             "components": []
                         }
                     },
@@ -1014,26 +211,26 @@
                     {
                         "slot": 2,
                         "itemStack": {
-                            "item_type_name": "diamond_sword",
+                            "item_type_name": "dirt",
                             "count": 1,
-                            "durability": 1561,
+                            "durability": null,
                             "components": []
                         }
                     },
                     {
                         "slot": 3,
                         "itemStack": {
-                            "item_type_name": "bow",
-                            "count": 1,
-                            "durability": 4,
+                            "item_type_name": "fox_meat",
+                            "count": 6,
+                            "durability": null,
                             "components": []
                         }
                     },
                     {
                         "slot": 4,
                         "itemStack": {
-                            "item_type_name": "torch",
-                            "count": 18,
+                            "item_type_name": "fox_cooked_meat",
+                            "count": 6,
                             "durability": null,
                             "components": []
                         }
@@ -1041,8 +238,8 @@
                     {
                         "slot": 5,
                         "itemStack": {
-                            "item_type_name": "chips",
-                            "count": 9,
+                            "item_type_name": "arrow",
+                            "count": 84,
                             "durability": null,
                             "components": []
                         }
@@ -1050,8 +247,8 @@
                     {
                         "slot": 6,
                         "itemStack": {
-                            "item_type_name": "dirt",
-                            "count": 1,
+                            "item_type_name": "oak_plank",
+                            "count": 70,
                             "durability": null,
                             "components": []
                         }
@@ -1060,317 +257,2256 @@
                         "slot": 7,
                         "itemStack": {
                             "item_type_name": "stone",
-                            "count": 38,
+                            "count": 97,
                             "durability": null,
                             "components": []
                         }
                     },
                     {
-                        "slot": 8,
+                        "slot": 9,
                         "itemStack": {
-                            "item_type_name": "arrow",
-                            "count": 26,
+                            "item_type_name": "bow",
+                            "count": 1,
+                            "durability": 10,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 10,
+                        "itemStack": {
+                            "item_type_name": "fox_cooked_meat",
+                            "count": 10,
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 11,
+                        "itemStack": {
+                            "item_type_name": "fox_cooked_meat",
+                            "count": 10,
+                            "durability": null,
+                            "components": []
+                        }
+                    },
+                    {
+                        "slot": 12,
+                        "itemStack": {
+                            "item_type_name": "coal_ingot",
+                            "count": 52,
                             "durability": null,
                             "components": []
                         }
                     }
                 ],
-                "owner_uuid": "8441e524-c1aa-40ec-b0a6-a16804f942e2"
+                "owner_uuid": "4293f052-8eae-4bc6-aa7a-fcf302a3376e"
             }
         }
     ],
     "modified_blocks": {
-        "-1": {
-            "-7:34": {
-                "x": -7,
-                "y": 34,
+        "3": {
+            "50:25": {
+                "x": 50,
+                "y": 25,
                 "block": "air",
                 "components": []
             },
-            "-7:33": {
-                "x": -7,
-                "y": 33,
+            "53:5": {
+                "x": 53,
+                "y": 5,
                 "block": "air",
                 "components": []
             },
-            "-15:39": {
-                "x": -15,
+            "52:-15": {
+                "x": 52,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "54:13": {
+                "x": 54,
+                "y": 13,
+                "block": "stone",
+                "components": []
+            },
+            "54:-15": {
+                "x": 54,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "55:-14": {
+                "x": 55,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "53:-57": {
+                "x": 53,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "54:-58": {
+                "x": 54,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "55:4": {
+                "x": 55,
+                "y": 4,
+                "block": "air",
+                "components": []
+            },
+            "54:6": {
+                "x": 54,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "56:3": {
+                "x": 56,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "52:-13": {
+                "x": 52,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "54:15": {
+                "x": 54,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "57:-14": {
+                "x": 57,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "55:-58": {
+                "x": 55,
+                "y": -58,
+                "block": "air",
+                "components": []
+            },
+            "55:6": {
+                "x": 55,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "54:8": {
+                "x": 54,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "56:5": {
+                "x": 56,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "54:17": {
+                "x": 54,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "56:-32": {
+                "x": 56,
+                "y": -32,
+                "block": "torch",
+                "components": []
+            },
+            "54:1": {
+                "x": 54,
+                "y": 1,
+                "block": "stone",
+                "components": []
+            },
+            "54:10": {
+                "x": 54,
+                "y": 10,
+                "block": "stone",
+                "components": []
+            },
+            "54:19": {
+                "x": 54,
+                "y": 19,
+                "block": "stone",
+                "components": []
+            },
+            "53:-14": {
+                "x": 53,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "54:-6": {
+                "x": 54,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "53:4": {
+                "x": 53,
+                "y": 4,
+                "block": "air",
+                "components": []
+            },
+            "54:3": {
+                "x": 54,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "54:12": {
+                "x": 54,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "55:-15": {
+                "x": 55,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "54:-13": {
+                "x": 54,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "50:-20": {
+                "x": 50,
+                "y": -20,
+                "block": "torch",
+                "components": []
+            },
+            "54:-4": {
+                "x": 54,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "57:-42": {
+                "x": 57,
+                "y": -42,
+                "block": "stone",
+                "components": []
+            },
+            "55:3": {
+                "x": 55,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "54:5": {
+                "x": 54,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "54:14": {
+                "x": 54,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "57:-15": {
+                "x": 57,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "55:-13": {
+                "x": 55,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "54:-11": {
+                "x": 54,
+                "y": -11,
+                "block": "air",
+                "components": []
+            },
+            "56:-14": {
+                "x": 56,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "54:-2": {
+                "x": 54,
+                "y": -2,
+                "block": "stone",
+                "components": []
+            },
+            "54:-1": {
+                "x": 54,
+                "y": -1,
+                "block": "air",
+                "components": []
+            },
+            "54:-57": {
+                "x": 54,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "54:7": {
+                "x": 54,
+                "y": 7,
+                "block": "stone",
+                "components": []
+            },
+            "56:4": {
+                "x": 56,
+                "y": 4,
+                "block": "air",
+                "components": []
+            },
+            "49:-44": {
+                "x": 49,
+                "y": -44,
+                "block": "torch",
+                "components": []
+            },
+            "54:16": {
+                "x": 54,
+                "y": 16,
+                "block": "stone",
+                "components": []
+            },
+            "57:-13": {
+                "x": 57,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "55:-38": {
+                "x": 55,
+                "y": -38,
+                "block": "dirt",
+                "components": []
+            },
+            "54:-9": {
+                "x": 54,
+                "y": -9,
+                "block": "air",
+                "components": []
+            },
+            "54:0": {
+                "x": 54,
+                "y": 0,
+                "block": "air",
+                "components": []
+            },
+            "54:9": {
+                "x": 54,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "54:18": {
+                "x": 54,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "53:-15": {
+                "x": 53,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "54:-7": {
+                "x": 54,
+                "y": -7,
+                "block": "air",
+                "components": []
+            },
+            "54:2": {
+                "x": 54,
+                "y": 2,
+                "block": "air",
+                "components": []
+            },
+            "49:-49": {
+                "x": 49,
+                "y": -49,
+                "block": "stone",
+                "components": []
+            },
+            "54:11": {
+                "x": 54,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "52:-14": {
+                "x": 52,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "53:-13": {
+                "x": 53,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "54:-14": {
+                "x": 54,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "54:-5": {
+                "x": 54,
+                "y": -5,
+                "block": "stone",
+                "components": []
+            },
+            "54:4": {
+                "x": 54,
+                "y": 4,
+                "block": "stone",
+                "components": []
+            },
+            "50:-18": {
+                "x": 50,
+                "y": -18,
+                "block": "stone",
+                "components": []
+            },
+            "55:5": {
+                "x": 55,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "48:-62": {
+                "x": 48,
+                "y": -62,
+                "block": "torch",
+                "components": []
+            },
+            "54:-12": {
+                "x": 54,
+                "y": -12,
+                "block": "stone",
+                "components": []
+            },
+            "56:-15": {
+                "x": 56,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "54:-3": {
+                "x": 54,
+                "y": -3,
+                "block": "air",
+                "components": []
+            },
+            "55:-57": {
+                "x": 55,
+                "y": -57,
+                "block": "air",
+                "components": []
+            },
+            "54:-10": {
+                "x": 54,
+                "y": -10,
+                "block": "air",
+                "components": []
+            },
+            "56:-13": {
+                "x": 56,
+                "y": -13,
+                "block": "air",
+                "components": []
+            },
+            "48:-51": {
+                "x": 48,
+                "y": -51,
+                "block": "stone",
+                "components": []
+            },
+            "53:3": {
+                "x": 53,
+                "y": 3,
+                "block": "air",
+                "components": []
+            },
+            "54:20": {
+                "x": 54,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "54:-35": {
+                "x": 54,
+                "y": -35,
+                "block": "dirt",
+                "components": []
+            },
+            "48:-21": {
+                "x": 48,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "54:-8": {
+                "x": 54,
+                "y": -8,
+                "block": "stone",
+                "components": []
+            }
+        },
+        "4": {
+            "73:26": {
+                "x": 73,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "76:25": {
+                "x": 76,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "77:25": {
+                "x": 77,
+                "y": 25,
+                "block": "air",
+                "components": []
+            }
+        },
+        "5": {
+            "87:26": {
+                "x": 87,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "88:26": {
+                "x": 88,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "87:29": {
+                "x": 87,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "88:29": {
+                "x": 88,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "89:29": {
+                "x": 89,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "85:26": {
+                "x": 85,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "91:26": {
+                "x": 91,
+                "y": 26,
+                "block": "furnace",
+                "components": [
+                    {
+                        "key": "furnace",
+                        "component": {
+                            "type": "furnaceComponent",
+                            "input": null,
+                            "fuel": {
+                                "item_type_name": "coal_ingot",
+                                "count": 86,
+                                "durability": null,
+                                "components": []
+                            },
+                            "output": null
+                        }
+                    }
+                ]
+            },
+            "88:28": {
+                "x": 88,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "88:27": {
+                "x": 88,
+                "y": 27,
+                "block": "air",
+                "components": []
+            },
+            "88:30": {
+                "x": 88,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "84:20": {
+                "x": 84,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "87:16": {
+                "x": 87,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "91:16": {
+                "x": 91,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "83:12": {
+                "x": 83,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "91:25": {
+                "x": 91,
+                "y": 25,
+                "block": "grass",
+                "components": []
+            },
+            "85:18": {
+                "x": 85,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "90:17": {
+                "x": 90,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "84:13": {
+                "x": 84,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "87:18": {
+                "x": 87,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "91:9": {
+                "x": 91,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "91:18": {
+                "x": 91,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "83:14": {
+                "x": 83,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "92:26": {
+                "x": 92,
+                "y": 26,
+                "block": "crafting_table",
+                "components": []
+            },
+            "85:20": {
+                "x": 85,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "90:10": {
+                "x": 90,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "90:19": {
+                "x": 90,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "84:15": {
+                "x": 84,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "87:11": {
+                "x": 87,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "87:20": {
+                "x": 87,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "91:11": {
+                "x": 91,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "86:24": {
+                "x": 86,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "91:20": {
+                "x": 91,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "83:16": {
+                "x": 83,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "85:13": {
+                "x": 85,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "90:12": {
+                "x": 90,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "87:13": {
+                "x": 87,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "86:17": {
+                "x": 86,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "86:26": {
+                "x": 86,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "83:18": {
+                "x": 83,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "85:15": {
+                "x": 85,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "88:17": {
+                "x": 88,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "82:19": {
+                "x": 82,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "86:19": {
+                "x": 86,
+                "y": 19,
+                "block": "dirt",
+                "components": []
+            },
+            "83:20": {
+                "x": 83,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "88:10": {
+                "x": 88,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "88:19": {
+                "x": 88,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "90:16": {
+                "x": 90,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "86:12": {
+                "x": 86,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "92:7": {
+                "x": 92,
+                "y": 7,
+                "block": "dirt",
+                "components": []
+            },
+            "86:21": {
+                "x": 86,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "89:17": {
+                "x": 89,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "83:13": {
+                "x": 83,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "88:12": {
+                "x": 88,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "90:9": {
+                "x": 90,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "90:18": {
+                "x": 90,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "84:17": {
+                "x": 84,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "86:14": {
+                "x": 86,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "89:10": {
+                "x": 89,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "86:23": {
+                "x": 86,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "89:19": {
+                "x": 89,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "90:11": {
+                "x": 90,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "90:20": {
+                "x": 90,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "84:19": {
+                "x": 84,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "86:16": {
+                "x": 86,
+                "y": 16,
+                "block": "dirt",
+                "components": []
+            },
+            "87:15": {
+                "x": 87,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "89:12": {
+                "x": 89,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "92:11": {
+                "x": 92,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "86:25": {
+                "x": 86,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "85:17": {
+                "x": 85,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "88:16": {
+                "x": 88,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "82:18": {
+                "x": 82,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "84:12": {
+                "x": 84,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "92:4": {
+                "x": 92,
+                "y": 4,
+                "block": "dirt",
+                "components": []
+            },
+            "86:18": {
+                "x": 86,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "87:17": {
+                "x": 87,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "91:17": {
+                "x": 91,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "85:19": {
+                "x": 85,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "88:18": {
+                "x": 88,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "82:20": {
+                "x": 82,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "84:14": {
+                "x": 84,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "86:11": {
+                "x": 86,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "86:20": {
+                "x": 86,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "87:19": {
+                "x": 87,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "89:16": {
+                "x": 89,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "91:10": {
+                "x": 91,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "91:19": {
+                "x": 91,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "83:15": {
+                "x": 83,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "85:12": {
+                "x": 85,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "88:11": {
+                "x": 88,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "93:25": {
+                "x": 93,
+                "y": 25,
+                "block": "chest",
+                "components": [
+                    {
+                        "key": "chest",
+                        "component": {
+                            "type": "chestManager",
+                            "inventory": {
+                                "uuid": "8bf0e8e2-45b9-4a8a-868c-b1db91806028",
+                                "size": 24,
+                                "title": "Inventory uuid:8bf0e8e2-45b9-4a8a-868c-b1db91806028",
+                                "items": [
+                                    {
+                                        "slot": 0,
+                                        "itemStack": {
+                                            "item_type_name": "golden_pickaxe",
+                                            "count": 1,
+                                            "durability": 432,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 6,
+                                        "itemStack": {
+                                            "item_type_name": "iron_sword",
+                                            "count": 1,
+                                            "durability": 523,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 7,
+                                        "itemStack": {
+                                            "item_type_name": "golden_sword",
+                                            "count": 1,
+                                            "durability": 432,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 12,
+                                        "itemStack": {
+                                            "item_type_name": "iron_pickaxe",
+                                            "count": 1,
+                                            "durability": 523,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 13,
+                                        "itemStack": {
+                                            "item_type_name": "stone_pickaxe",
+                                            "count": 1,
+                                            "durability": 240,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 14,
+                                        "itemStack": {
+                                            "item_type_name": "fox_meat",
+                                            "count": 2,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 15,
+                                        "itemStack": {
+                                            "item_type_name": "dirt",
+                                            "count": 4,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 18,
+                                        "itemStack": {
+                                            "item_type_name": "wooden_sword",
+                                            "count": 1,
+                                            "durability": 110,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 19,
+                                        "itemStack": {
+                                            "item_type_name": "iron_ore",
+                                            "count": 7,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 20,
+                                        "itemStack": {
+                                            "item_type_name": "torch",
+                                            "count": 3,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 21,
+                                        "itemStack": {
+                                            "item_type_name": "stick",
+                                            "count": 1,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 22,
+                                        "itemStack": {
+                                            "item_type_name": "gold_ingot",
+                                            "count": 11,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    },
+                                    {
+                                        "slot": 23,
+                                        "itemStack": {
+                                            "item_type_name": "iron_ingot",
+                                            "count": 2,
+                                            "durability": null,
+                                            "components": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "85:21": {
+                "x": 85,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "88:20": {
+                "x": 88,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "84:16": {
+                "x": 84,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "86:13": {
+                "x": 86,
+                "y": 13,
+                "block": "dirt",
+                "components": []
+            },
+            "87:12": {
+                "x": 87,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "86:22": {
+                "x": 86,
+                "y": 22,
+                "block": "dirt",
+                "components": []
+            },
+            "89:18": {
+                "x": 89,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "83:17": {
+                "x": 83,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "85:14": {
+                "x": 85,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "88:13": {
+                "x": 88,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "84:18": {
+                "x": 84,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "86:15": {
+                "x": 86,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "89:11": {
+                "x": 89,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "89:20": {
+                "x": 89,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "83:19": {
+                "x": 83,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "85:16": {
+                "x": 85,
+                "y": 16,
+                "block": "air",
+                "components": []
+            }
+        },
+        "7": {
+            "120:10": {
+                "x": 120,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "116:15": {
+                "x": 116,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "118:9": {
+                "x": 118,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "116:21": {
+                "x": 116,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "117:10": {
+                "x": 117,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "115:16": {
+                "x": 115,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "117:13": {
+                "x": 117,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "119:10": {
+                "x": 119,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "119:13": {
+                "x": 119,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "118:8": {
+                "x": 118,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "116:20": {
+                "x": 116,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "116:17": {
+                "x": 116,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "118:14": {
+                "x": 118,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "115:15": {
+                "x": 115,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "115:18": {
+                "x": 115,
+                "y": 18,
+                "block": "dirt",
+                "components": []
+            },
+            "117:9": {
+                "x": 117,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "119:9": {
+                "x": 119,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "119:12": {
+                "x": 119,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "118:10": {
+                "x": 118,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "118:13": {
+                "x": 118,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "116:19": {
+                "x": 116,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "115:14": {
+                "x": 115,
+                "y": 14,
+                "block": "air",
+                "components": []
+            }
+        },
+        "8": {
+            "143:21": {
+                "x": 143,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "143:22": {
+                "x": 143,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "143:23": {
+                "x": 143,
+                "y": 23,
+                "block": "air",
+                "components": []
+            }
+        },
+        "9": {
+            "150:17": {
+                "x": 150,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "152:17": {
+                "x": 152,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "153:16": {
+                "x": 153,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "153:19": {
+                "x": 153,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "157:19": {
+                "x": 157,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "155:19": {
+                "x": 155,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "148:19": {
+                "x": 148,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "149:18": {
+                "x": 149,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "151:18": {
+                "x": 151,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "154:17": {
+                "x": 154,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "156:17": {
+                "x": 156,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "150:16": {
+                "x": 150,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "152:19": {
+                "x": 152,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "150:19": {
+                "x": 150,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "153:18": {
+                "x": 153,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "155:18": {
+                "x": 155,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "149:17": {
+                "x": 149,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "157:18": {
+                "x": 157,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "148:18": {
+                "x": 148,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "151:17": {
+                "x": 151,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "154:19": {
+                "x": 154,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "156:19": {
+                "x": 156,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "150:18": {
+                "x": 150,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "153:17": {
+                "x": 153,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "152:18": {
+                "x": 152,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "155:17": {
+                "x": 155,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "157:17": {
+                "x": 157,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "151:19": {
+                "x": 151,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "149:19": {
+                "x": 149,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "151:16": {
+                "x": 151,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "154:18": {
+                "x": 154,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "156:18": {
+                "x": 156,
+                "y": 18,
+                "block": "air",
+                "components": []
+            }
+        },
+        "11": {
+            "188:30": {
+                "x": 188,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "178:30": {
+                "x": 178,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "188:26": {
+                "x": 188,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "187:29": {
+                "x": 187,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "188:29": {
+                "x": 188,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "178:29": {
+                "x": 178,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "189:29": {
+                "x": 189,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "178:32": {
+                "x": 178,
+                "y": 32,
+                "block": "air",
+                "components": []
+            },
+            "179:31": {
+                "x": 179,
+                "y": 31,
+                "block": "air",
+                "components": []
+            },
+            "177:31": {
+                "x": 177,
+                "y": 31,
+                "block": "air",
+                "components": []
+            },
+            "178:31": {
+                "x": 178,
+                "y": 31,
+                "block": "air",
+                "components": []
+            },
+            "188:28": {
+                "x": 188,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "178:28": {
+                "x": 178,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "188:27": {
+                "x": 188,
+                "y": 27,
+                "block": "air",
+                "components": []
+            }
+        },
+        "20": {
+            "325:39": {
+                "x": 325,
                 "y": 39,
                 "block": "air",
                 "components": []
             },
-            "-15:38": {
-                "x": -15,
+            "326:40": {
+                "x": 326,
+                "y": 40,
+                "block": "air",
+                "components": []
+            },
+            "325:38": {
+                "x": 325,
                 "y": 38,
                 "block": "air",
                 "components": []
             },
-            "-15:40": {
-                "x": -15,
+            "325:41": {
+                "x": 325,
+                "y": 41,
+                "block": "air",
+                "components": []
+            },
+            "325:37": {
+                "x": 325,
+                "y": 37,
+                "block": "air",
+                "components": []
+            },
+            "324:40": {
+                "x": 324,
+                "y": 40,
+                "block": "air",
+                "components": []
+            },
+            "325:40": {
+                "x": 325,
                 "y": 40,
                 "block": "air",
                 "components": []
             }
         },
-        "17": {
-            "281:-18": {
-                "x": 281,
-                "y": -18,
+        "33": {
+            "531:48": {
+                "x": 531,
+                "y": 48,
                 "block": "air",
                 "components": []
             },
-            "284:-16": {
-                "x": 284,
-                "y": -16,
+            "531:49": {
+                "x": 531,
+                "y": 49,
                 "block": "air",
                 "components": []
             },
-            "283:-18": {
-                "x": 283,
-                "y": -18,
+            "531:50": {
+                "x": 531,
+                "y": 50,
                 "block": "air",
                 "components": []
             },
-            "286:-16": {
-                "x": 286,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "285:-18": {
-                "x": 285,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "280:-17": {
-                "x": 280,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "282:-17": {
-                "x": 282,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "287:-15": {
-                "x": 287,
-                "y": -15,
-                "block": "air",
-                "components": []
-            },
-            "287:-18": {
-                "x": 287,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "287:-12": {
-                "x": 287,
-                "y": -12,
-                "block": "air",
-                "components": []
-            },
-            "287:-9": {
-                "x": 287,
-                "y": -9,
-                "block": "air",
-                "components": []
-            },
-            "287:-6": {
-                "x": 287,
-                "y": -6,
-                "block": "air",
-                "components": []
-            },
-            "284:-17": {
-                "x": 284,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "281:-16": {
-                "x": 281,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "282:19": {
-                "x": 282,
-                "y": 19,
-                "block": "oak_plank",
-                "components": []
-            },
-            "286:-17": {
-                "x": 286,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "283:-16": {
-                "x": 283,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "285:19": {
-                "x": 285,
-                "y": 19,
-                "block": "oak_plank",
-                "components": []
-            },
-            "285:-16": {
-                "x": 285,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "280:-18": {
-                "x": 280,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "282:-18": {
-                "x": 282,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "287:-16": {
-                "x": 287,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "287:-10": {
-                "x": 287,
-                "y": -10,
-                "block": "air",
-                "components": []
-            },
-            "287:-13": {
-                "x": 287,
-                "y": -13,
-                "block": "air",
-                "components": []
-            },
-            "287:-7": {
-                "x": 287,
-                "y": -7,
-                "block": "air",
-                "components": []
-            },
-            "281:-17": {
-                "x": 281,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "275:-30": {
-                "x": 275,
-                "y": -30,
-                "block": "torch",
-                "components": []
-            },
-            "283:-17": {
-                "x": 283,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "284:-18": {
-                "x": 284,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "286:-15": {
-                "x": 286,
-                "y": -15,
-                "block": "air",
-                "components": []
-            },
-            "285:-17": {
-                "x": 285,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "286:-18": {
-                "x": 286,
-                "y": -18,
-                "block": "air",
-                "components": []
-            },
-            "280:-16": {
-                "x": 280,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "282:-16": {
-                "x": 282,
-                "y": -16,
-                "block": "air",
-                "components": []
-            },
-            "287:-17": {
-                "x": 287,
-                "y": -17,
-                "block": "air",
-                "components": []
-            },
-            "276:-17": {
-                "x": 276,
-                "y": -17,
-                "block": "torch",
-                "components": []
-            },
-            "287:-14": {
-                "x": 287,
-                "y": -14,
-                "block": "air",
-                "components": []
-            },
-            "287:-8": {
-                "x": 287,
-                "y": -8,
-                "block": "air",
-                "components": []
-            },
-            "287:-11": {
-                "x": 287,
-                "y": -11,
+            "529:47": {
+                "x": 529,
+                "y": 47,
                 "block": "air",
                 "components": []
             }
         },
-        "18": {
-            "288:-17": {
-                "x": 288,
-                "y": -17,
+        "32": {
+            "526:47": {
+                "x": 526,
+                "y": 47,
                 "block": "air",
                 "components": []
             },
-            "288:-16": {
-                "x": 288,
-                "y": -16,
+            "525:47": {
+                "x": 525,
+                "y": 47,
+                "block": "air",
+                "components": []
+            }
+        },
+        "31": {
+            "507:27": {
+                "x": 507,
+                "y": 27,
                 "block": "air",
                 "components": []
             },
-            "288:-15": {
-                "x": 288,
-                "y": -15,
+            "505:26": {
+                "x": 505,
+                "y": 26,
                 "block": "air",
                 "components": []
             },
-            "288:19": {
-                "x": 288,
+            "507:26": {
+                "x": 507,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "507:23": {
+                "x": 507,
+                "y": 23,
+                "block": "stone",
+                "components": []
+            },
+            "507:28": {
+                "x": 507,
+                "y": 28,
+                "block": "air",
+                "components": []
+            },
+            "507:25": {
+                "x": 507,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "505:27": {
+                "x": 505,
+                "y": 27,
+                "block": "air",
+                "components": []
+            }
+        },
+        "30": {
+            "484:20": {
+                "x": 484,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "483:23": {
+                "x": 483,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "484:23": {
+                "x": 484,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "484:22": {
+                "x": 484,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "484:24": {
+                "x": 484,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "485:23": {
+                "x": 485,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "484:21": {
+                "x": 484,
+                "y": 21,
+                "block": "air",
+                "components": []
+            }
+        },
+        "29": {
+            "475:16": {
+                "x": 475,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "475:19": {
+                "x": 475,
                 "y": 19,
-                "block": "oak_plank",
+                "block": "air",
+                "components": []
+            },
+            "476:19": {
+                "x": 476,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "474:19": {
+                "x": 474,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "475:18": {
+                "x": 475,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "475:17": {
+                "x": 475,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "475:20": {
+                "x": 475,
+                "y": 20,
+                "block": "air",
+                "components": []
+            }
+        },
+        "27": {
+            "445:14": {
+                "x": 445,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "444:14": {
+                "x": 444,
+                "y": 14,
+                "block": "air",
+                "components": []
+            }
+        },
+        "24": {
+            "388:32": {
+                "x": 388,
+                "y": 32,
+                "block": "air",
+                "components": []
+            },
+            "388:29": {
+                "x": 388,
+                "y": 29,
+                "block": "air",
+                "components": []
+            },
+            "389:32": {
+                "x": 389,
+                "y": 32,
+                "block": "air",
+                "components": []
+            },
+            "387:32": {
+                "x": 387,
+                "y": 32,
+                "block": "air",
+                "components": []
+            },
+            "388:31": {
+                "x": 388,
+                "y": 31,
+                "block": "air",
+                "components": []
+            },
+            "388:30": {
+                "x": 388,
+                "y": 30,
+                "block": "air",
+                "components": []
+            },
+            "388:33": {
+                "x": 388,
+                "y": 33,
+                "block": "air",
+                "components": []
+            }
+        },
+        "15": {
+            "242:6": {
+                "x": 242,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "242:7": {
+                "x": 242,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "242:5": {
+                "x": 242,
+                "y": 5,
+                "block": "air",
+                "components": []
+            }
+        },
+        "13": {
+            "218:14": {
+                "x": 218,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "217:16": {
+                "x": 217,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "219:14": {
+                "x": 219,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "217:15": {
+                "x": 217,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "220:16": {
+                "x": 220,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "215:16": {
+                "x": 215,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "218:16": {
+                "x": 218,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "216:16": {
+                "x": 216,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "220:15": {
+                "x": 220,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "218:15": {
+                "x": 218,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "220:17": {
+                "x": 220,
+                "y": 17,
+                "block": "dirt",
+                "components": []
+            }
+        },
+        "6": {
+            "104:23": {
+                "x": 104,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "103:23": {
+                "x": 103,
+                "y": 23,
+                "block": "air",
+                "components": []
+            }
+        },
+        "2": {
+            "44:-22": {
+                "x": 44,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "43:-21": {
+                "x": 43,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "46:-22": {
+                "x": 46,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "46:-59": {
+                "x": 46,
+                "y": -59,
+                "block": "stone",
+                "components": []
+            },
+            "45:-21": {
+                "x": 45,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "46:-56": {
+                "x": 46,
+                "y": -56,
+                "block": "stone",
+                "components": []
+            },
+            "47:-21": {
+                "x": 47,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "43:-22": {
+                "x": 43,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "44:-23": {
+                "x": 44,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "46:-23": {
+                "x": 46,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "45:-22": {
+                "x": 45,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "47:-22": {
+                "x": 47,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "44:-21": {
+                "x": 44,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "41:-14": {
+                "x": 41,
+                "y": -14,
+                "block": "torch",
+                "components": []
+            },
+            "43:-23": {
+                "x": 43,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "47:-53": {
+                "x": 47,
+                "y": -53,
+                "block": "stone",
+                "components": []
+            },
+            "46:-21": {
+                "x": 46,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "45:-23": {
+                "x": 45,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "47:-26": {
+                "x": 47,
+                "y": -26,
+                "block": "stone",
+                "components": []
+            },
+            "47:-23": {
+                "x": 47,
+                "y": -23,
+                "block": "air",
                 "components": []
             }
         }

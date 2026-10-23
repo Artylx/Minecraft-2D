@@ -1,0 +1,22 @@
+[
+    {
+        "id": "collect_wood",
+        "title": "&aRécolter du bois",
+        "description": "&7Couper 10 blocs de bois",
+        "type": "collect",
+        "target": "WOOD",
+        "amount": 10,
+        "progress": 0,
+        "completed": false
+    },
+    {
+        "id": "kill_zombie",
+        "title": "&cTuer des zombies",
+        "description": "&7Éliminer 5 zombies",
+        "type": "kill",
+        "target": "Zombie",
+        "amount": 5,
+        "progress": 0,
+        "completed": false
+    }
+]

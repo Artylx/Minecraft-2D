@@ -1,0 +1,18 @@
+{
+    "attack_break": "mouse1",
+    "jump": 32,
+    "left": 113,
+    "right": 100,
+    "sneak": 1073742048,
+    "place_use": "mouse3",
+    "speak": 101,
+    "slot_1": 49,
+    "slot_2": 50,
+    "slot_3": 51,
+    "slot_4": 52,
+    "slot_5": 53,
+    "slot_6": 54,
+    "drop_item": 97,
+    "tchat": 116,
+    "inventory": 101
+}

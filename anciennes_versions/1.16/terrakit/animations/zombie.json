@@ -1,0 +1,66 @@
+{
+  "idle": {
+    "duration": 2.0,
+    "loop": true,
+    "tracks": {
+      "head_texture": {
+        "offset": [
+          {"t": 0.0, "v": [0, 0], "ease": "ease_in_out"},
+          {"t": 1.0, "v": [0, 1], "ease": "ease_in_out"},
+          {"t": 2.0, "v": [0, 0]}
+        ]
+      }
+    }
+  },
+  "walk": {
+    "duration": 1.2,
+    "loop": true,
+    "tracks": {
+      "left_leg_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": 15,  "ease": "ease_in_out"},
+          {"t": 0.45, "v": -15, "ease": "ease_in_out"},
+          {"t": 0.7,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.85, "v": 15,  "ease": "ease_in_out"},
+          {"t": 1.05, "v": -15, "ease": "ease_in_out"},
+          {"t": 1.2,  "v": 0}
+        ]
+      },
+      "right_leg_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.15, "v": -15,  "ease": "ease_in_out"},
+          {"t": 0.45, "v": 15, "ease": "ease_in_out"},
+          {"t": 0.7,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.85, "v": -15,  "ease": "ease_in_out"},
+          {"t": 1.05, "v": 15, "ease": "ease_in_out"},
+          {"t": 1.2,  "v": 0}
+        ]
+      },
+      "arm_texture": {
+        "angle": [
+          {"t": 0.0,  "v": 0,   "ease": "ease_in_out"},
+          {"t": 0.4, "v": -15, "ease": "ease_in_out"},
+          {"t": 0.8, "v": 15,  "ease": "ease_in_out"},
+          {"t": 1.2,  "v": 0}
+        ]
+      }
+    }
+  },
+  "attack": {
+    "duration": 0.3,
+    "loop": false,
+    "tracks": {
+        "arm_texture": {
+          "angle": [
+              {"t": 0.0,  "v": 0,   "ease": "ease_out"},
+              {"t": 0.09, "v": 50,  "ease": "ease_in"},
+              {"t": 0.16, "v": -90, "ease": "ease_in_out"},
+              {"t": 0.3,  "v": 0}
+          ]
+        }
+      },
+      "events": [ {"t": 0.16, "name": "hit"} ]
+    }
+}

@@ -4,7 +4,7 @@ import pygame
 from terrakit import game_property, game_type
 import re
 import time
-from terrakit.entity import get_classe_by_str
+from terrakit.entity import get_classe_by_str, get_entity_names
 from terrakit.inventory import ItemStack
 
 COLORS = {
@@ -207,6 +207,7 @@ class CommandManager:
             self.tchat.send_message("", "- /clear <player>")
             self.tchat.send_message("", "- /kill <entityType>")
             self.tchat.send_message("", "- /summon <entityType>")
+            self.tchat.send_message("", "- /listentity")
 
         elif command == "tp":
             player = None
@@ -344,6 +345,25 @@ class CommandManager:
                     self.tchat.send_message("", f"{args[0]} invoqué")
                 else:
                     self.send_error_message(f"L'entité {args[0]} ne s'est pas invoqué")
+        elif command == "listentity":
+            if len(args) > 1 or (len(args) == 1 and args[0] != "world"):
+                self.send_error_message_command(content)
+                return
+
+            if len(args) == 0:
+                names = get_entity_names()
+                self.tchat.send_message("", f"{len(names)} entités :")
+                self._send_in_lines(names)
+            else:
+                counts = {}
+                for e in self.game.World.get_entities():
+                    name = type(e).__name__
+                    counts[name] = counts.get(name, 0) + 1
+
+                total = sum(counts.values())
+                self.tchat.send_message("", f"{total} entités chargées :")
+                lines = [f"{name} x{n}" for name, n in sorted(counts.items(), key=lambda kv: -kv[1])]
+                self._send_in_lines(lines)
 
         else:
             self.send_error_message_command(content)
@@ -354,3 +374,7 @@ class CommandManager:
     
     def send_error_message(self, content):
         self.tchat.send_message("", f"&4Erreur, {content}")
+
+    def _send_in_lines(self, items, per_line=6):
+        for i in range(0, len(items), per_line):
+            self.tchat.send_message("", ", ".join(items[i:i + per_line]))

@@ -13,6 +13,7 @@ import os
 from terrakit.biome import BiomeType, BiomeManager
 from collections import deque
 from terrakit import debug
+from terrakit.spawner import SpawnRule, MobSpawner, SpawnCategory, Rarity
 
 def load_world_json(world_path):
     """
@@ -247,7 +248,6 @@ class World():
         return total / count
 
     def update(self, dt):
-        print("update world")
         end_loading = self.update_chunks()
 
         if end_loading:
@@ -671,7 +671,27 @@ class World():
         pass
 
             
+HOSTILE  = SpawnCategory("hostile",  max_count=8)
+CREATURE = SpawnCategory("creature", max_count=10)
 
+SPAWN_RULES = [
+    # créatures : en pleine lumière, 10 au maximum en tout autour d'un joueur
+    SpawnRule(EntityClass.Fox, category=CREATURE, weight=10, min_light=9,
+              group_min=1, group_max=3, group_radius=4, max_count=4, rarity=Rarity.UNCOMMON),
+    # SpawnRule(EntityClass.Pig, category=CREATURE, weight=15, min_light=9,
+    #           group_min=2, group_max=4),
+    # SpawnRule(EntityClass.Fox, category=CREATURE, rarity=Rarity.RARE, ...),   # (exemple de variante rare)
+
+    # hostiles : 8 au maximum en tout, quel que soit le mélange
+    SpawnRule(EntityClass.Zombie, category=HOSTILE, weight=20, max_light=4,
+              group_min=1, group_max=2, max_count=None),
+    SpawnRule(EntityClass.Skeleton, category=HOSTILE, weight=10, max_light=4,
+              rarity=Rarity.UNCOMMON, group_min=2, group_max=4, group_radius=5, max_count=4),
+
+    # entité sans catégorie, rare, un seul exemplaire à la fois
+    SpawnRule(EntityClass.Wither, category=None, weight=5, rarity=Rarity.LEGENDARY,
+              max_light=4, max_count=1, min_distance=20),
+]
 
 class WorldSolo():
     def __init__(self, name="Unamed world", seed=None, json_data=None, callback_loading=None):
@@ -729,9 +749,7 @@ class WorldSolo():
         self.total_light_steps = 0
         self.done_light_steps = 0
 
-        self.mob_spawn_timer = 0
-        self.mob_spawn_points = {}
-        self.MAX_MOB_PER_SPAWN_POINT = 3
+        self.spawner = MobSpawner(self, rules=SPAWN_RULES, interval=3.0, attempts=5)
 
         self.day_time = 0
         self.day_length = 24000
@@ -755,155 +773,11 @@ class WorldSolo():
         if isinstance(entity, EntityClass.LivingEntity):
             print("Damage applied to entity:", entity.get_name(), "Damage:", damage, "Source:", source.get_name())
             entity.apply_damage(damage, dx)
-            
-
-    def build_mob_spawn_points_chunk(self, chunk_x, chunk_y=0):
-
-        chunk_key = (chunk_x, chunk_y)
-
-        if chunk_key in self.mob_spawn_points:
-            return
-
-        self.mob_spawn_points[chunk_key] = {}
-
-        start_x = chunk_x * game_property.CHUNK_WIDTH
-        end_x = start_x + game_property.CHUNK_WIDTH
-
-        for x in range(start_x, end_x):
-            for y in range(
-                game_property.CHUNK_MIN_HEIGHT,
-                game_property.CHUNK_MAX_HEIGHT,
-                2
-            ):
-                if self.can_spawn_basic(x, y):
-                    self.mob_spawn_points[chunk_key][(x, y)] = 0
-
-    def can_spawn_here(self, chunk_key, pos):
-        return self.mob_spawn_points[chunk_key].get(pos, 0) < self.MAX_MOB_PER_SPAWN_POINT
-
-    def can_spawn_basic(self, x, y):
-        block = self.get_block(x, y)
-        if not block:
-            return False
-
-        # lumière
-        light = max(block.sky_light, block.block_light)
-        if light > 4:
-            return False
-
-        # collision simple
-        if block.can_collide():
-            return False
-
-        return True
-    
-    def can_spawn_monster(self, x, y, player): 
-        tile = game_property.TILE_SIZE 
-        # zone réelle du zombie 
-
-        rect = pygame.Rect( x * tile, y * tile, tile, int(2.5 * tile) ) 
-        
-        for dx in range(rect.left // tile, rect.right // tile + 1): 
-            for dy in range(rect.top // tile, rect.bottom // tile + 1): 
-                block = self.get_block(dx, dy) 
-                if block and block.can_collide(): 
-                    return False 
-        
-        center_block = self.get_block(x, y) 
-        if not center_block: 
-            return False 
-        
-        light = max(center_block.pending_sky_light, center_block.block_light)
-        if light > 4:
-            return False 
-        
-        # 3) distance joueur 
-        px = player.rect.centerx // tile 
-        py = player.rect.centery // tile 
-        dx = px - x 
-        dy = py - y 
-        
-        if dx*dx + dy*dy < 10*10: 
-            return False 
-        return True
-    
-    def try_spawn_mobs(self):
-
-        return
-
-        # players = self.get_players()
-        # if not players:
-        #     return
-        
-        # r = random.Random().randint(1, 100)
-        # class_monster = None
-        # class_monster = EntityClass.Zombie
-
-        # if r < 40:
-        #     class_monster = EntityClass.Skeleton
-
-        # monsters = self.get_entities(class_monster)
-        # if len(monsters) >= config.Config().get("preload_distance", 6) * 2 + 1:
-        #     return
-
-        # if not self.mob_spawn_points:
-        #     return
-
-        # for _ in range(5):
-        #     player = random.choice(players)
-
-        #     tile = game_property.TILE_SIZE
-        #     chunk_x = player.rect.x // (game_property.CHUNK_WIDTH * tile)
-        #     chunk_key = (chunk_x, 0)
-
-        #     chunk = self.mob_spawn_points.get(chunk_key)
-        #     if not chunk:
-        #         continue
-
-        #     filtrer les points encore disponibles
-        #     valid_points = [
-        #         pos for pos, count in chunk.items()
-        #         if count < self.MAX_MOB_PER_SPAWN_POINT
-        #     ]
-
-        #     if not valid_points:
-        #         continue
-
-        #     spawn_x, spawn_y = random.choice(valid_points)
-
-        #     if not self.can_spawn_monster(spawn_x, spawn_y, player):
-        #         continue
-
-        #     monster = EntityClass.Zombie(world=self, spawn_point=(spawn_x, spawn_y, chunk_key))
-        #     monster.tp_tile(spawn_x, spawn_y)
-
-        #     self.create_entity(monster)
-
-        #     chunk[(spawn_x, spawn_y)] += 1
-
-        #     break
 
     def on_entity_death(self, entity):
         # if isinstance(entity, EntityClass.Zombie):
         #     self.release_spawn_point(entity)
         pass
-
-    def release_spawn_point(self, monster):
-
-        if not hasattr(monster, "spawn_point"):
-            return
-        
-        if not monster.spawn_point:
-            return
-
-        x, y, chunk_key = monster.spawn_point
-
-        chunk = self.mob_spawn_points.get(chunk_key)
-        if not chunk:
-            return
-
-        if (x, y) in chunk:
-            chunk[(x, y)] = max(0, chunk[(x, y)] - 1)
 
     def set_json(self, json):
         seed = json.get("seed", None)
@@ -1032,8 +906,6 @@ class WorldSolo():
             chunk = Chunk(chunk_x, self.seed, self.structure_manager, self.biome_manager)
             self.chunks[chunk_x] = chunk
 
-            self.build_mob_spawn_points_chunk(chunk_x)
-
             # appliquer les modifications sauvegardées
             blc = 0
             list_blocks = []
@@ -1052,14 +924,6 @@ class WorldSolo():
                     blc += 1
 
             self.light_chunk_queue.append(chunk_x)
-
-            # for x in range((chunk_x * game_property.CHUNK_WIDTH), ((chunk_x + 1)*game_property.CHUNK_WIDTH)):
-            #     self.sky_column_queue.append(x)
-            
-            # for x in range((chunk_x * game_property.CHUNK_WIDTH) - int(game_property.CHUNK_WIDTH * 0.25), 
-            #                ((chunk_x + 1) * game_property.CHUNK_WIDTH) + int(game_property.CHUNK_WIDTH * 0.25)):
-            #     for y in range(game_property.CHUNK_MIN_HEIGHT, game_property.CHUNK_MAX_HEIGHT):
-            #         self.sky_light_queue.append((x, y))
 
             self.set_blocks(list_blocks, update_range=0)
 
@@ -1211,14 +1075,9 @@ class WorldSolo():
 
     def update(self, dt):
         end_loading = self.update_chunks()
+        self.spawner.update(dt)
 
-        self.mob_spawn_timer += dt
-
-        if self.mob_spawn_timer >= 3:
-            self.mob_spawn_timer = 0
-            self.try_spawn_mobs()
-
-        self.update_chunk_light(max_chunks=1)
+        self.update_chunk_light(max_chunks=2)
 
         self.compute_sky_column()
 

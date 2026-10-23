@@ -2,10 +2,54 @@
     "seed": 687533,
     "entitys": [
         {
+            "type": "Fox",
+            "uuid": "22b7f4f8-0897-469c-a806-71a845246065",
+            "x": -688.0,
+            "y": 1472.0,
+            "vx": 0.0,
+            "vy": 0.0,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": false,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
+        },
+        {
+            "type": "Fox",
+            "uuid": "db83c5f5-0712-40a5-8d71-d01cab667fec",
+            "x": -499.8399999999965,
+            "y": 1312.0,
+            "vx": 34.56,
+            "vy": 0.0,
+            "speed": 41.6,
+            "display_name": null,
+            "name": "Fox entity",
+            "health": 10,
+            "max_health": 10,
+            "flip_x": false,
+            "drops": [
+                {
+                    "item_type_name": "fox_meat",
+                    "count": 2,
+                    "durability": null,
+                    "components": []
+                }
+            ]
+        },
+        {
             "type": "Player",
-            "uuid": "35c0d2a7-fb3f-492a-9733-1e365faba48e",
-            "x": 2958.0,
-            "y": 768.0,
+            "uuid": "3bfcc325-f0eb-4631-8a46-2515058ffacb",
+            "x": 16.0,
+            "y": 992.0,
             "vx": 0.0,
             "vy": 0.0,
             "speed": 41.6,
@@ -13,14 +57,14 @@
             "name": "math",
             "health": 20,
             "max_health": 20,
-            "flip_x": true,
+            "flip_x": false,
             "drops": [],
             "inventory": {
-                "uuid": "f8786383-7f67-406d-98f7-dc98490b7c20",
+                "uuid": "4b056904-a76c-472a-bdfc-7514f3e779a0",
                 "size": 24,
                 "title": "Inventory of math",
                 "items": [],
-                "owner_uuid": "35c0d2a7-fb3f-492a-9733-1e365faba48e"
+                "owner_uuid": "3bfcc325-f0eb-4631-8a46-2515058ffacb"
             }
         }
     ],
@@ -169,6 +213,18 @@
                 "y": 22,
                 "block": "dirt",
                 "components": []
+            },
+            "62:25": {
+                "x": 62,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "62:26": {
+                "x": 62,
+                "y": 26,
+                "block": "air",
+                "components": []
             }
         },
         "5": {
@@ -234,6 +290,18 @@
             },
             "87:26": {
                 "x": 87,
+                "y": 26,
+                "block": "air",
+                "components": []
+            },
+            "91:25": {
+                "x": 91,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "91:26": {
+                "x": 91,
                 "y": 26,
                 "block": "air",
                 "components": []
@@ -540,6 +608,64 @@
                 "x": 64,
                 "y": 23,
                 "block": "dirt",
+                "components": []
+            }
+        },
+        "6": {
+            "111:20": {
+                "x": 111,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "111:21": {
+                "x": 111,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "111:22": {
+                "x": 111,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "110:22": {
+                "x": 110,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "110:20": {
+                "x": 110,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "110:21": {
+                "x": 110,
+                "y": 21,
+                "block": "air",
+                "components": []
+            }
+        },
+        "9": {
+            "155:24": {
+                "x": 155,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "153:24": {
+                "x": 153,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "154:24": {
+                "x": 154,
+                "y": 24,
+                "block": "air",
                 "components": []
             }
         }

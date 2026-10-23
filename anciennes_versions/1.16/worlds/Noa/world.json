@@ -1,0 +1,1310 @@
+{
+    "seed": 313606,
+    "entitys": [],
+    "modified_blocks": {
+        "0": {
+            "4:23": {
+                "x": 4,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "5:24": {
+                "x": 5,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "4:25": {
+                "x": 4,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "6:23": {
+                "x": 6,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "4:24": {
+                "x": 4,
+                "y": 24,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-1": {
+            "-8:23": {
+                "x": -8,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-8:24": {
+                "x": -8,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-4:24": {
+                "x": -4,
+                "y": 24,
+                "block": "air",
+                "components": []
+            },
+            "-8:22": {
+                "x": -8,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "-15:17": {
+                "x": -15,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-12:19": {
+                "x": -12,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-10:16": {
+                "x": -10,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-11:14": {
+                "x": -11,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-12:16": {
+                "x": -12,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-10:13": {
+                "x": -10,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-13:17": {
+                "x": -13,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-11:17": {
+                "x": -11,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-14:18": {
+                "x": -14,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-9:14": {
+                "x": -9,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-8:13": {
+                "x": -8,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-7:14": {
+                "x": -7,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-7:17": {
+                "x": -7,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-7:20": {
+                "x": -7,
+                "y": 20,
+                "block": "air",
+                "components": []
+            },
+            "-13:16": {
+                "x": -13,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-12:15": {
+                "x": -12,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-13:19": {
+                "x": -13,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-11:16": {
+                "x": -11,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-12:18": {
+                "x": -12,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-10:15": {
+                "x": -10,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-14:17": {
+                "x": -14,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-8:12": {
+                "x": -8,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-9:16": {
+                "x": -9,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-8:15": {
+                "x": -8,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-9:13": {
+                "x": -9,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-7:16": {
+                "x": -7,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-7:13": {
+                "x": -7,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-7:19": {
+                "x": -7,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-13:18": {
+                "x": -13,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-15:18": {
+                "x": -15,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-12:17": {
+                "x": -12,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-10:14": {
+                "x": -10,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-13:15": {
+                "x": -13,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-11:15": {
+                "x": -11,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-14:16": {
+                "x": -14,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-14:19": {
+                "x": -14,
+                "y": 19,
+                "block": "air",
+                "components": []
+            },
+            "-8:14": {
+                "x": -8,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-9:12": {
+                "x": -9,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-9:15": {
+                "x": -9,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-7:12": {
+                "x": -7,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-7:18": {
+                "x": -7,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-9:18": {
+                "x": -9,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-7:15": {
+                "x": -7,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-7:21": {
+                "x": -7,
+                "y": 21,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-2": {
+            "-26:16": {
+                "x": -26,
+                "y": 16,
+                "block": "crafting_table",
+                "components": []
+            },
+            "-30:16": {
+                "x": -30,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-30:14": {
+                "x": -30,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-30:17": {
+                "x": -30,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-29:15": {
+                "x": -29,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-28:16": {
+                "x": -28,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-30:18": {
+                "x": -30,
+                "y": 18,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-9": {
+            "-142:14": {
+                "x": -142,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-140:11": {
+                "x": -140,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-139:11": {
+                "x": -139,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-138:10": {
+                "x": -138,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-142:13": {
+                "x": -142,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-139:10": {
+                "x": -139,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-137:10": {
+                "x": -137,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-136:9": {
+                "x": -136,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-141:13": {
+                "x": -141,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-140:12": {
+                "x": -140,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-143:14": {
+                "x": -143,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-137:9": {
+                "x": -137,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-141:12": {
+                "x": -141,
+                "y": 12,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-8": {
+            "-128:14": {
+                "x": -128,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-128:15": {
+                "x": -128,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-127:14": {
+                "x": -127,
+                "y": 14,
+                "block": "air",
+                "components": []
+            },
+            "-116:23": {
+                "x": -116,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-116:21": {
+                "x": -116,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "-116:22": {
+                "x": -116,
+                "y": 22,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-3": {
+            "-47:17": {
+                "x": -47,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-35:17": {
+                "x": -35,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-40:17": {
+                "x": -40,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-35:16": {
+                "x": -35,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-40:16": {
+                "x": -40,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-47:16": {
+                "x": -47,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-47:18": {
+                "x": -47,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-47:15": {
+                "x": -47,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-35:15": {
+                "x": -35,
+                "y": 15,
+                "block": "air",
+                "components": []
+            },
+            "-40:15": {
+                "x": -40,
+                "y": 15,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-4": {
+            "-56:16": {
+                "x": -56,
+                "y": 16,
+                "block": "air",
+                "components": []
+            },
+            "-56:17": {
+                "x": -56,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-56:18": {
+                "x": -56,
+                "y": 18,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-5": {
+            "-66:17": {
+                "x": -66,
+                "y": 17,
+                "block": "air",
+                "components": []
+            },
+            "-66:18": {
+                "x": -66,
+                "y": 18,
+                "block": "air",
+                "components": []
+            },
+            "-66:19": {
+                "x": -66,
+                "y": 19,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-6": {
+            "-87:18": {
+                "x": -87,
+                "y": 18,
+                "block": "mushroom",
+                "components": []
+            }
+        },
+        "-7": {
+            "-105:23": {
+                "x": -105,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-109:23": {
+                "x": -109,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-105:22": {
+                "x": -105,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "-109:22": {
+                "x": -109,
+                "y": 22,
+                "block": "air",
+                "components": []
+            },
+            "-105:21": {
+                "x": -105,
+                "y": 21,
+                "block": "air",
+                "components": []
+            },
+            "-109:21": {
+                "x": -109,
+                "y": 21,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-10": {
+            "-157:-21": {
+                "x": -157,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "-159:-6": {
+                "x": -159,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-158:-17": {
+                "x": -158,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-160:-5": {
+                "x": -160,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-154:-13": {
+                "x": -154,
+                "y": -13,
+                "block": "stone",
+                "components": []
+            },
+            "-157:-6": {
+                "x": -157,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-156:-23": {
+                "x": -156,
+                "y": -23,
+                "block": "air",
+                "components": []
+            },
+            "-156:-20": {
+                "x": -156,
+                "y": -20,
+                "block": "air",
+                "components": []
+            },
+            "-156:-17": {
+                "x": -156,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-156:-11": {
+                "x": -156,
+                "y": -11,
+                "block": "air",
+                "components": []
+            },
+            "-156:-14": {
+                "x": -156,
+                "y": -14,
+                "block": "stone",
+                "components": []
+            },
+            "-156:-5": {
+                "x": -156,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-157:-22": {
+                "x": -157,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "-157:-16": {
+                "x": -157,
+                "y": -16,
+                "block": "stone",
+                "components": []
+            },
+            "-158:-18": {
+                "x": -158,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-159:-16": {
+                "x": -159,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-157:-19": {
+                "x": -157,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-159:-4": {
+                "x": -159,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-160:-6": {
+                "x": -160,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-157:-10": {
+                "x": -157,
+                "y": -10,
+                "block": "stone",
+                "components": []
+            },
+            "-156:-21": {
+                "x": -156,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "-156:-18": {
+                "x": -156,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-155:-13": {
+                "x": -155,
+                "y": -13,
+                "block": "stone",
+                "components": []
+            },
+            "-156:-15": {
+                "x": -156,
+                "y": -15,
+                "block": "air",
+                "components": []
+            },
+            "-158:-19": {
+                "x": -158,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-159:-17": {
+                "x": -159,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-157:-20": {
+                "x": -157,
+                "y": -20,
+                "block": "air",
+                "components": []
+            },
+            "-157:-17": {
+                "x": -157,
+                "y": -17,
+                "block": "air",
+                "components": []
+            },
+            "-159:-8": {
+                "x": -159,
+                "y": -8,
+                "block": "stone",
+                "components": []
+            },
+            "-160:-4": {
+                "x": -160,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-154:-21": {
+                "x": -154,
+                "y": -21,
+                "block": "air",
+                "components": []
+            },
+            "-159:-5": {
+                "x": -159,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-153:-14": {
+                "x": -153,
+                "y": -14,
+                "block": "air",
+                "components": []
+            },
+            "-154:-12": {
+                "x": -154,
+                "y": -12,
+                "block": "air",
+                "components": []
+            },
+            "-156:-22": {
+                "x": -156,
+                "y": -22,
+                "block": "air",
+                "components": []
+            },
+            "-156:-16": {
+                "x": -156,
+                "y": -16,
+                "block": "air",
+                "components": []
+            },
+            "-156:-19": {
+                "x": -156,
+                "y": -19,
+                "block": "air",
+                "components": []
+            },
+            "-155:-14": {
+                "x": -155,
+                "y": -14,
+                "block": "torch",
+                "components": []
+            },
+            "-159:-18": {
+                "x": -159,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-159:-15": {
+                "x": -159,
+                "y": -15,
+                "block": "torch",
+                "components": []
+            },
+            "-157:-18": {
+                "x": -157,
+                "y": -18,
+                "block": "air",
+                "components": []
+            },
+            "-158:-20": {
+                "x": -158,
+                "y": -20,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-11": {
+            "-162:-5": {
+                "x": -162,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-167:11": {
+                "x": -167,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-168:-6": {
+                "x": -168,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-168:-3": {
+                "x": -168,
+                "y": -3,
+                "block": "air",
+                "components": []
+            },
+            "-166:-6": {
+                "x": -166,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-168:6": {
+                "x": -168,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "-163:-4": {
+                "x": -163,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-168:9": {
+                "x": -168,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-161:-4": {
+                "x": -161,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-168:12": {
+                "x": -168,
+                "y": 12,
+                "block": "air",
+                "components": []
+            },
+            "-169:-5": {
+                "x": -169,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-169:1": {
+                "x": -169,
+                "y": 1,
+                "block": "air",
+                "components": []
+            },
+            "-169:-1": {
+                "x": -169,
+                "y": -1,
+                "block": "air",
+                "components": []
+            },
+            "-169:4": {
+                "x": -169,
+                "y": 4,
+                "block": "air",
+                "components": []
+            },
+            "-169:-2": {
+                "x": -169,
+                "y": -2,
+                "block": "air",
+                "components": []
+            },
+            "-167:-5": {
+                "x": -167,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-164:-6": {
+                "x": -164,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-169:7": {
+                "x": -169,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-165:-5": {
+                "x": -165,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-167:10": {
+                "x": -167,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-169:10": {
+                "x": -169,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-162:-6": {
+                "x": -162,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-167:7": {
+                "x": -167,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-167:16": {
+                "x": -167,
+                "y": 16,
+                "block": "stone",
+                "components": []
+            },
+            "-168:-4": {
+                "x": -168,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-167:19": {
+                "x": -167,
+                "y": 19,
+                "block": "stone",
+                "components": []
+            },
+            "-166:-4": {
+                "x": -166,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-168:8": {
+                "x": -168,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-168:5": {
+                "x": -168,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "-168:11": {
+                "x": -168,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-163:-5": {
+                "x": -163,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-161:-5": {
+                "x": -161,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-169:-3": {
+                "x": -169,
+                "y": -3,
+                "block": "stone",
+                "components": []
+            },
+            "-169:3": {
+                "x": -169,
+                "y": 3,
+                "block": "stone",
+                "components": []
+            },
+            "-167:-6": {
+                "x": -167,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-169:0": {
+                "x": -169,
+                "y": 0,
+                "block": "stone",
+                "components": []
+            },
+            "-169:6": {
+                "x": -169,
+                "y": 6,
+                "block": "stone",
+                "components": []
+            },
+            "-164:-4": {
+                "x": -164,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-165:-6": {
+                "x": -165,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-169:9": {
+                "x": -169,
+                "y": 9,
+                "block": "stone",
+                "components": []
+            },
+            "-167:6": {
+                "x": -167,
+                "y": 6,
+                "block": "air",
+                "components": []
+            },
+            "-162:-4": {
+                "x": -162,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-169:12": {
+                "x": -169,
+                "y": 12,
+                "block": "stone",
+                "components": []
+            },
+            "-167:9": {
+                "x": -167,
+                "y": 9,
+                "block": "air",
+                "components": []
+            },
+            "-168:-5": {
+                "x": -168,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-166:-5": {
+                "x": -166,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-168:10": {
+                "x": -168,
+                "y": 10,
+                "block": "air",
+                "components": []
+            },
+            "-163:-6": {
+                "x": -163,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-168:7": {
+                "x": -168,
+                "y": 7,
+                "block": "air",
+                "components": []
+            },
+            "-168:13": {
+                "x": -168,
+                "y": 13,
+                "block": "air",
+                "components": []
+            },
+            "-161:-6": {
+                "x": -161,
+                "y": -6,
+                "block": "air",
+                "components": []
+            },
+            "-169:-4": {
+                "x": -169,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-164:-5": {
+                "x": -164,
+                "y": -5,
+                "block": "air",
+                "components": []
+            },
+            "-169:-7": {
+                "x": -169,
+                "y": -7,
+                "block": "stone",
+                "components": []
+            },
+            "-167:-4": {
+                "x": -167,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-169:2": {
+                "x": -169,
+                "y": 2,
+                "block": "air",
+                "components": []
+            },
+            "-169:8": {
+                "x": -169,
+                "y": 8,
+                "block": "air",
+                "components": []
+            },
+            "-165:-4": {
+                "x": -165,
+                "y": -4,
+                "block": "air",
+                "components": []
+            },
+            "-169:5": {
+                "x": -169,
+                "y": 5,
+                "block": "air",
+                "components": []
+            },
+            "-169:11": {
+                "x": -169,
+                "y": 11,
+                "block": "air",
+                "components": []
+            },
+            "-167:8": {
+                "x": -167,
+                "y": 8,
+                "block": "air",
+                "components": []
+            }
+        },
+        "-12": {
+            "-182:20": {
+                "x": -182,
+                "y": 20,
+                "block": "crafting_table",
+                "components": []
+            }
+        },
+        "-13": {
+            "-197:21": {
+                "x": -197,
+                "y": 21,
+                "block": "furnace",
+                "components": [
+                    {
+                        "key": "furnace",
+                        "component": {
+                            "type": "furnaceComponent",
+                            "input": null,
+                            "fuel": {
+                                "item_type_name": "oak_plank",
+                                "count": 58,
+                                "durability": null
+                            },
+                            "output": null
+                        }
+                    }
+                ]
+            }
+        },
+        "-14": {
+            "-215:25": {
+                "x": -215,
+                "y": 25,
+                "block": "air",
+                "components": []
+            },
+            "-215:23": {
+                "x": -215,
+                "y": 23,
+                "block": "air",
+                "components": []
+            },
+            "-215:24": {
+                "x": -215,
+                "y": 24,
+                "block": "air",
+                "components": []
+            }
+        }
+    }
+}

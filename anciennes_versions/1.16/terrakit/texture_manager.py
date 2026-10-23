@@ -1,0 +1,349 @@
+import pygame
+from terrakit import game_property
+
+BLOCKS_PATH = "blocks/"
+ITEMS_PATH = "items/"
+TOOLS_PATH = "tools/"
+CONSUMABLE_PATH = "consumable/"
+ENTITIES_PATH = "entities/"
+MOBS_PATH = "mobs/"
+PLAYER_PATH = "player/"
+OTHERS_PATH = "others/"
+UI_PATH = "ui/"
+
+class TextureType:
+    NONE = ""
+    DIRT = "dirt"
+    STONE = "stone"
+    GRASS = "grass"
+    BEDROCK = "bedrock"
+
+    COAL_ORE = "coal_ore"
+    IRON_ORE = "iron_ore"
+    GOLD_ORE = "gold_ore"
+    EMERALD_ORE = "emerald_old"
+
+    COAL = "coal"
+    IRON = "iron"
+    GOLD = "gold"
+
+    SAND = "sand"
+    WATER = "water"
+    SNOW = "snow"
+    STONE_SNOW = "stone_snow"
+    REDSTONE = "redstone"
+    REDSTONE_EMERALD = "redstone_emerald"
+    REDSTONE_SAND = "redstone_sand"
+    STICK = "stick"
+
+    GRASS_1 = "grass_1"
+    GRASS_2 = "grass_2"
+    GRASS_3 = "grass_3"
+    GRASS_4 = "grass_4"
+    GRASS_BROWN = "grass_brown"
+    ROCK = "rock"
+    MUSHROOM = "mushroom"
+    GRASS_TAN = "grass_tan"
+    ROCK_MOSS = "rock_moss"
+    WHEAT = "wheat"
+
+    OAK_TRUNK = "oak_trunk"
+    OAK_LEAVES = "oak_leaves"
+    OAK_TRUNK_BOTTOM = "oak_trunk_bottom"
+    OAK_TRUNK_MID = "oak_trunk_mid"
+    OAK_PLANK = "oak_plank"
+    TNT = "tnt"
+    TORCH = "torch"
+
+    BOW = "bow"
+    ARROW = "arrow"
+    BOW_ARROW = "bow_arrow"
+
+    CRAFTING_TABLE = "crafting_table"
+    FURNACE = "furnace"
+    CHEST = "chest"
+    IRON_CHEST = "iron_chest"
+
+    WATER_BUCKET = "water_bucket"
+
+    # TOOLS
+    FLINT_AND_STEEL = "flint_and_steel"
+
+    WOODEN_SWORD = "wooden_sword"
+    WOODEN_PICKAXE = "wooden_pickaxe"
+    WOODEN_AXE = "wooden_axe"
+
+    STONE_SWORD = "stone_sword"
+    STONE_PICKAXE = "stone_pickaxe"
+    STONE_AXE = "stone_axe"
+
+    IRON_SWORD = "iron_sword"
+    IRON_PICKAXE = "iron_pickaxe"
+    IRON_AXE = "iron_axe"
+
+    GOLDEN_SWORD = "gold_sword"
+    GOLDEN_PICKAXE = "gold_pickaxe"
+    GOLDEN_AXE = "gold_axe"
+
+    DIAMOND_SWORD = "diamond_sword"
+    DIAMOND_PICKAXE = "diamond_pickaxe"
+    DIAMOND_AXE = "diamond_axe"
+    
+    PLAYER_HEAD_MALE = "player_head_male"
+    PLAYER_BODY_MALE = "player_body_male"
+    PLAYER_LEG_MALE = "player_leg_male"
+    PLAYER_ARM_MALE = "player_arm_male"
+
+    PLAYER_HEAD_FEMALE = "player_head_female"
+    PLAYER_BODY_FEMALE = "player_body_female"
+    PLAYER_LEG_FEMALE = "player_leg_female"
+    PLAYER_ARM_FEMALE = "player_arm_female"
+
+    ZOMBIE_HEAD = "zombie_head"
+    ZOMBIE_BODY = "zombie_body"
+    ZOMBIE_ARM = "zombie_arm"
+    ZOMBIE_LEG = "zombie_leg"
+
+    SKELETON_HEAD = "skeleton_head"
+    SKELETON_BODY = "skeleton_body"
+    SKELETON_ARM = "skeleton_arm"
+    SKELETON_LEG = "skeleton_leg"
+
+    ALIEN_HEAD = "alien_head"
+    ALIEN_BODY = "alien_body"
+    ALIEN_ARM = "alien_arm"
+    ALIEN_LEG = "alien_leg"
+
+    ALIEN_HEAD = "gnome_head"
+    ALIEN_BODY = "alien_body"
+    ALIEN_ARM = "alien_arm"
+    ALIEN_LEG = "alien_leg"
+
+    FOX_BODY = "fox_body"
+    FOX_EAR = "fox_ear"
+    FOX_LEG = "fox_leg"
+    FOX_TAIL = "fox_tail"
+    FOX_MEAT = "fox_meat"
+    FOX_COOKED_MEAT = "fox_cooked_meat"
+
+    WITHER_LITTLE_HEAD = "wither_little_head"
+    WITHER_HEAD = "wither_head"
+    WITHER_TOP_BODY = "wither_top_body"
+    WITHER_BODY_PART = "wither_body_part"
+    WITHER_BODY_CORPS = "wither_body_corps"
+    
+    CHIPS = "chips"
+    EGG = "egg"
+    COOKED_EGG = "cooked_egg"
+    DEFAULT = "default"
+    POUP = "poup"
+
+    SWEETY_FOX_BODY = "sweety_fox_body"
+
+    # IAMGES UI
+    MAIN_MENU = "main_menu"
+    TITLE = "title"
+
+    POINTER = "pointer"
+    HAND_POINT = "hand_point"
+
+    HEART_FULL = "heart_full"
+    HEART_HALF = "heart_half"
+    HEART_EMPTY = "heart_empty"
+
+class TextureManager:
+    def __init__(self, directory):
+        self.default_texture = self.get_default_texture()
+        self.textures = {}
+        self.directory = directory
+
+        self._reload()
+
+    def _reload(self):
+        """Charge les textures par défaut. Doit être appelé après pygame.display.set_mode()."""
+        try:
+            # BLOCK
+            self.load_texture(TextureType.DIRT, BLOCKS_PATH + "dirt.png")
+            self.load_texture(TextureType.STONE, BLOCKS_PATH + "stone.png")
+            self.load_texture(TextureType.GRASS, BLOCKS_PATH + "grass_block.png")
+            self.load_texture(TextureType.BEDROCK, BLOCKS_PATH + "bedrock.png")
+            self.load_texture(TextureType.COAL_ORE, BLOCKS_PATH + "coal_ore.png")
+            self.load_texture(TextureType.IRON_ORE, BLOCKS_PATH + "iron_ore.png")
+            self.load_texture(TextureType.GOLD_ORE, BLOCKS_PATH + "gold_ore.png")
+            self.load_texture(TextureType.EMERALD_ORE, ITEMS_PATH + OTHERS_PATH + "emerald_ore.png")
+            self.load_texture(TextureType.SAND, BLOCKS_PATH + "sand.png")
+            self.load_texture(TextureType.WATER, BLOCKS_PATH + "water.png")
+            self.load_texture(TextureType.OAK_TRUNK, BLOCKS_PATH + "oak_trunk.png")
+            self.load_texture(TextureType.OAK_LEAVES, BLOCKS_PATH + "oak_leaves.png")
+            self.load_texture(TextureType.OAK_TRUNK_BOTTOM, BLOCKS_PATH + "oak_trunk_bottom.png")
+            self.load_texture(TextureType.OAK_TRUNK_MID, BLOCKS_PATH + "oak_trunk_mid.png")
+            self.load_texture(TextureType.SNOW, BLOCKS_PATH + "snow.png")
+            self.load_texture(TextureType.STONE_SNOW, BLOCKS_PATH + "stone_snow.png")
+            self.load_texture(TextureType.REDSTONE, BLOCKS_PATH + "redstone.png")
+            self.load_texture(TextureType.REDSTONE_EMERALD, BLOCKS_PATH + "redstone_emerald.png")
+            self.load_texture(TextureType.REDSTONE_SAND, BLOCKS_PATH + "redstone_sand.png")
+            self.load_texture(TextureType.OAK_PLANK, BLOCKS_PATH + "oak_plank.png")
+            self.load_texture(TextureType.TNT, BLOCKS_PATH + "tnt.png")
+            self.load_texture(TextureType.TORCH, BLOCKS_PATH + "torch.png")
+
+            self.load_texture(TextureType.CRAFTING_TABLE, BLOCKS_PATH + "crafting_table.png")
+            self.load_texture(TextureType.FURNACE, BLOCKS_PATH + "furnace.png")
+            self.load_texture(TextureType.CHEST, BLOCKS_PATH + "chest.png")
+            self.load_texture(TextureType.IRON_CHEST, BLOCKS_PATH + "iron_chest.png")
+
+            # VARIATIONS 
+            self.load_texture(TextureType.GRASS_1, BLOCKS_PATH + "grass1.png")
+            self.load_texture(TextureType.GRASS_2, BLOCKS_PATH + "grass2.png")
+            self.load_texture(TextureType.GRASS_3, BLOCKS_PATH + "grass3.png")
+            self.load_texture(TextureType.GRASS_4, BLOCKS_PATH + "grass4.png")
+            self.load_texture(TextureType.GRASS_BROWN, BLOCKS_PATH + "grass_brown.png")
+            self.load_texture(TextureType.GRASS_TAN, BLOCKS_PATH + "grass_tan.png")
+            self.load_texture(TextureType.ROCK_MOSS, BLOCKS_PATH + "rock_moss.png")
+            self.load_texture(TextureType.ROCK, BLOCKS_PATH + "rock.png")
+            self.load_texture(TextureType.MUSHROOM, BLOCKS_PATH + "mushroom_red.png")
+            self.load_texture(TextureType.WHEAT, BLOCKS_PATH + "wheat.png")
+
+            self.load_texture(TextureType.POUP, ITEMS_PATH + CONSUMABLE_PATH + "poup.png")
+
+            # ITEMS
+            self.load_texture(TextureType.WATER_BUCKET, ITEMS_PATH + TOOLS_PATH + "water_bucket.png")
+            self.load_texture(TextureType.FLINT_AND_STEEL, ITEMS_PATH + TOOLS_PATH + "flint_and_steel.png")
+
+            self.load_texture(TextureType.DIAMOND_SWORD, ITEMS_PATH + TOOLS_PATH + "diamond_sword.png")
+            self.load_texture(TextureType.WOODEN_SWORD, ITEMS_PATH + TOOLS_PATH + "wooden_sword.png")
+            self.load_texture(TextureType.STONE_SWORD, ITEMS_PATH + TOOLS_PATH + "stone_sword.png")
+            self.load_texture(TextureType.IRON_SWORD, ITEMS_PATH + TOOLS_PATH + "iron_sword.png")
+            self.load_texture(TextureType.GOLDEN_SWORD, ITEMS_PATH + TOOLS_PATH + "golden_sword.png")
+
+            self.load_texture(TextureType.DIAMOND_PICKAXE, ITEMS_PATH + TOOLS_PATH + "diamond_pickaxe.png")
+            self.load_texture(TextureType.WOODEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "wooden_pickaxe.png")
+            self.load_texture(TextureType.STONE_PICKAXE, ITEMS_PATH + TOOLS_PATH + "stone_pickaxe.png")
+            self.load_texture(TextureType.IRON_PICKAXE, ITEMS_PATH + TOOLS_PATH + "iron_pickaxe.png")
+            self.load_texture(TextureType.GOLDEN_PICKAXE, ITEMS_PATH + TOOLS_PATH + "golden_pickaxe.png")
+
+            self.load_texture(TextureType.DIAMOND_AXE, ITEMS_PATH + TOOLS_PATH + "diamond_axe.png")
+            self.load_texture(TextureType.WOODEN_AXE, ITEMS_PATH + TOOLS_PATH + "wooden_axe.png")
+            self.load_texture(TextureType.STONE_AXE, ITEMS_PATH + TOOLS_PATH + "stone_axe.png")
+            self.load_texture(TextureType.IRON_AXE, ITEMS_PATH + TOOLS_PATH + "iron_axe.png")
+            self.load_texture(TextureType.GOLDEN_AXE, ITEMS_PATH + TOOLS_PATH + "golden_axe.png")
+
+            self.load_texture(TextureType.CHIPS, ITEMS_PATH + CONSUMABLE_PATH + "chips.png")
+            self.load_texture(TextureType.EGG, ITEMS_PATH + CONSUMABLE_PATH + "egg.png")
+            self.load_texture(TextureType.COOKED_EGG, ITEMS_PATH + CONSUMABLE_PATH + "cooked_egg.png")
+
+            self.load_texture(TextureType.STICK, ITEMS_PATH + OTHERS_PATH + "stick.png")
+
+            self.load_texture(TextureType.COAL, ITEMS_PATH + OTHERS_PATH + "coal_ore.png")
+            self.load_texture(TextureType.IRON, ITEMS_PATH + OTHERS_PATH + "iron_ore.png")
+            self.load_texture(TextureType.GOLD, ITEMS_PATH + OTHERS_PATH + "gold_ore.png")
+
+            self.load_texture(TextureType.ARROW, ITEMS_PATH + TOOLS_PATH + "arrow.png")
+            self.load_texture(TextureType.BOW, ITEMS_PATH + TOOLS_PATH + "bow.png")
+            self.load_texture(TextureType.BOW_ARROW, ITEMS_PATH + TOOLS_PATH + "bow_arrow.png")
+
+            # PLAYER
+            self.load_texture(TextureType.PLAYER_HEAD_MALE, ENTITIES_PATH + PLAYER_PATH + "male/head.png")
+            self.load_texture(TextureType.PLAYER_BODY_MALE, ENTITIES_PATH + PLAYER_PATH + "male/body.png")
+            self.load_texture(TextureType.PLAYER_ARM_MALE, ENTITIES_PATH + PLAYER_PATH + "male/arm.png")
+            self.load_texture(TextureType.PLAYER_LEG_MALE, ENTITIES_PATH + PLAYER_PATH + "male/leg.png")
+
+            self.load_texture(TextureType.PLAYER_HEAD_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/head.png")
+            self.load_texture(TextureType.PLAYER_BODY_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/body.png")
+            self.load_texture(TextureType.PLAYER_ARM_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/arm.png")
+            self.load_texture(TextureType.PLAYER_LEG_FEMALE, ENTITIES_PATH + PLAYER_PATH + "female/leg.png")
+
+            # ZOMBIE
+            self.load_texture(TextureType.ZOMBIE_HEAD, ENTITIES_PATH + MOBS_PATH + "zombie/head.png")
+            self.load_texture(TextureType.ZOMBIE_ARM, ENTITIES_PATH + MOBS_PATH + "zombie/arm.png")
+            self.load_texture(TextureType.ZOMBIE_BODY, ENTITIES_PATH + MOBS_PATH + "zombie/body.png")
+            self.load_texture(TextureType.ZOMBIE_LEG, ENTITIES_PATH + MOBS_PATH + "zombie/leg.png")
+
+            # SKELETON
+            self.load_texture(TextureType.SKELETON_HEAD, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_head.png")
+            self.load_texture(TextureType.SKELETON_ARM, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_arm.png")
+            self.load_texture(TextureType.SKELETON_BODY, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_body.png")
+            self.load_texture(TextureType.SKELETON_LEG, ENTITIES_PATH + MOBS_PATH + "skeleton/skeleton_leg.png")
+
+            # ALIEN
+            self.load_texture(TextureType.ALIEN_HEAD, ENTITIES_PATH + MOBS_PATH + "alien/alien_head.png")
+            self.load_texture(TextureType.ALIEN_ARM, ENTITIES_PATH + MOBS_PATH + "alien/alien_arm.png")
+            self.load_texture(TextureType.ALIEN_BODY, ENTITIES_PATH + MOBS_PATH + "alien/alien_body.png")
+            self.load_texture(TextureType.ALIEN_LEG, ENTITIES_PATH + MOBS_PATH + "alien/alien_leg.png")
+
+            # FOX
+            self.load_texture(TextureType.FOX_BODY, ENTITIES_PATH + MOBS_PATH + "fox/fox_body.png")
+            self.load_texture(TextureType.FOX_EAR, ENTITIES_PATH + MOBS_PATH + "fox/fox_ear.png")
+            self.load_texture(TextureType.FOX_LEG, ENTITIES_PATH + MOBS_PATH + "fox/fox_leg.png")
+            self.load_texture(TextureType.FOX_TAIL, ENTITIES_PATH + MOBS_PATH + "fox/fox_tail.png")
+            self.load_texture(TextureType.FOX_MEAT, ITEMS_PATH + CONSUMABLE_PATH + "fox_meat.png")
+            self.load_texture(TextureType.FOX_COOKED_MEAT, ITEMS_PATH + CONSUMABLE_PATH + "fox_cooked_meat.png")
+
+            self.load_texture(TextureType.SWEETY_FOX_BODY, ENTITIES_PATH + MOBS_PATH + "sweetyfox/body.png")
+
+            # WITHER
+            self.load_texture(TextureType.WITHER_HEAD, ENTITIES_PATH + MOBS_PATH + "wither/head.png")
+            self.load_texture(TextureType.WITHER_LITTLE_HEAD, ENTITIES_PATH + MOBS_PATH + "wither/little_head.png")
+            self.load_texture(TextureType.WITHER_TOP_BODY, ENTITIES_PATH + MOBS_PATH + "wither/top_body.png")
+            self.load_texture(TextureType.WITHER_BODY_CORPS, ENTITIES_PATH + MOBS_PATH + "wither/body_corps.png")
+            self.load_texture(TextureType.WITHER_BODY_PART, ENTITIES_PATH + MOBS_PATH + "wither/body_part.png")
+
+            #
+            self.load_texture(TextureType.DEFAULT, "default.png")
+
+            # MENU
+            self.load_texture(TextureType.MAIN_MENU, UI_PATH + "main_menu.png", size=None)
+            self.load_texture(TextureType.TITLE, UI_PATH + "title.png", size=None)
+
+            self.load_texture(TextureType.POINTER, UI_PATH + "pointer.png", size=(20, 20))
+            self.load_texture(TextureType.HAND_POINT, UI_PATH + "hand_point.png", size=(20, 20))
+
+            self.load_texture(TextureType.HEART_FULL, UI_PATH + "heart_full.png")
+            self.load_texture(TextureType.HEART_HALF, UI_PATH + "heart_half.png")
+            self.load_texture(TextureType.HEART_EMPTY, UI_PATH + "heart_empty.png")
+
+        except Exception as e:
+            print(f"Erreur lors du chargement des textures: {e}")
+            return False
+
+        print(f"Textures chargées avec succès: {len(self.textures)} textures chargées.")
+        return True
+    
+    def load_texture(self, texture_type: TextureType, file_path, size=(game_property.TILE_SIZE, game_property.TILE_SIZE)):
+        """Charge une texture depuis un fichier."""
+        full_path = self.directory + "texture/" + file_path
+
+        try:
+            texture = pygame.image.load(game_property.get_resource_path(full_path)).convert_alpha()
+            if size:
+                texture = pygame.transform.scale(texture, size)
+
+            self.textures[texture_type] = texture
+
+        except Exception as e:
+            print(f"Erreur texture {texture_type} ({file_path}): {e}")
+
+    def get_texture(self, texture_type):
+        if texture_type in self.textures:
+            return self.textures[texture_type]
+        
+        if texture_type == TextureType.NONE:
+            return None
+
+        return self.default_texture
+    
+    def get_default_texture(self):
+        surface = pygame.Surface((game_property.TILE_SIZE, game_property.TILE_SIZE))
+
+        tile = game_property.TILE_SIZE
+        half = tile // 2
+
+        pink = (255, 0, 255)
+        black = (0, 0, 0)
+
+        # 4 carrés
+        pygame.draw.rect(surface, pink,  (0, 0, half, half))
+        pygame.draw.rect(surface, black, (half, 0, half, half))
+        pygame.draw.rect(surface, black, (0, half, half, half))
+        pygame.draw.rect(surface, pink,  (half, half, half, half))
+
+        return surface
